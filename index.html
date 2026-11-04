@@ -65,18 +65,16 @@ body[data-screen="report"] #report{display:block}
 @keyframes pulse{50%{transform:scale(1.07)}}
 
 /* ---------- teacher panel ---------- */
-.teacher{display:flex;align-items:center;gap:10px;padding:8px 18px;background:rgba(255,255,255,.6);border-top:2px dashed rgba(30,42,90,.3);min-height:58px}
-.tlabel{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);white-space:nowrap}
-#tactions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;flex:1;min-width:0}
-.tb{font:600 14px/1 var(--text);padding:9px 14px;border:2px solid var(--navy);border-radius:12px;background:#fff;box-shadow:2px 2px 0 var(--navy);cursor:pointer;white-space:nowrap}
+.teacher{display:flex;align-items:center;gap:8px;padding:5px 16px;background:rgba(255,255,255,.32);border-top:1px dashed rgba(30,42,90,.22);min-height:46px}
+#tactions{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;flex:1;min-width:0}
+#tskip,#tnext{display:flex;gap:6px}
+.tb{font:600 13px/1 var(--text);padding:7px 12px;border:1.5px solid var(--navy);border-radius:10px;background:#fff;box-shadow:1.5px 1.5px 0 var(--navy);cursor:pointer;white-space:nowrap;color:var(--navy)}
+.tb.num{min-width:32px;padding:6px 7px;font-variant-numeric:tabular-nums}
+#tnext .tb{min-width:104px;padding:8px 16px}
 .tb:active{transform:translate(1px,1px);box-shadow:1px 1px 0 var(--navy)}
 .tb.primary{background:var(--navy);color:#fff}
-.tb.small{padding:6px 9px;font-size:18px;line-height:1}
 .tb:disabled{opacity:.4;cursor:not-allowed;transform:none}
 .tb.arm{background:#FFE7A8}
-.thint{font-size:13px;color:var(--muted)}
-#treset .tb{font-size:13px;color:var(--muted);border-color:rgba(30,42,90,.5);box-shadow:none}
-#treset .tb.arm{color:var(--navy);border-color:var(--navy)}
 
 /* ---------- common child elements ---------- */
 .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;min-height:0}
@@ -197,7 +195,6 @@ body[data-screen="report"] #report{display:block}
 .emo{font:700 19px/1.1 var(--head);padding:12px 10px;border:4px solid var(--navy);border-radius:18px;background:#fff;box-shadow:5px 5px 0 var(--navy);cursor:pointer;display:flex;align-items:center;gap:10px;justify-content:center}
 .emo .e{font-size:36px}
 .emo.sel{background:#F1EDFF}
-.need2{font-weight:800;font-size:17px;color:var(--purple)}
 .dots{display:flex;gap:6px;justify-content:center}
 .dots i{width:12px;height:12px;border-radius:50%;border:2px solid var(--navy);background:#fff}
 .dots i.on{background:var(--navy)}
@@ -284,17 +281,45 @@ body[data-screen="report"] #report{display:block}
 @keyframes fall{to{transform:translate(var(--dx), 105vh) rotate(var(--rot));opacity:.9}}
 
 /* ---------- teacher extras ---------- */
-.tb.skip{font-size:13px;color:var(--muted);border-color:rgba(30,42,90,.45);box-shadow:none;background:transparent}
+.tb.skip{color:var(--muted);border-color:rgba(30,42,90,.4);box-shadow:none;background:transparent}
 .tb.arm,.tb.skip.arm{background:#FFE7A8;color:var(--navy);border-color:var(--navy)}
-.tb.hintbtn{font-size:16px;padding:7px 10px}
-.tb.hintbtn.on{background:var(--yellow)}
-#tinfo{font-size:12px;color:var(--muted);white-space:nowrap}
 #tmenu{position:relative}
-.menu{position:absolute;right:0;bottom:calc(100% + 8px);background:#fff;border:2px solid var(--navy);border-radius:14px;box-shadow:3px 3px 0 var(--navy);padding:8px;display:flex;flex-direction:column;gap:6px;z-index:30;min-width:230px}
-.popover{position:fixed;left:18px;bottom:70px;max-width:540px;background:#fff;border:2px solid var(--navy);border-radius:14px;box-shadow:3px 3px 0 var(--navy);padding:10px 14px;font-size:14px;line-height:1.45;z-index:30}
-.popover .ttl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
-.popover ul{margin:0;padding-left:18px}
-.popover li{margin:2px 0}
+.menu{position:absolute;left:0;bottom:calc(100% + 8px);background:#fff;border:2px solid var(--navy);border-radius:14px;box-shadow:3px 3px 0 var(--navy);padding:8px;display:flex;flex-direction:column;gap:6px;z-index:30;min-width:260px}
+.minfo{font-size:12px;color:var(--muted);padding:2px 4px 6px;border-bottom:1px solid #E3E7F0;line-height:1.4}
+
+/* setup (компактна картка) */
+body[data-screen="setup"] .aside{display:none}
+body[data-screen="setup"] .main{grid-template-columns:minmax(0,1fr)}
+.setupcard{max-width:640px;width:100%;margin:auto;display:flex;flex-direction:column;gap:12px}
+.setupcard h1{font-size:22px;text-align:center}
+.setupcard .sub{text-align:center;font-size:14px;color:var(--muted);margin-top:-6px}
+.frow{display:grid;grid-template-columns:150px minmax(0,1fr);align-items:center;gap:12px}
+.frow label,.frow .fl{font-weight:700;font-size:14px}
+.frow .opt{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.sinput{font:600 16px var(--text);padding:8px 12px;border:2px solid var(--navy);border-radius:12px;width:100%;color:var(--navy);background:var(--soft)}
+.sinput:focus{outline:4px solid var(--purple);outline-offset:1px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip2{font:700 15px var(--text);padding:8px 16px;border:2px solid var(--navy);border-radius:12px;background:#fff;box-shadow:2px 2px 0 var(--navy);cursor:pointer;color:var(--navy)}
+
+/* «Що зникло?» — «Ось як було» */
+.item.gone{position:relative;background:#FFF7DC;box-shadow:0 0 0 7px rgba(255,201,60,.45),5px 5px 0 var(--navy)}
+.item.gone::before,.item.gone::after{content:"✨";position:absolute;font-size:26px}
+.item.gone::before{top:-16px;right:-12px}
+.item.gone::after{bottom:-14px;left:-10px}
+
+/* креативність: пауза й майстерня винаходів */
+.hourglass{font-size:min(120px, calc((100vh - 360px) / 2.6));line-height:1;animation:flipg 3s ease-in-out infinite}
+@keyframes flipg{0%,40%{transform:rotate(0)}50%,90%{transform:rotate(180deg)}100%{transform:rotate(360deg)}}
+.ws{flex:1;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:22px;align-items:stretch;min-height:0}
+.wsitems{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;align-content:center}
+.wsitem{aspect-ratio:1;border:4px solid var(--navy);border-radius:20px;background:#fff;box-shadow:4px 4px 0 var(--navy);font-size:min(52px, calc((100vh - 360px) / 6.5));cursor:pointer;display:grid;place-items:center;padding:0}
+.wsitem.sel{background:#F1EDFF}
+.wshelf{background:#FFF3D1;border:4px solid var(--navy);border-radius:24px;box-shadow:6px 6px 0 var(--navy);padding:12px;display:flex;flex-direction:column;gap:8px;min-height:0;overflow:hidden}
+.wshelf .lbl{text-align:center}
+.pairs{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;overflow:hidden}
+.pair{background:#fff;border:3px solid var(--navy);border-radius:14px;padding:4px 10px;font-size:26px;display:flex;align-items:center;gap:4px}
+.pair small{font-size:18px}
+.can2{font-weight:700;font-size:16px;color:var(--muted)}
 
 /* ---------- report (окремий стриманий стиль) ---------- */
 body[data-screen="report"]{background:#fff}
@@ -353,7 +378,6 @@ body[data-screen="report"]{background:#fff}
   .animals{gap:10px}
   .brand span{display:none}
   .opts .big{min-width:210px}
-  #tinfo{display:none}
 }
 @media (max-width:820px){ .rp-profile{grid-template-columns:1fr} .rp-skill dl{grid-template-columns:1fr} }
 @media (prefers-reduced-motion: reduce){
@@ -362,7 +386,7 @@ body[data-screen="report"]{background:#fff}
 @media print{
   @page{size:A4;margin:12mm 13mm}
   body,body[data-screen="report"]{background:#fff !important;overflow:visible}
-  .app,.no-print,.confetti,.popover{display:none !important}
+  .app,.no-print,.confetti{display:none !important}
   #report{display:block !important;min-height:0}
   .rp{max-width:none;padding:0;font-size:9.6pt;line-height:1.38}
   .rp h1{font-size:17pt;margin:2px 0 8px}
@@ -414,14 +438,12 @@ body[data-screen="report"]{background:#fff}
     <section class="stage" id="stage"></section>
   </main>
   <footer class="teacher" id="teacher">
-    <span class="tlabel">Для вчителя</span>
-    <button class="tb hintbtn" id="hintbtn" data-act="g.hint" title="Підказка для вчителя (клавіша H)">💡</button>
-    <div id="tactions"></div>
-    <span id="tinfo"></span>
     <div id="tmenu"></div>
+    <div id="tactions"></div>
+    <div id="tskip"></div>
+    <div id="tnext"></div>
   </footer>
 </div>
-<div class="popover" id="thintpop" hidden></div>
 <div id="report"></div>
 <script src="hero-pixel.js"></script>
 <script>
@@ -434,6 +456,9 @@ body[data-screen="report"]{background:#fff}
    ===================================================================== */
 const CONFIG = {
   storageKey: 'majsternia-supersyl-v2',
+  version: '3.0',
+  // Google Таблиця (див. GOOGLE_SHEETS.md). Порожній endpoint — нічого не надсилається.
+  sheets: { endpoint: '', token: '' },
   planMinutes: 45,
   // план хвилин на станцію (для «Стилю роботи → Темп» у звіті); разом із героєм, батарейками й фіналом — 45
   planStationMinutes: { attention: 5, memory: 4, planning: 6, emotions: 5, money: 6, creativity: 5, safe: 5 },
@@ -553,7 +578,7 @@ const CONFIG = {
       } },
     { key: 'creativity', icon: '💡', area: 'Креативність', title: 'Генератор ідей', selfHint: 'вигадувати нове',
       about: 'Креативність допомагає знаходити кілька рішень, а не одне — у навчанні, грі й спілкуванні.',
-      measured: 'Кількість і різноманітність ідей для звичайних предметів і абстрактних картинок за обмежений час',
+      measured: 'Ідеї для звичайного предмета та винаходи з пар предметів за обмежений час: кількість, різні предмети, неочевидні пари',
       strong: 'легко генерує багато різних ідей',
       grow: 'ідей поки небагато, вони схожі між собою',
       praise: 'незвичні ідеї: «О, я б до такого не додумалася!»',
@@ -623,7 +648,12 @@ const CONFIG = {
       titleMiss: 'Що зникло?',
       stepMs: 900, litMs: 620, missShowSec: 5,
       maxShows: 5,                 // жорсткий ліміт показів коду на станцію
-      items: ['🍎', '🧸', '🚗', '🎈', '⚽', '🐟', '📕', '✏️', '☂️', '🎩', '🔑', '🕰️'],
+      // «Що зникло?»: номер кнопки вчителя = позиція в цьому списку (1 — яблуко, 2 — ведмедик, …). Не змінюйте порядок посеред пілоту.
+      items: [
+        { e: '🍎', name: 'яблуко' }, { e: '🧸', name: 'ведмедик' }, { e: '🚗', name: 'машинка' }, { e: '🎈', name: 'кулька' },
+        { e: '⚽', name: 'м’яч' }, { e: '🐟', name: 'рибка' }, { e: '📕', name: 'книжка' }, { e: '✏️', name: 'олівець' },
+        { e: '☂️', name: 'парасолька' }, { e: '🎩', name: 'капелюх' }, { e: '🔑', name: 'ключ' }, { e: '🕰️', name: 'годинник' }
+      ],
       iskra: {
         intro: 'Сейф показує код. Дивись уважно, а потім повтори!',
         show: 'Тсс… запам’ятовуй!',
@@ -631,7 +661,8 @@ const CONFIG = {
         next: 'Наступний код!',
         missIntro: 'Запам’ятай усі предмети. Потім один сховається!',
         missShow: 'Дивись і запам’ятовуй…',
-        missAnswer: 'Що зникло?'
+        missAnswer: 'Що зникло?',
+        missReveal: 'Ось як було!'
       },
       // Код: найдовший правильно повторений. «Що зникло?»: частка правильних із пройдених наборів (1 = 2/2, 0,5 = 1/2)
       '78':  { icons: ['🐱', '🌞', '⚽', '🍎', '🚗', '🐸'], start: 3, maxLen: 6, missN: [5, 6], shuffleMiss: false,
@@ -700,7 +731,8 @@ const CONFIG = {
     emotions: {
       title: 'Детектор емоцій',
       titleWarm: 'Покажи емоцію',
-      iskra: { warm: 'Покажи цю емоцію обличчям!', detect: 'Що відчуває герой? Обери емоцію.', detect2: 'Тут почуттів два! Обери ДВІ емоції.' },
+      // Можна обрати 1 або 2 емоції. Бал: усі обрані в ok → 1; дві обрані, одна з ok → 0,5; інакше 0.
+      iskra: { warm: 'Покажи цю емоцію обличчям!', detect: 'Що відчуває герой? Можна обрати одну чи дві емоції.' },
       thresholds: { l3: 5, l2: 3.5 },
       '78': {
         readAloud: true,
@@ -710,12 +742,12 @@ const CONFIG = {
           { id: 'fear', name: 'Страх', e: '😨' }, { id: 'surprise', name: 'Здивування', e: '😲' }
         ],
         situations: [
-          { e: '🐶', text: 'Тобі подарували цуценя, про яке ти давно мрія{в|ла}.', ok: ['joy'], pick: 1 },
-          { e: '🍦', text: 'Морозиво впало на землю, а нового купити не можна.', ok: ['sad'], pick: 1 },
-          { e: '🧱', text: 'Хтось навмисно зламав вежу, яку ти будува{в|ла} цілу годину.', ok: ['anger'], pick: 1 },
-          { e: '⛈️', text: 'Вночі гримить грім, а світло в домі зникло.', ok: ['fear'], pick: 1 },
-          { e: '🎩', text: 'Фокусник дістав із твоєї кишені живого кролика!', ok: ['surprise'], pick: 1 },
-          { e: '🚚', text: 'Найкращий друг переїжджає в інше місто.', ok: ['sad'], pick: 1 }
+          { e: '🐶', text: 'Тобі подарували цуценя, про яке ти давно мрія{в|ла}.', ok: ['joy', 'surprise'] },
+          { e: '🍦', text: 'Морозиво впало на землю, а нового купити не можна.', ok: ['sad', 'anger'] },
+          { e: '🧱', text: 'Хтось навмисно зламав вежу, яку ти будува{в|ла} цілу годину.', ok: ['anger', 'sad'] },
+          { e: '⛈️', text: 'Вночі гримить грім, а світло в домі зникло.', ok: ['fear', 'surprise'] },
+          { e: '🎩', text: 'Фокусник дістав із твоєї кишені живого кролика!', ok: ['surprise', 'joy'] },
+          { e: '🚚', text: 'Найкращий друг переїжджає в інше місто.', ok: ['sad'] }
         ]
       },
       '910': {
@@ -726,12 +758,12 @@ const CONFIG = {
           { id: 'shame', name: 'Сором' }, { id: 'pride', name: 'Гордість' }, { id: 'hurt', name: 'Образа' }, { id: 'envy', name: 'Заздрість' }
         ],
         situations: [
-          { e: '🏅', text: 'Ти вигра{в|ла} олімпіаду, до якої довго готува{вся|лася}.', ok: ['pride', 'joy'], pick: 1 },
-          { e: '📝', text: 'Завтра контрольна, а ти не встиг{|ла} повторити половину тем.', ok: ['anxiety'], pick: 1 },
-          { e: '🎬', text: 'Друзі пішли в кіно без тебе й виклали фото в сторіс.', ok: ['hurt', 'sad'], pick: 1 },
-          { e: '🙈', text: 'Ти спіткну{вся|лася} й упа{в|ла} перед усім класом.', ok: ['shame'], pick: 1 },
-          { e: '🏫', text: 'Ти переходиш у нову школу: там є басейн, але старі друзі лишаються.', ok: ['joy', 'sad', 'anxiety'], pick: 2 },
-          { e: '🏆', text: 'Подруга виграла конкурс, у якому ти теж бра{в|ла} участь.', ok: ['joy', 'envy', 'sad'], pick: 2 }
+          { e: '🏅', text: 'Ти вигра{в|ла} олімпіаду, до якої довго готува{вся|лася}.', ok: ['pride', 'joy'] },
+          { e: '📝', text: 'Завтра контрольна, а ти не встиг{|ла} повторити половину тем.', ok: ['anxiety', 'shame'] },
+          { e: '🎬', text: 'Друзі пішли в кіно без тебе й виклали фото в сторіс.', ok: ['hurt', 'sad', 'anger'] },
+          { e: '🙈', text: 'Ти спіткну{вся|лася} й упа{в|ла} перед усім класом.', ok: ['shame', 'anger'] },
+          { e: '🏫', text: 'Ти переходиш у нову школу: там є басейн, але старі друзі лишаються.', ok: ['joy', 'sad', 'anxiety'] },
+          { e: '🏆', text: 'Подруга виграла конкурс, у якому ти теж бра{в|ла} участь.', ok: ['joy', 'envy', 'sad'] }
         ]
       }
     },
@@ -784,27 +816,22 @@ const CONFIG = {
 
     creativity: {
       title: 'Генератор ідей',
-      categories: [
-        { id: 'game', e: '🎲', name: 'гра / іграшка' },
-        { id: 'wear', e: '👗', name: 'одяг / прикраса' },
-        { id: 'tool', e: '🔧', name: 'інструмент' },
-        { id: 'pets', e: '🐾', name: 'для тварин' },
-        { id: 'home', e: '🏠', name: 'для дому' },
-        { id: 'fantasy', e: '🧙', name: 'фантастика' },
-        { id: 'other', e: '✨', name: 'інше' }
-      ],
+      thinkSec: 15,                 // пауза «Подумай…» перед кожним раундом (ідеї ще не рахуються)
       prompts: {
-        sock:   { title: 'Чарівна шкарпетка', obj: '🧦', text: 'Що ще можна зробити зі шкарпеткою, крім того, щоб її носити?' },
-        squigA: { title: 'Незакінчена картинка', text: 'На що це схоже? Що це може бути?',
-                  svg: '<svg viewBox="0 0 300 220" fill="none" stroke="#1E2A5A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M40 160 C 60 50, 150 40, 165 115 S 250 190, 265 80"/><circle cx="118" cy="168" r="22"/><circle cx="232" cy="52" r="11"/><path d="M70 196 L 98 186"/></svg>' },
-        squigB: { title: 'Незакінчена картинка', text: 'На що це схоже? Що це може бути?',
-                  svg: '<svg viewBox="0 0 300 220" fill="none" stroke="#1E2A5A" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M30 120 L 70 70 L 110 120 L 150 70"/><path d="M200 110 m -10 0 a 10 10 0 1 1 20 0 a 22 22 0 1 1 -44 0 a 36 36 0 1 1 72 0"/><circle cx="95" cy="175" r="16"/><circle cx="150" cy="182" r="7"/><path d="M40 190 Q 70 160 60 140"/></svg>' },
-        mashup: { title: 'Мешап', obj: '🥄 + 🎈', text: 'Придумай нову річ, яка поєднує ложку й повітряну кульку!' }
+        sock: { type: 'ideas', title: 'Чарівна шкарпетка', obj: '🧦', text: 'Що ще можна зробити зі шкарпеткою, крім того, щоб її носити?' },
+        workshop: { type: 'workshop', title: 'Майстерня винаходів', text: 'Поєднай будь-які два предмети. Який винахід вийшов?' }
       },
-      iskra: { intro: 'Час вигадувати! Тут годиться будь-яка ідея.', play: 'Ще ідея? І ще одна! Кожна ідея — іскорка ✨' },
-      // Якщо раунд пропущено, поріг кількості ідей зменшується пропорційно пройденим раундам
-      '78':  { rounds: ['sock', 'squigA'], roundSec: 90, thresholds: { l3: { ideas: 8, cats: 3 }, l2: { ideas: 4 } } },
-      '910': { rounds: ['sock', 'squigB', 'mashup'], roundSec: 75, thresholds: { l3: { ideas: 12, cats: 4 }, l2: { ideas: 6 } } }
+      // Пари, які діти називають найчастіше (не рахуються як неочевидні). Порядок у парі не важливий.
+      obviousPairs: [['☂️', '🪣'], ['🥄', '🪣'], ['🎈', '📦'], ['🧦', '📦'], ['🔦', '📦'], ['🧲', '🥄'], ['☂️', '🎈'], ['🧲', '🪣'], ['🧵', '🎈'], ['🔔', '📦']],
+      iskra: { intro: 'Час вигадувати! Тут годиться будь-яка ідея.', think: 'Подумай… Скоро почнемо!', play: 'Ще ідея? І ще одна! Кожна ідея — іскорка ✨', workshop: 'Що вийде, якщо поєднати два предмети?' },
+      // total = ідеї (шкарпетка) + винаходи; items = різні предмети у винаходах (гнучкість).
+      // Якщо раунд пропущено, поріг total зменшується пропорційно; умова items діє, лише якщо «Майстерню» пройдено.
+      '78':  { rounds: ['sock', 'workshop'], roundSec: 90,
+               workshopItems: [{ e: '🧦', name: 'шкарпетка' }, { e: '☂️', name: 'парасолька' }, { e: '🥄', name: 'ложка' }, { e: '🎈', name: 'кулька' }, { e: '📦', name: 'коробка' }, { e: '🔦', name: 'ліхтарик' }, { e: '🧲', name: 'магніт' }, { e: '🪣', name: 'відро' }],
+               thresholds: { l3: { total: 8, items: 5 }, l2: { total: 4 } } },
+      '910': { rounds: ['sock', 'workshop'], roundSec: 90,
+               workshopItems: [{ e: '🧦', name: 'шкарпетка' }, { e: '☂️', name: 'парасолька' }, { e: '🥄', name: 'ложка' }, { e: '🎈', name: 'кулька' }, { e: '📦', name: 'коробка' }, { e: '🔦', name: 'ліхтарик' }, { e: '🧲', name: 'магніт' }, { e: '🪣', name: 'відро' }, { e: '🧵', name: 'нитки' }, { e: '🔔', name: 'дзвоник' }],
+               thresholds: { l3: { total: 12, items: 6 }, l2: { total: 6 } } }
     },
 
     safe: {
@@ -820,53 +847,6 @@ const CONFIG = {
       '78':  { locks: [{ slots: 3, fruits: ['🍎', '🍌', '🍇', '🍓', '🍒'] }, { slots: 4, fruits: ['🍎', '🍌', '🍇', '🍓', '🍒', '🍐'] }] },
       '910': { locks: [{ slots: 4, fruits: ['🍎', '🍌', '🍇', '🍓', '🍒', '🍐'] }, { slots: 5, fruits: ['🍎', '🍌', '🍇', '🍓', '🍒', '🍐', '🥝'] }] }
     }
-  },
-
-  /* ---------------- Підказки для вчителя (кнопка 💡 / клавіша H) ----------------
-     teacherHints[станція][номер раунду] = { all | '78' | '910': [рядки] }.
-     Видно в демонстрації екрана — тут НІКОЛИ немає правильних відповідей. */
-  teacherHints: {
-    setup: [{ all: ['Заповни дані до початку демонстрації екрана.', 'Демонструй у Zoom лише вікно з грою.'] }],
-    hero: [{ all: ['Скажи: «Сьогодні ти — новий учень Майстерні суперсил. Тут не можна програти».', 'Клікай героя й колір, які обирає дитина. Не оцінюється.'] }],
-    attention: [
-      { '78': ['Скажи: «Знайди всі зірочки й називай номери. Хитрі зірки 🌟 — не ті».', '«Старт» → клікай номери, які називає дитина. Повторний клік знімає позначку.', 'Не показуй курсором, де шукати, і не рахуй уголос.'],
-        '910': ['Скажи: «Знайди всі дзвіночки й називай номери. Дзвоник 🛎️ — не той».', '«Старт» → клікай номери, які називає дитина. Повторний клік знімає позначку.', 'Не показуй курсором, де шукати, і не рахуй уголос.'] },
-      { '78': ['Те саме правило, поле більше.', 'Між раундами: «Поморгай швидко-швидко — дай очам відпочити».', 'Не підказуй, які рядки ще не переглянуто.'],
-        '910': ['Нове правило — прочитай його вголос перед «Старт».', 'Клікай усі номери, які називає дитина, навіть якщо це пастка.', 'Не нагадуй про старе правило під час раунду.'] },
-      { all: ['Тепер дві цілі одночасно — прочитай обидві.', 'Клікай усе, що називає дитина. «Завершити раунд», коли вона скаже «все».', 'Не коментуй вибір.'] }
-    ],
-    memory: [
-      { all: ['«Показати код» → дитина дивиться, потім називає іконки.', 'Клікай іконки по черзі; «Стерти останню», якщо виправляється. «Готово» — навіть із неповним кодом.', 'Не повторюй код уголос і не кажи «майже».'] },
-      { all: ['«Старт» → 5 с показу → дитина називає, що зникло.', 'Лише після відповіді — «Дитина відповіла → обрати».', 'Не відкривай варіанти до відповіді.'] },
-      { all: ['Другий набір — та сама схема.', 'Реакція нейтральна: «Записала».'] }
-    ],
-    planning: [
-      { '78': ['Скажи: «Завтра школа, на вулиці дощ. Що покладемо в рюкзак?»', 'Клікай речі, які називає дитина; клік у рюкзаку виймає.', 'Не нагадуй про розклад чи погоду і не питай «А ти впевнен{ий|а}?».'],
-        '910': ['Скажи: «Куди поставимо справи? Праворуч — правила».', 'Клік по справі, потім по годині. Клік по заповненій годині звільняє її.', 'Не перечитуй правила замість дитини.'] },
-      { '78': ['Скажи: «Що герой робить спочатку, а що потім?»', 'Клікай картки в порядку, який називає дитина; клік у клітинці повертає.', 'Оцінюються правила, а не один «ідеальний» порядок — не підказуй.'],
-        '910': ['Прочитай оголошення разом з Іскрою, потім «Переставити гурток».', 'Справа з 15:00 повернеться в список — дитина переплановує.', 'Не підказуй, куди що поставити.'] }
-    ],
-    emotions: [
-      { all: ['Розминка, не оцінюється. Дитина показує емоцію обличчям.', 'Соромиться — «Можна показати очима або рукою» — і далі.'] },
-      { '78': ['Прочитай ситуацію вголос рівним голосом.', 'Клікай емоцію, яку назвала дитина; передумала — інша кнопка або «Назад».', 'Не підказуй інтонацією і не оцінюй емоції як «хороші» чи «погані».'],
-        '910': ['Дитина читає ситуацію сама.', 'У двох ситуаціях обирають ДВІ емоції. Передумала — «Назад».', 'Не підказуй і не перепитуй «А може…?».'] }
-    ],
-    money: [
-      { '78': ['Скажи: «У тебе 10 монет, треба поїсти й попити. Що купиш?»', 'Клікай товари; клік у кошику повертає. Якщо монет бракує, гра скаже сама.', 'Не нагадуй про воду чи їжу і не коментуй солодощі.'],
-        '910': ['Скажи: «Пікнік на трьох, 60 грн. Їжа на всіх і 1,5 л напою».', 'Клік по товару — +1 шт., клік у кошику — −1.', 'Не рахуй замість дитини.'] },
-      { '78': ['Скажи: «Які монетки покладеш, щоб вийшло рівно стільки?»', 'Клікай монети, які називає дитина → «Заплатити».', 'Не підсумовуй уголос.'],
-        '910': ['Клікни варіант, який назвала дитина, → «Далі».', 'Решту набирай цифрами, які каже дитина.', 'Не рахуй уголос і не перепитуй.'] }
-    ],
-    creativity: [
-      { all: ['На кожну ідею тисни категорію; повтор не рахуй.', 'Реакція: «Записала! А ще?» — без «класно».', 'Замовкла — почекай 5–7 с, потім «А якщо вона величезна?»'] },
-      { all: ['«На що це схоже?» — приймай будь-які ідеї.', 'Категорія на кожну ідею, «Скасувати останню» при помилці.', 'Не пропонуй своїх прикладів.'] },
-      { all: ['Мешап: ложка + кулька. Будь-які фантастичні ідеї — 🧙.', 'Реакція: «Записала! А ще?»'] }
-    ],
-    safe: [
-      { all: ['«Перевірити», коли всі місця заповнені; «Стерти» прибирає останній фрукт.', '«Підказка» й «Дитина зупинилась» — лише якщо дитина сама попросила.', 'Не пояснюй, куди ставити фрукти.'] }
-    ],
-    battery: [{ all: ['Називай суперсилу з поясненням, дитина каже 1–3 поділки.', 'Не коментуй і не сперечайся з оцінкою.'] }],
-    final: [{ all: ['Похвали конкретне зусилля, без рівнів і цифр.', 'Зупини демонстрацію екрана, потім «Звіт для батьків» двічі.'] }]
   },
 
   /* ------------------------- Загальні екрани ------------------------- */
@@ -896,7 +876,7 @@ const CONFIG = {
 const ORDER = CONFIG.skills.map(s => s.key);
 const NAVY = '#1E2A5A';
 const ui = { playToken: 0, justEarned: null, celebrate: false, timerEnds: null, onTimeUp: null, timeUpFired: false,
-             arm: null, armT: null, menuOpen: false, hintOpen: false, hintKey: '', lastT: 0,
+             arm: null, armT: null, menuOpen: false, lastT: 0,
              flash: null, missReveal: false, lastIskra: '' };
 let S;
 
@@ -917,9 +897,14 @@ function skillOf(key) { return CONFIG.skills.find(s => s.key === key); }
 function tplG(str, gender) { return String(str ?? '').replace(/\{([^{}|]*)\|([^{}|]*)\}/g, (_, m, f) => (gender === 'f' ? f : m)); }
 function tpl(str) { return tplG(str, S && S.gender); }
 function tb(act, label, o = {}) {
-  return `<button class="tb${o.primary ? ' primary' : ''}${o.cls ? ' ' + o.cls : ''}" data-act="${act}"${o.arg !== undefined ? ` data-arg="${esc(o.arg)}"` : ''}${o.disabled ? ' disabled' : ''}${o.title ? ` title="${esc(o.title)}"` : ''}>${label}</button>`;
+  return `<button class="tb${o.primary ? ' primary' : ''}${o.cls ? ' ' + o.cls : ''}" data-act="${act}"${o.arg !== undefined ? ` data-arg="${esc(o.arg)}"` : ''}${o.disabled ? ' disabled' : ''}${o.aria ? ` aria-label="${esc(o.aria)}" title="${esc(o.aria)}"` : ''}>${label}</button>`;
 }
-function hint(t) { return `<span class="thint">${t}</span>`; }
+// основна кнопка панелі («Старт» / «Далі»)
+function nx(act, label = 'Далі', disabled = false) { return { act, label, disabled }; }
+function uuid() {
+  try { if (crypto.randomUUID) return crypto.randomUUID(); } catch (e) { }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, ch => { const r = Math.random() * 16 | 0; return (ch === 'x' ? r : (r & 3 | 8)).toString(16); });
+}
 function reduced() { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }
 // Підтвердження другим кліком: перший клік «озброює» кнопку на 4 с
 function armed(key) {
@@ -932,9 +917,9 @@ function armLabel(key, label) { return ui.arm === key ? 'Точно? Натис�
 
 /* ---------- стан ---------- */
 function freshState(sound = true) {
-  return { v: 2, screen: 'setup', name: '', teacher: '', gender: null, group: null, age: null, hero: { head: null, cape: null },
+  return { v: 2, id: uuid(), screen: 'setup', name: '', teacher: '', gender: null, group: null, age: null, hero: { head: null, cape: null },
            idx: 0, st: {}, self: {}, sound, date: new Date().toISOString(), lessonStart: null, lessonEnd: null,
-           skips: { rounds: 0, stations: 0 }, compare: null };
+           skips: { rounds: 0, stations: 0 }, compare: null, sheet: null };
 }
 function load() { try { const x = JSON.parse(localStorage.getItem(CONFIG.storageKey)); if (x && x.v === 2) return x; } catch (e) { } return null; }
 function save() { try { localStorage.setItem(CONFIG.storageKey, JSON.stringify(S)); } catch (e) { } }
@@ -1062,9 +1047,13 @@ function applySurprise(slots, newHour) {
 }
 function sumCoins(coins) { return coins.reduce((a, b) => a + b, 0); }
 function isExact(coins, target) { return sumCoins(coins) === target; }
-function emoScore(sit, chosen) {
-  if (sit.pick === 1) return chosen.length && sit.ok.includes(chosen[0]) ? 1 : 0;
-  return chosen.slice(0, 2).filter(c => sit.ok.includes(c)).length * 0.5;
+// Емоції: можна обрати 1–2. Усі обрані прийнятні → 1; дві обрані, одна прийнятна → 0,5; інакше 0
+function emoScore(ok, chosen) {
+  if (!chosen.length) return 0;
+  const good = chosen.filter(c => ok.includes(c)).length;
+  if (good === chosen.length) return 1;
+  if (chosen.length === 2 && good === 1) return 0.5;
+  return 0;
 }
 function picnic910Points(cart) {
   const n = id => cart[id] || 0; let p = 0;
@@ -1108,14 +1097,22 @@ function memoryLevel(s, c) {
   const miss = answered.length ? th(ok / answered.length, T.miss.l3, T.miss.l2) : null;
   return { level: ceilAvgN(code, miss), code, miss, longest, missOk: ok, missAnswered: answered.length };
 }
-// Креативність: пороги ідей масштабуються на частку пройдених раундів
-function creativityLevel(rounds, totalRounds, T) {
+// Креативність: ідеї (шкарпетка) + винаходи (пари предметів)
+function pairKey(a, b) { return [a, b].sort().join('+'); }
+function creativityMetrics(rounds, obviousPairs) {
   const done = rounds.filter(r => r && !r.skipped);
-  if (!done.length) return { level: null, ideas: 0, cats: 0 };
-  const all = done.flatMap(r => r.ideas), cats = new Set(all).size, k = done.length / totalRounds;
-  const l3i = Math.ceil(T.l3.ideas * k), l2i = Math.ceil(T.l2.ideas * k);
-  const level = (all.length >= l3i && cats >= Math.min(T.l3.cats, l3i)) ? 3 : all.length >= l2i ? 2 : 1;
-  return { level, ideas: all.length, cats };
+  const ideas = done.filter(r => r.type === 'ideas').reduce((a, r) => a + r.n, 0);
+  const pairs = done.filter(r => r.type === 'workshop').flatMap(r => r.pairs);
+  const obvious = new Set(obviousPairs.map(([a, b]) => pairKey(a, b)));
+  const items = new Set(pairs.flat()).size, unobvious = pairs.filter(([a, b]) => !obvious.has(pairKey(a, b))).length;
+  return { ideas, inventions: pairs.length, total: ideas + pairs.length, items, unobvious, workshopDone: done.some(r => r.type === 'workshop'), roundsDone: done.length };
+}
+function creativityLevel(rounds, totalRounds, T, obviousPairs) {
+  const m = creativityMetrics(rounds, obviousPairs);
+  if (!m.roundsDone) return { level: null, ...m };
+  const k = m.roundsDone / totalRounds, l3 = Math.ceil(T.l3.total * k), l2 = Math.ceil(T.l2.total * k);
+  const itemsOk = !m.workshopDone || m.items >= T.l3.items;
+  return { level: m.total >= l3 && itemsOk ? 3 : m.total >= l2 ? 2 : 1, ...m };
 }
 function newSeq(len, n) { const a = []; for (let i = 0; i < len; i++) { let x; do { x = rnd(n); } while (i && x === a[i - 1]); a.push(x); } return a; }
 function shuffleDifferent(a) { if (a.length < 2) return a.slice(); let b; let k = 0; do { b = shuffle(a); k++; } while (k < 20 && b.every((x, i) => x === a[i])); return b; }
@@ -1157,10 +1154,10 @@ STN.attention = {
       return {
         child: `<div class="center">${head}
           <h2 style="font-size:30px">${rc.newRule ? '<span class="pill newrule">Нове правило!</span> ' : ''}${esc(rc.rule)}</h2>
-          <div class="rulecard"><div class="card"><div class="lbl">Шукаємо</div><div class="em">${ems(rc.find)}</div></div>
-          <div class="card"><div class="lbl">Не плутай — це пастки</div><div class="em">${ems(rc.traps)}</div></div></div>
+          <div class="rulecard"><div class="card"><div class="lbl">Шукай</div><div class="em">${ems(rc.find)}</div></div>
+          <div class="card"><div class="lbl">Обережно, пастка</div><div class="em">${ems(rc.traps)}</div></div></div>
           <div class="lead muted">У кожної клітинки є номер. Називай номери — і вони позначаться.</div></div>`,
-        teacher: tb('attention.start', `▶ Старт раунду ${s.round + 1}`, { primary: true }) + hint(`${c.roundSec} с на раунд.`),
+        next: nx('attention.start', 'Старт'),
         iskra: c.iskra.intro[s.round] || c.iskra.intro[0]
       };
     }
@@ -1169,9 +1166,9 @@ STN.attention = {
     return {
       timer: R.endsAt,
       onTimeUp: () => STN.attention.endRound(s, c),
-      child: `<div class="att"><div class="findbar">Шукай: <span class="em">${ems(rc.find)}</span><span class="muted">· пастки: ${ems(rc.traps)}</span></div>
+      child: `<div class="att"><div class="findbar">Шукай: <span class="em">${ems(rc.find)}</span></div>
         <div class="grid" style="--n:${rc.n}">${cells}</div></div>`,
-      teacher: tb('attention.end', '⏹ Завершити раунд') + hint('Клікай номери, які називає дитина.'),
+      next: nx('attention.end'),
       iskra: c.iskra.play
     };
   },
@@ -1210,7 +1207,8 @@ STN.memory = {
   missAdvance(s, c) { const M = s.miss; if (M.round < c.missN.length - 1) { M.round++; s.phase = 'missIntro'; } else finishStation(s); },
   skipRound(s, c) {
     if (s.part === 'code') { s.codeSkipped = true; markSkip(s, 0); STN.memory.toMiss(s); return; }
-    s.miss.rounds[s.miss.round] = { skipped: true }; ui.missReveal = false; markSkip(s, 1 + s.miss.round); STN.memory.missAdvance(s, c);
+    if (s.phase === 'missReveal') { STN.memory.missAdvance(s, c); return; }   // відповідь уже є — просто далі
+    s.miss.rounds[s.miss.round] = { skipped: true }; markSkip(s, 1 + s.miss.round); STN.memory.missAdvance(s, c);
   },
   play(s, c) {
     const tok = ++ui.playToken, lead = 700;
@@ -1222,46 +1220,49 @@ STN.memory = {
     setTimeout(() => { if (tok !== ui.playToken) return; s.phase = 'input'; render(); }, lead + s.seq.length * c.stepMs);
   },
   view(s, c) {
+    const E = c.items.map(x => x.e);
     if (s.part === 'code') {
       const cols = c.icons.length > 6 ? 4 : 3;
       const tiles = (live, dim) => `<div class="tiles${dim ? ' dim' : ''}" style="grid-template-columns:repeat(${cols}, auto)">${c.icons.map((e, i) =>
         `<button class="tile" ${live ? `data-act="memory.tap" data-arg="${i}"` : 'disabled'}>${e}</button>`).join('')}</div>`;
       if (s.phase === 'intro' || s.phase === 'next') {
         const msg = s.phase === 'next' ? '<div class="huge">Наступний код!</div>' : '<div class="lead">Іконки засвітяться по черзі. Запам’ятай порядок і назви код.</div>';
-        return { child: `<div class="center">${msg}${tiles(false, true)}</div>`,
-          teacher: tb('memory.show', '▶ Показати код', { primary: true }) + hint(`Довжина коду: ${s.len}. Показ ${s.shows + 1} з ${c.maxShows}.`),
+        return { child: `<div class="center">${msg}${tiles(false, true)}</div>`, next: nx('memory.show', 'Старт'),
           iskra: s.phase === 'next' ? c.iskra.next : c.iskra.intro };
       }
       if (s.phase === 'show') {
         return { child: `<div class="center"><div class="lead">Дивись уважно…</div>${tiles(false, false)}<div class="slots"></div></div>`,
-          teacher: hint('Йде показ коду…'), iskra: c.iskra.show, after: () => STN.memory.play(s, c) };
+          next: null, iskra: c.iskra.show, after: () => STN.memory.play(s, c) };
       }
       const slots = Array.from({ length: s.len }, (_, i) => s.input[i] !== undefined ? `<div class="slot f">${c.icons[s.input[i]]}</div>` : '<div class="slot"></div>').join('');
       return { child: `<div class="center"><div class="lead">Який був код?</div>${tiles(true, false)}<div class="slots">${slots}</div></div>`,
-        teacher: tb('memory.erase', '⌫ Стерти останню', { disabled: !s.input.length }) + tb('memory.done', '✔ Готово', { primary: true }) + hint('«Готово» можна й з неповним кодом.'),
-        iskra: c.iskra.input };
+        controls: tb('memory.erase', 'Стерти', { disabled: !s.input.length }), next: nx('memory.done'), iskra: c.iskra.input };
     }
     // Частина Б — «Що зникло?»
     const M = s.miss, R = M.rounds[M.round], N = c.missN[M.round];
-    const items = arr => `<div class="items">${arr.map(e => `<div class="item">${e}</div>`).join('')}</div>`;
+    const items = (arr, gone) => `<div class="items">${arr.map(e => `<div class="item${e === gone ? ' gone' : ''}">${e}</div>`).join('')}</div>`;
     if (s.phase === 'missIntro') {
-      return { title: c.titleMiss, child: `<div class="center">${M.round ? '<div class="pill">Дякую! Новий набір</div>' : ''}
+      return { title: c.titleMiss, child: `<div class="center">${M.round ? '<div class="pill">Новий набір</div>' : ''}
           <div class="huge">Що зникло?</div><div class="lead">Зараз з’являться ${N} предметів. Запам’ятай їх — потім один сховається!</div>
           <div class="pill">Набір ${M.round + 1} з ${c.missN.length}</div></div>`,
-        teacher: tb('memory.missStart', '▶ Старт', { primary: true }) + hint(`Показ — ${c.missShowSec} с.`), iskra: c.iskra.missIntro };
+        next: nx('memory.missStart', 'Старт'), iskra: c.iskra.missIntro };
     }
     if (s.phase === 'missShow') {
       return { title: c.titleMiss, timer: M.endsAt, onTimeUp: () => { s.phase = 'missBlink'; },
-        child: `<div class="center"><div class="lead">Запам’ятовуй!</div>${items(R.items)}</div>`, teacher: hint('Показ…'), iskra: c.iskra.missShow };
+        child: `<div class="center"><div class="lead">Запам’ятовуй!</div>${items(R.items)}</div>`, next: null, iskra: c.iskra.missShow };
     }
     if (s.phase === 'missBlink') {
-      return { title: c.titleMiss, child: '<div class="blink">✨</div>', teacher: hint('Моргнули…'), iskra: c.iskra.missShow,
+      return { title: c.titleMiss, child: '<div class="blink">✨</div>', next: null, iskra: c.iskra.missShow,
         after: () => { const tok = ++ui.playToken; setTimeout(() => { if (tok !== ui.playToken) return; s.phase = 'missAnswer'; render(); }, 550); } };
     }
-    const teacher = ui.missReveal
-      ? hint('Що назвала дитина:') + c.items.map(e => tb('memory.missAnswer', e, { arg: e, cls: 'small' })).join('') + tb('memory.missAnswer', 'Не знає', { arg: '' })
-      : tb('memory.reveal', 'Дитина відповіла → обрати', { primary: true }) + tb('memory.missAnswer', 'Не знає', { arg: '' });
-    return { title: c.titleMiss, child: `<div class="center"><div class="huge">Що зникло?</div>${items(R.rest)}</div>`, teacher, iskra: c.iskra.missAnswer };
+    if (s.phase === 'missReveal') {
+      return { title: c.titleMiss, child: `<div class="center"><div class="huge">Ось як було</div>${items(R.items, R.gone)}</div>`,
+        next: nx('memory.missNext'), iskra: c.iskra.missReveal };
+    }
+    // Номер кнопки закріплений за предметом у порядку CONFIG (легенда — у scenariy.html)
+    return { title: c.titleMiss, child: `<div class="center"><div class="huge">Що зникло?</div>${items(R.rest)}</div>`,
+      controls: E.map((e, i) => tb('memory.missAnswer', String(i + 1), { arg: i, cls: 'num' })).join('') + tb('memory.missAnswer', 'Не знає', { arg: '' }),
+      next: null, iskra: c.iskra.missAnswer };
   },
   act: {
     show(s, _, c) { if (s.part !== 'code' || s.phase === 'show' || s.phase === 'input') return; s.seq = newSeq(s.len, c.icons.length); s.input = []; s.shows++; s.phase = 'show'; },
@@ -1277,17 +1278,17 @@ STN.memory = {
     },
     missStart(s, _, c) {
       if (s.phase !== 'missIntro') return;
-      const M = s.miss, N = c.missN[M.round], items = shuffle(c.items).slice(0, N), gi = rnd(N);
+      const E = c.items.map(x => x.e), M = s.miss, N = c.missN[M.round], items = shuffle(E).slice(0, N), gi = rnd(N);
       const rest = items.filter((_, i) => i !== gi);
       M.rounds[M.round] = { items, gone: items[gi], rest: c.shuffleMiss ? shuffleDifferent(rest) : rest, answer: undefined, ok: false };
-      M.endsAt = Date.now() + c.missShowSec * 1000; s.phase = 'missShow'; ui.missReveal = false;
+      M.endsAt = Date.now() + c.missShowSec * 1000; s.phase = 'missShow';
     },
-    reveal() { ui.missReveal = true; },
     missAnswer(s, a, c) {
       const M = s.miss, R = M.rounds[M.round]; if (!R || s.phase !== 'missAnswer') return;
-      R.answer = a || null; R.ok = a === R.gone; ui.missReveal = false;
-      STN.memory.missAdvance(s, c);
-    }
+      const idx = a === '' || a === undefined ? null : +a;
+      R.answer = idx === null ? null : c.items[idx].e; R.ok = R.answer === R.gone; s.phase = 'missReveal';
+    },
+    missNext(s, _, c) { if (s.phase === 'missReveal') STN.memory.missAdvance(s, c); }
   },
   level(s, c) {
     const r = memoryLevel(s, c);
@@ -1326,7 +1327,7 @@ STN.planning = {
             <div class="card schedule"><div class="lbl">Розклад на завтра</div>${c.schedule.map(x => `<div class="srow"><span>${x.e}</span>${esc(x.name)}</div>`).join('')}
             <div class="lbl" style="margin-top:8px">Погода</div><div class="srow"><span>${c.weather.e}</span>${esc(c.weather.name)}</div></div>
             <div class="shelf">${shelf}</div><div class="bag">${bag}</div></div>`,
-          teacher: tb('planning.packDone', '✔ Рюкзак зібрано', { primary: true }) + hint('Клік — у рюкзак, клік у рюкзаку — вийняти.'), iskra: c.iskra.pack };
+          next: nx('planning.packDone'), iskra: c.iskra.pack };
       }
       const m = id => c.morning.find(x => x.id === id);
       const card = (x, act, arg) => `<button class="mcard" data-act="${act}" data-arg="${arg}"><span class="e">${x.e}</span>${esc(x.name)}</button>`;
@@ -1334,13 +1335,13 @@ STN.planning = {
       const slots = s.morning.slots.map((id, i) => `<div class="mslot"><div class="no">${i + 1}</div>${id ? card(m(id), 'planning.unplace', i) : ''}</div>${i < s.morning.slots.length - 1 ? '<span class="arrow">→</span>' : ''}`).join('');
       return { title: c.titles[1], child: `<div class="morning"><div class="lead" style="margin:0 auto;text-align:center">Що герой робить вранці? Постав картки по порядку.</div>
           <div class="cards">${pool}</div><div class="mslots">${slots}</div></div>`,
-        teacher: tb('planning.morningDone', '✔ Готово', { primary: true, disabled: s.morning.slots.some(x => !x) }) + hint('Клік по картці — у вільну клітинку; клік у клітинці — повернути.'),
+        next: nx('planning.morningDone', 'Далі', s.morning.slots.some(x => !x)),
         iskra: c.iskra.morning };
     }
     if (s.phase === 'surprise') {
       return { title: c.titles[1], child: `<div class="center"><div class="surprise">📣</div><div class="huge">${esc(c.surpriseText)}</div>
           <div class="lead">Справа, що стояла на ${c.newClubHour}:00, повернеться в список. Треба переставити план.</div></div>`,
-        teacher: tb('planning.applySurprise', 'Переставити гурток →', { primary: true }), iskra: c.iskra.surprise };
+        next: nx('planning.applySurprise'), iskra: c.iskra.surprise };
     }
     const task = id => c.tasks.find(t => t.id === id);
     const placed = Object.values(s.slots);
@@ -1357,7 +1358,7 @@ STN.planning = {
         <div class="pool"><div class="lbl">Справи</div>${pool}</div>
         <div class="timeline">${p2 ? `<div class="banner">📣 Гурток тепер о ${c.newClubHour}:00</div>` : ''}${hours}</div>
         <div class="card rules"><div class="lbl">Правила</div><ul>${Object.values(c.rules).map(r => `<li>${esc(r)}</li>`).join('')}</ul></div></div>`,
-      teacher: tb('planning.planDone', '✔ План готовий', { primary: true }) + hint('Клік по справі, потім по годині.'),
+      next: nx('planning.planDone'),
       iskra: p2 ? c.iskra.plan2 : c.iskra.plan1 };
   },
   act: {
@@ -1422,35 +1423,33 @@ STN.emotions = {
       const w = c.warm[s.warm];
       return { title: c.titleWarm, child: `<div class="center"><div class="pill">Розминка · ${s.warm + 1} з ${c.warm.length}</div>
           <div style="font-size:120px;line-height:1">${w.e}</div><div class="huge">${esc(w.name)}</div><div class="lead">Покажи цю емоцію обличчям!</div></div>`,
-        teacher: tb('emotions.warmNext', '✔ Показа{в|ла}', { primary: true }) + hint('Розминка, не оцінюється.'), iskra: c.iskra.warm };
+        next: nx('emotions.warmNext'), iskra: c.iskra.warm };
     }
     const sit = c.situations[s.i], ch = s.answers[s.i];
     const emos = c.emotions.map(e => `<button class="emo${ch.includes(e.id) ? ' sel' : ''}" data-act="emotions.pick" data-arg="${e.id}">${e.e ? `<span class="e">${e.e}</span>` : ''}${esc(e.name)}</button>`).join('');
     const dots = c.situations.map((_, i) => `<i class="${i === s.i ? 'on' : ''}"></i>`).join('');
     return { title: c.title, child: `<div class="situ">
-        <div class="card"><div class="dots">${dots}</div><div class="pic">${sit.e}</div><div class="txt">${esc(sit.text)}</div>${sit.pick === 2 ? '<div class="need2">Обери ДВІ емоції</div>' : ''}</div>
+        <div class="card"><div class="dots">${dots}</div><div class="pic">${sit.e}</div><div class="txt">${esc(sit.text)}</div><div class="can2">Можна обрати одну чи дві</div></div>
         <div class="emogrid">${emos}</div></div>`,
-      teacher: tb('emotions.prev', '← Назад', { disabled: s.i === 0 }) + tb('emotions.next', s.i === c.situations.length - 1 ? 'Завершити →' : 'Далі →', { primary: true })
-        + hint(c.readAloud ? 'Прочитай ситуацію вголос.' : 'Дитина читає ситуацію сама.'),
-      iskra: sit.pick === 2 ? c.iskra.detect2 : c.iskra.detect };
+      controls: tb('emotions.prev', '←', { disabled: s.i === 0, aria: 'Назад' }), next: nx('emotions.next'),
+      iskra: c.iskra.detect };
   },
   act: {
     warmNext(s, _, c) { if (s.phase !== 'warm') return; s.warm++; if (s.warm >= c.warm.length) s.phase = 'detect'; },
-    pick(s, a, c) {
-      const sit = c.situations[s.i], ch = s.answers[s.i];
-      if (sit.pick === 1) { if (ch.length) corr(s, 'change'); s.answers[s.i] = ch[0] === a ? [] : [a]; return; }
-      const k = ch.indexOf(a); if (k >= 0) { ch.splice(k, 1); corr(s, 'change'); } else { ch.push(a); if (ch.length > 2) { ch.shift(); corr(s, 'change'); } }
+    // 1 або 2 емоції; повторний клік знімає; третя замінює найстарішу
+    pick(s, a) {
+      const ch = s.answers[s.i], k = ch.indexOf(a);
+      if (k >= 0) { ch.splice(k, 1); corr(s, 'change'); } else { ch.push(a); if (ch.length > 2) { ch.shift(); corr(s, 'change'); } }
     },
     prev(s) { if (s.i > 0) { s.i--; corr(s, 'back'); } },
     next(s, _, c) { if (s.phase !== 'detect') return; if (s.i < c.situations.length - 1) s.i++; else finishStation(s); }
   },
   level(s, c) {
     if (s.detectSkipped) return { level: null, evidence: CONFIG.report.skippedAll + '.', short: '—', metrics: {} };
-    const scores = c.situations.map((sit, i) => emoScore(sit, s.answers[i] || [])), sum = scores.reduce((a, b) => a + b, 0);
-    const mixed = c.situations.map((sit, i) => ({ sit, sc: scores[i] })).filter(x => x.sit.pick === 2);
-    let ev = `Детектор: ${num(sum)} з ${c.situations.length} балів`;
-    if (mixed.length) ev += `; змішані почуття повністю розпізнано в ${mixed.filter(x => x.sc >= 1).length} з ${mixed.length} ситуацій`;
-    const missed = c.situations.map((sit, i) => ({ sit, sc: scores[i], ch: s.answers[i] || [] })).filter(x => x.sit.pick === 1 && x.sc < 1);
+    const scores = c.situations.map((sit, i) => emoScore(sit.ok, s.answers[i] || [])), sum = scores.reduce((a, b) => a + b, 0);
+    const two = c.situations.filter((_, i) => (s.answers[i] || []).length === 2).length;
+    let ev = `Детектор: ${num(sum)} з ${c.situations.length} балів; дві емоції одразу обрано в ${two} з ${c.situations.length} ситуацій`;
+    const missed = c.situations.map((sit, i) => ({ sit, sc: scores[i], ch: s.answers[i] || [] })).filter(x => x.sc < 1);
     if (missed.length) ev += `. Побачено інакше: ${missed.map(x => `${x.sit.e} — ${x.ch.length ? x.ch.map(id => c.emotions.find(e => e.id === id).name.toLowerCase()).join(', ') : 'без відповіді'}`).join('; ')}`;
     return { level: th(sum, c.thresholds.l3, c.thresholds.l2), evidence: ev + '.', short: `${num(sum)} з ${c.situations.length}`, metrics: { scores, sum, answers: s.answers } };
   }
@@ -1479,7 +1478,7 @@ STN.money = {
         return { title: c.titles[0], child: `<div class="shop"><div><div class="lbl">Крамниця</div><div class="goods">${goods}</div></div>
             <div class="basket"><div class="wallet">Монетки: <span class="coins">${'<i class="mini"></i>'.repeat(Math.max(0, left))}</span></div>
             <div class="lbl">Кошик для пікніка</div><div class="cart">${cart}</div></div></div>`,
-          teacher: tb('money.picnicDone', '✔ Готово', { primary: true }) + hint('Клік — у кошик, клік у кошику — повернути.'), iskra: c.iskra.picnic };
+          next: nx('money.picnicDone'), iskra: c.iskra.picnic };
       }
       const T = c.targets[s.t];
       const coins = c.coins.map(v => `<button class="coin c${v}" data-act="money.coin" data-arg="${v}">${v}</button>`).join('');
@@ -1487,7 +1486,7 @@ STN.money = {
       return { title: c.titles[1], child: `<div class="center"><div class="pill">Покупка ${s.t + 1} з ${c.targets.length}</div>
           <div class="huge">${T.e} ${esc(T.name)} — ${T.sum} 🪙</div><div class="lead">Заплати рівно ${T.sum} монет. Які монетки покладеш?</div>
           <div class="row" style="align-items:center">${coins}</div><div class="plate">${plate || '<span class="muted">Тарілочка для монет</span>'}</div></div>`,
-        teacher: tb('money.pay', '✔ Заплатити', { primary: true, disabled: !s.plate.length }) + hint('Клік по монеті — на тарілку, клік на тарілці — прибрати.'), iskra: c.iskra.exact };
+        next: nx('money.pay', 'Далі', !s.plate.length), iskra: c.iskra.exact };
     }
     if (s.phase === 'picnic') {
       const goods = c.goods.map(g => `<button class="good" data-act="money.take" data-arg="${g.id}"><span class="e">${g.e}</span><span class="n">${esc(g.name)}</span><span class="price">${g.price} грн</span></button>`).join('');
@@ -1497,14 +1496,14 @@ STN.money = {
           <div class="basket"><div class="card" style="padding:10px 14px"><div class="lead" style="font-size:17px">Пікнік на трьох: їжа на всіх і 1,5 л напою.</div>
           <div class="wallet">Залишок: <span class="pill">${left} грн</span> з ${c.budget}</div></div>
           <div class="lbl">Кошик</div><div class="cart" style="flex-direction:column;flex-wrap:nowrap;overflow:auto">${lines}</div></div></div>`,
-        teacher: tb('money.picnicDone', '✔ Готово', { primary: true }) + hint('Клік — +1 шт., клік у кошику — −1.'), iskra: c.iskra.picnic };
+        next: nx('money.picnicDone'), iskra: c.iskra.picnic };
     }
     const D = c.deals[s.q];
     let body;
     if (D.type === 'choice') body = `<div class="opts">${D.opts.map(o => `<button class="big${s.choice === o.id ? ' sel' : ''}" data-act="money.choose" data-arg="${o.id}">${esc(o.label)}</button>`).join('')}</div>`;
     else body = `<div class="display">${esc(s.typed) || '&nbsp;'}</div><div class="keypad">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<button class="key" data-act="money.key" data-arg="${d}">${d}</button>`).join('')}<button class="key" data-act="money.key" data-arg="del">⌫</button><button class="key" data-act="money.key" data-arg="0">0</button><span></span></div>`;
     return { title: c.titles[1], child: `<div class="center"><div class="pill">Завдання ${s.q + 1} з ${c.deals.length}</div><div class="huge" style="font-size:32px;max-width:820px">${esc(D.text)}</div>${body}</div>`,
-      teacher: tb('money.dealNext', s.q === c.deals.length - 1 ? 'Завершити →' : 'Далі →', { primary: true }), iskra: c.iskra.deal };
+      next: nx('money.dealNext'), iskra: c.iskra.deal };
   },
   act: {
     take(s, a, c) {
@@ -1568,12 +1567,18 @@ STN.money = {
 
 /* ---------------- 6. Креативність ---------------- */
 STN.creativity = {
-  init: () => ({ phase: 'intro', round: 0, rounds: [] }),
+  init: () => ({ phase: 'intro', round: 0, rounds: [], sel: [] }),
   round: s => s.round,
   fresh: s => s.round === 0 && s.phase === 'intro',
-  advance(s, c) { if (s.round < c.rounds.length - 1) { s.round++; s.phase = 'intro'; } else finishStation(s); },
-  endRound(s, c) { const R = s.rounds[s.round]; R.endedAt = Date.now(); STN.creativity.advance(s, c); },
-  skipRound(s, c) { s.rounds[s.round] = { skipped: true, prompt: c.rounds[s.round] }; markSkip(s, s.round); STN.creativity.advance(s, c); },
+  P: (s, c) => c.prompts[c.rounds[s.round]],
+  advance(s, c) { s.sel = []; if (s.round < c.rounds.length - 1) { s.round++; s.phase = 'intro'; } else finishStation(s); },
+  endRound(s, c) { const R = s.rounds[s.round]; if (R) R.endedAt = Date.now(); STN.creativity.advance(s, c); },
+  skipRound(s, c) { s.rounds[s.round] = { skipped: true, prompt: c.rounds[s.round], type: STN.creativity.P(s, c).type }; markSkip(s, s.round); STN.creativity.advance(s, c); },
+  go(s, c) {
+    const now = Date.now(), P = STN.creativity.P(s, c), base = { prompt: c.rounds[s.round], type: P.type, startedAt: now, endsAt: now + c.roundSec * 1000 };
+    s.rounds[s.round] = P.type === 'ideas' ? { ...base, n: 0 } : { ...base, pairs: [] };
+    s.phase = 'play'; s.sel = [];
+  },
   sparks(n, flyLast) {
     let h = '';
     for (let i = 0; i < n; i++) {
@@ -1584,33 +1589,62 @@ STN.creativity = {
     return h;
   },
   view(s, c) {
-    const P = c.prompts[c.rounds[s.round]];
-    const vis = P.svg ? P.svg : `<div class="obj">${P.obj}</div>`;
+    const P = STN.creativity.P(s, c), ws = P.type === 'workshop';
     if (s.phase === 'intro') {
-      return { title: P.title, child: `<div class="center">${s.round ? '<div class="pill">Дякую! Наступне завдання</div>' : ''}<div class="pill">Завдання ${s.round + 1} з ${c.rounds.length}</div>
-          <div class="huge">${esc(P.title)}</div><div class="lead">${esc(P.text)}</div><div class="lead muted">Кажи всі ідеї, які спадуть на думку. Чим більше — тим краще!</div></div>`,
-        teacher: tb('creativity.start', '▶ Старт', { primary: true }) + hint(`${c.roundSec} с на завдання.`), iskra: c.iskra.intro };
+      return { title: P.title, child: `<div class="center"><div class="pill">Завдання ${s.round + 1} з ${c.rounds.length}</div>
+          <div class="huge">${esc(P.title)}</div><div class="lead">${esc(P.text)}</div>
+          <div class="lead muted">${ws ? 'Називай два предмети й розкажи, який винахід вийшов. Винаходів може бути скільки завгодно!' : 'Кажи всі ідеї, які спадуть на думку. Чим більше — тим краще!'}</div></div>`,
+        next: nx('creativity.think', 'Старт'), iskra: c.iskra.intro };
     }
-    const R = s.rounds[s.round], fly = ui.flash === 'spark';
+    if (s.phase === 'think') {
+      return { title: P.title, timer: s.thinkEnds, onTimeUp: () => STN.creativity.go(s, c),
+        child: `<div class="center"><div class="hourglass">⏳</div><div class="huge">Подумай…</div><div class="lead">${esc(P.text)}</div></div>`,
+        next: nx('creativity.go'), iskra: c.iskra.think };
+    }
+    const R = s.rounds[s.round];
+    if (!ws) {
+      return { title: P.title, timer: R.endsAt, onTimeUp: () => STN.creativity.endRound(s, c),
+        child: `<div class="creat">${STN.creativity.sparks(R.n, ui.flash === 'spark')}<div class="prompt"><div class="obj">${P.obj}</div><div class="lead">${esc(P.text)}</div></div></div>`,
+        controls: tb('creativity.plus', '+1', { aria: 'Ще одна ідея (пробіл)' }) + tb('creativity.undo', 'Стерти', { disabled: !R.n }),
+        next: nx('creativity.end'), iskra: c.iskra.play };
+    }
+    const items = c.workshopItems.map((it, i) => `<button class="wsitem${s.sel.includes(i) ? ' sel' : ''}" data-act="creativity.pick" data-arg="${i}" aria-label="${esc(it.name)}">${it.e}</button>`).join('');
+    const pairs = R.pairs.map(([a, b], i) => `<div class="pair${ui.flash === 'pair' && i === R.pairs.length - 1 ? ' fly' : ''}">${a}<small>+</small>${b} ✨</div>`).join('');
     return { title: P.title, timer: R.endsAt, onTimeUp: () => STN.creativity.endRound(s, c),
-      child: `<div class="creat">${STN.creativity.sparks(R.ideas.length, fly)}<div class="prompt">${vis}<div class="lead">${esc(P.text)}</div></div></div>`,
-      teacher: c.categories.map(k => tb('creativity.idea', `${k.e} ${esc(k.name)}`, { arg: k.id })).join('') + tb('creativity.undo', '↶ Скасувати останню', { disabled: !R.ideas.length }) + tb('creativity.end', '⏹ Завершити раунд'),
-      iskra: c.iskra.play };
+      child: `<div class="ws"><div class="wsitems" style="grid-template-columns:repeat(${c.workshopItems.length > 8 ? 5 : 4},1fr)">${items}</div>
+        <div class="wshelf"><div class="lbl">Полиця винаходів</div><div class="pairs">${pairs}</div></div></div>`,
+      controls: tb('creativity.record', 'Записати', { disabled: s.sel.length !== 2 }) + tb('creativity.undo', 'Стерти', { disabled: !R.pairs.length }),
+      next: nx('creativity.end'), iskra: c.iskra.workshop };
   },
   act: {
-    start(s, _, c) { if (s.phase !== 'intro') return; const now = Date.now(); s.rounds[s.round] = { prompt: c.rounds[s.round], ideas: [], startedAt: now, endsAt: now + c.roundSec * 1000 }; s.phase = 'play'; },
-    idea(s, a) { if (s.phase !== 'play') return; s.rounds[s.round].ideas.push(a); ui.flash = 'spark'; AUD.tone(1046, 0.12, 'triangle', 0.05); },
-    undo(s) { if (s.phase === 'play') s.rounds[s.round].ideas.pop(); ui.flash = null; },
+    think(s, _, c) { if (s.phase !== 'intro') return; s.phase = 'think'; s.thinkEnds = Date.now() + c.thinkSec * 1000; },
+    go(s, _, c) { if (s.phase === 'think') STN.creativity.go(s, c); },
+    plus(s) { const R = s.rounds[s.round]; if (s.phase !== 'play' || R.type !== 'ideas') return false; R.n++; ui.flash = 'spark'; AUD.tone(1046, 0.12, 'triangle', 0.05); },
+    pick(s, a) {
+      const R = s.rounds[s.round]; if (s.phase !== 'play' || R.type !== 'workshop') return;
+      const i = +a, k = s.sel.indexOf(i); if (k >= 0) s.sel.splice(k, 1); else { s.sel.push(i); if (s.sel.length > 2) s.sel.shift(); }
+      ui.flash = null;
+    },
+    record(s, _, c) {
+      const R = s.rounds[s.round]; if (s.phase !== 'play' || R.type !== 'workshop' || s.sel.length !== 2) return;
+      R.pairs.push(s.sel.map(i => c.workshopItems[i].e)); s.sel = []; ui.flash = 'pair'; AUD.tone(1046, 0.12, 'triangle', 0.05);
+    },
+    undo(s) {
+      const R = s.rounds[s.round]; if (s.phase !== 'play') return;
+      if (R.type === 'ideas') { if (R.n > 0) R.n--; } else R.pairs.pop();
+      ui.flash = null;
+    },
     end(s, _, c) { if (s.phase === 'play') STN.creativity.endRound(s, c); }
   },
   level(s, c) {
-    const r = creativityLevel(s.rounds, c.rounds.length, c.thresholds);
+    const r = creativityLevel(s.rounds, c.rounds.length, c.thresholds, c.obviousPairs);
     if (r.level === null) return { level: null, evidence: CONFIG.report.skippedAll + '.', short: '—', metrics: r };
-    const done = s.rounds.filter(x => x && !x.skipped), all = done.flatMap(x => x.ideas), cats = [...new Set(all)];
-    const per = s.rounds.map(x => `${c.prompts[x.prompt].title.toLowerCase()} — ${x.skipped ? 'пропущено' : x.ideas.length}`).join(', ');
-    return { level: r.level, evidence: `Ідей — ${all.length} (${per}), різних категорій — ${cats.length}${cats.length ? `: ${cats.map(id => c.categories.find(k => k.id === id).name).join(', ')}` : ''}.`,
-      short: `${all.length} ${pl(all.length, ['ідея', 'ідеї', 'ідей'])}, ${cats.length} ${pl(cats.length, ['категорія', 'категорії', 'категорій'])}`,
-      metrics: { ideas: all.length, categories: cats, perRound: s.rounds.map(x => ({ prompt: x.prompt, skipped: !!x.skipped, ideas: x.ideas || [] })) } };
+    const R1 = s.rounds.find(x => x && x.type === 'ideas'), R2 = s.rounds.find(x => x && x.type === 'workshop');
+    const a = !R1 || R1.skipped ? 'Шкарпетка — пропущено' : `Ідей для шкарпетки — ${r.ideas}`;
+    const b = !R2 || R2.skipped ? 'майстерня винаходів — пропущено' : `винаходів — ${r.inventions}, різних предметів — ${r.items} з ${c.workshopItems.length}, неочевидних пар — ${r.unobvious}`;
+    return { level: r.level, evidence: `${a}; ${b}.`,
+      short: `${r.ideas} ${pl(r.ideas, ['ідея', 'ідеї', 'ідей'])} + ${r.inventions} ${pl(r.inventions, ['винахід', 'винаходи', 'винаходів'])}, ${r.items} ${pl(r.items, ['предмет', 'предмети', 'предметів'])}`,
+      metrics: { ...r, perRound: s.rounds } };
   }
 };
 
@@ -1628,13 +1662,13 @@ STN.safe = {
       return { title: c.title, child: `<div class="center"><div style="font-size:90px;line-height:1">🔐</div><div class="lead">Відгадай код із фруктів. Після кожної спроби сейф підкаже кольорами:</div>
           <div class="legend" style="font-size:19px"><span><i class="fb-g"></i> зелений — фрукт на своєму місці</span><span><i class="fb-y"></i> жовтий — він є в коді, але в іншому місці</span><span><i class="fb-x"></i> сірий — його в коді немає</span></div>
           <div class="lead muted">Фрукти в коді не повторюються.</div></div>`,
-        teacher: tb('safe.start', `▶ Старт (${fmtTime(c.totalSec)})`, { primary: true }), iskra: c.iskra.intro };
+        next: nx('safe.start', 'Старт'), iskra: c.iskra.intro };
     }
     const L = c.locks[s.lock], lk = s.locks[s.lock];
     if (s.phase === 'opened') {
       return { title: c.title, timer: s.endsAt, onTimeUp: () => STN.safe.finish(s, 'time'),
         child: `<div class="center"><div style="font-size:100px;line-height:1">🔓</div><div class="huge">Замок ${s.lock + 1} відкрито!</div><div class="lead">Але за ним — ще один замок. Спробуємо?</div></div>`,
-        teacher: tb('safe.nextLock', `Замок ${s.lock + 2} →`, { primary: true }) + tb('safe.stop', 'Дитина зупинилась'), iskra: c.iskra.opened };
+        controls: tb('safe.stop', '⏹', { aria: 'Завершити станцію' }), next: nx('safe.nextLock'), iskra: c.iskra.opened };
     }
     const guess = Array.from({ length: L.slots }, (_, i) => {
       if (lk.hint && lk.hint.pos === i) return `<div class="ft hint">${lk.hint.fruit}</div>`;
@@ -1654,8 +1688,9 @@ STN.safe = {
         <div class="guess">${guess}</div><div class="fruits">${fruits}</div>
         <div class="legend"><span><i class="fb-g"></i> на своєму місці</span><span><i class="fb-y"></i> є в коді, але в іншому місці</span><span><i class="fb-x"></i> немає в коді</span></div></div>
         <div class="history" id="hist">${hist}</div></div>`,
-      teacher: tb('safe.check', '✔ Перевірити', { primary: true, disabled: !full }) + tb('safe.erase', '⌫ Стерти', { disabled: !filledOwn })
-        + tb('safe.hint', '🗝️ Підказка', { disabled: !!lk.hint || !STN.safe.hintCandidates(s, c).length, title: 'Лише якщо дитина сама попросила' }) + tb('safe.stop', 'Дитина зупинилась'),
+      controls: tb('safe.erase', 'Стерти', { disabled: !filledOwn }) + tb('safe.hint', '🗝️', { disabled: !!lk.hint || !STN.safe.hintCandidates(s, c).length, aria: 'Підказка' })
+        + tb('safe.stop', '⏹', { aria: 'Завершити станцію' }),
+      next: nx('safe.check', 'Перевірити', !full),
       iskra: c.iskra.play,
       after: () => { const h = $('#hist'); if (h) h.scrollTop = h.scrollHeight; } };
   },
@@ -1713,18 +1748,20 @@ STN.safe = {
 const V = {};
 V.setup = () => {
   const g = S.group, ready = S.name.trim() && g && S.age && S.gender;
-  const groups = Object.entries(CONFIG.groups).map(([id, G]) => `<button class="big groupbtn${g === id ? ' sel' : ''}" data-act="g.group" data-arg="${id}">${G.label.split(' ')[0]}<small>років</small></button>`).join('');
-  const ages = g ? CONFIG.groups[g].ages.map(a => `<button class="big agebtn${S.age === a ? ' sel' : ''}" data-act="g.age" data-arg="${a}">${a}</button>`).join('') : '<div class="muted">Спершу оберіть вікову групу</div>';
-  const gen = [['m', '👦 Хлопчик'], ['f', '👧 Дівчинка']].map(([id, l]) => `<button class="big genbtn${S.gender === id ? ' sel' : ''}" data-act="g.gender" data-arg="${id}">${l}</button>`).join('');
+  const chip = (act, arg, label, on) => `<button class="chip2${on ? ' sel' : ''}" data-act="${act}" data-arg="${arg}">${label}</button>`;
+  const groups = Object.entries(CONFIG.groups).map(([id, G]) => chip('g.group', id, G.label, g === id)).join('');
+  const ages = g ? CONFIG.groups[g].ages.map(a => chip('g.age', a, a, S.age === a)).join('') : '<span class="muted" style="font-size:14px">спершу оберіть групу</span>';
+  const gen = [['m', 'Хлопчик'], ['f', 'Дівчинка']].map(([id, l]) => chip('g.gender', id, l, S.gender === id)).join('');
   return {
-    child: `<div class="setup">
-      <div class="wide center" style="flex:none;gap:4px"><h1 style="font-size:30px">Майстерня суперсил</h1><div class="lead muted" style="font-size:18px">Діагностичний урок · 7 станцій · ≈45 хв</div></div>
-      <div class="card"><h3>Ім’я дитини</h3><input class="nameinput" id="nameinput" data-bind="name" maxlength="24" autocomplete="off" placeholder="Наприклад, Софійка" value="${esc(S.name)}"></div>
-      <div class="card"><h3>Ім’я вчителя <span class="opt">— необов’язково, для звіту</span></h3><input class="nameinput" data-bind="teacher" maxlength="40" autocomplete="off" placeholder="Наприклад, Марія Іванівна" value="${esc(S.teacher)}"></div>
-      <div class="card wide"><h3>Вікова група</h3><div class="row">${groups}</div></div>
-      <div class="card"><h3>Точний вік</h3><div class="row">${ages}</div></div>
-      <div class="card"><h3>Дитина</h3><div class="row">${gen}</div></div></div>`,
-    teacher: tb('g.toHero', 'Далі: створити героя →', { primary: true, disabled: !ready }) + hint('Заповніть до початку демонстрації екрана.'),
+    child: `<div class="center"><div class="card setupcard">
+      <h1>Майстерня суперсил</h1><div class="sub">Діагностичний урок · 7 станцій · ≈45 хв</div>
+      <div class="frow"><label for="nameinput">Ім’я дитини</label><input class="sinput" id="nameinput" data-bind="name" maxlength="24" autocomplete="off" value="${esc(S.name)}"></div>
+      <div class="frow"><label for="teacherinput">Ім’я вчителя<span class="opt">необов’язково</span></label><input class="sinput" id="teacherinput" data-bind="teacher" maxlength="40" autocomplete="off" value="${esc(S.teacher)}"></div>
+      <div class="frow"><span class="fl">Вікова група</span><div class="chips">${groups}</div></div>
+      <div class="frow"><span class="fl">Точний вік</span><div class="chips">${ages}</div></div>
+      <div class="frow"><span class="fl">Стать</span><div class="chips">${gen}</div></div>
+    </div></div>`,
+    next: nx('g.toHero', 'Далі', !ready),
     iskra: CONFIG.iskra.setup
   };
 };
@@ -1738,7 +1775,7 @@ V.hero = () => {
       <div style="display:flex;flex-direction:column;gap:22px"><div><div class="lbl">Хто твій герой?</div><div class="animals">${heads}</div></div>
       <div><div class="lbl">Колір плаща</div><div class="capes">${CONFIG.capes.map(c => `<button class="capebtn${h.cape === c.id ? ' sel' : ''}" style="background:${c.color}" data-act="g.cape" data-arg="${c.id}" title="${c.name}"></button>`).join('')}</div></div>
       <div class="lead">За кожне випробування твій герой отримає частину костюма: ${CONFIG.costume.map(x => x.toLowerCase()).join(', ')}.</div></div></div>`,
-    teacher: tb('g.start', 'Готово — до першої станції →', { primary: true, disabled: !(h.head && h.cape) }) + hint('Не оцінюється. ≈2 хв.'),
+    next: nx('g.start', 'Далі', !(h.head && h.cape)),
     iskra: CONFIG.iskra.hero
   };
 };
@@ -1751,7 +1788,7 @@ V.station = () => {
     return {
       child: head(s.skippedStation ? 'Переходимо далі!' : 'Станцію пройдено!') + `<div class="center" style="gap:10px">${heroHTML(doneCount(), ui.justEarned, stageScale(480))}
         <div class="huge" style="font-size:30px">Новий предмет: ${esc(item)}!</div><div class="lead">${s.skippedStation ? 'Твій герой готовий до наступного випробування!' : `Суперсила «${esc(sk.title)}» тренується. Дякую за старання!`}</div></div>`,
-      teacher: tb('g.next', S.idx < ORDER.length - 1 ? `Далі: станція ${S.idx + 2} →` : 'Далі: батарейки суперсил →', { primary: true }),
+      next: nx('g.next'),
       iskra: s.skippedStation ? CONFIG.iskra.skipped : CONFIG.iskra.done,
       after: celebrateIfNeeded
     };
@@ -1761,8 +1798,7 @@ V.station = () => {
   if (s.curR !== r) { closeRound(s); s.curR = r; if (!s.rt[r]) s.rt[r] = { start: Date.now() }; }
   const v = st.view(s, c);
   v.child = head(v.title || c.title, v.timer) + `<div class="sbody">${v.child}</div>`;
-  v.teacher = (v.teacher || '') + tb('g.skipRound', armLabel('skipRound', '⏭ Пропустити раунд'), { cls: 'skip' + (ui.arm === 'skipRound' ? ' arm' : '') })
-    + (st.fresh(s) ? tb('g.skipStation', armLabel('skipStation', 'Пропустити станцію'), { cls: 'skip' + (ui.arm === 'skipStation' ? ' arm' : '') }) : '');
+  v.canSkip = true;
   return v;
 };
 function celebrateIfNeeded() {
@@ -1779,7 +1815,7 @@ V.battery = () => {
   return {
     child: `<div class="shead"><span class="sicon">🔋</span><div><div class="kicker">Майже фінал</div><h2>${CONFIG.battery.title}</h2></div></div>
       <div class="sbody"><div class="lead" style="margin-bottom:8px;font-size:18px">Скільки поділок у кожної твоєї суперсили — одна, дві чи три?</div><div class="bats">${rows}</div></div>`,
-    teacher: tb('g.toFinal', 'Далі: фінал →', { primary: true }) + hint('Дитина називає 1–3 поділки. Не оцінюється.'),
+    next: nx('g.toFinal'),
     iskra: CONFIG.iskra.battery
   };
 };
@@ -1791,7 +1827,7 @@ V.final = () => {
       <div class="kicker" style="font-size:16px">${esc(CONFIG.final.subtitle)}</div>
       <div class="huge">${sk.icon} ${esc(sk.title)}</div>
       <div class="lead">Твій герой зібрав повний костюм. Пишаємося тобою! ✨</div></div></div>`,
-    teacher: tb('g.report', armLabel('report', '📄 Звіт для батьків'), { primary: ui.arm !== 'report', cls: ui.arm === 'report' ? 'arm' : '' }) + hint('⚠ Спершу зупини демонстрацію екрана.'),
+    next: nx('g.report', 'Звіт для батьків'),
     iskra: CONFIG.iskra.final,
     after: celebrateIfNeeded
   };
@@ -2008,14 +2044,15 @@ V.report = () => {
 
       <div class="rp-actions no-print">${tb('g.print', 'Зберегти PDF', { primary: true })}${tb('g.json', 'Завантажити дані (JSON)')}
         <label class="tb" style="cursor:pointer">Порівняти з попередньою<input type="file" id="cmpfile" accept="application/json,.json" hidden></label>
-        ${cmp ? tb('g.cmpClear', 'Прибрати порівняння') : ''}${tb('g.backToGame', '← Повернутися до гри')}<span id="cmpmsg" class="rp-note"></span></div>
+        ${cmp ? tb('g.cmpClear', 'Прибрати порівняння') : ''}${tb('g.backToGame', '← Повернутися до гри')}<span id="cmpmsg" class="rp-note"></span>
+        <span id="sheetStatus" class="rp-note">${sheetStatusHTML()}</span></div>
     </div>`
   };
 };
 function exportData() {
   const L = computeAll();
   return {
-    app: 'Майстерня суперсил', version: 2, exportedAt: new Date().toISOString(), date: S.date,
+    app: 'Майстерня суперсил', version: 2, gameVersion: CONFIG.version, exportedAt: new Date().toISOString(), date: S.date,
     name: S.name, teacher: S.teacher || null, gender: S.gender, group: CONFIG.groups[S.group].label, groupId: S.group, age: S.age,
     hero: S.hero, title: titleSkill(L),
     levels: Object.fromEntries(ORDER.map(k => [k, { level: L[k].level, skipped: !!L[k].skipped, evidence: L[k].evidence, metrics: L[k].metrics }])),
@@ -2058,8 +2095,9 @@ const GA = {
   },
   self(a) { const [k, n] = a.split(':'); const v = +n; S.self[k] = S.self[k] === v ? (v - 1 || null) : v; if (!S.self[k]) delete S.self[k]; },
   toFinal() { if (S.screen !== 'battery') return; S.screen = 'final'; if (!S.lessonEnd) S.lessonEnd = Date.now(); ui.celebrate = true; ui.justEarned = null; },
+  // відкривається з першого кліку (раніше друге підтвердження ковтав захист від подвійних кліків)
   report() {
-    if (!armed('report')) { render('teacher'); return false; }
+    if (S.screen !== 'final') return false;
     S.screen = 'report'; document.querySelectorAll('.confetti').forEach(x => x.remove()); window.scrollTo(0, 0);
   },
   backToGame() { S.screen = 'final'; },
@@ -2073,22 +2111,22 @@ const GA = {
   },
   cmpClear() { S.compare = null; },
   sound() { S.sound = !S.sound; if (S.sound) AUD.click(); },
-  hint() { ui.hintOpen = !ui.hintOpen; renderHint(); return false; },
+  sheetRetry() { sheetFlush(); return false; },
   menu() { ui.menuOpen = !ui.menuOpen; if (!ui.menuOpen && ui.arm === 'reset') ui.arm = null; renderMenu(); return false; },
   reset() {
     if (!armed('reset')) { renderMenu(); return false; }
-    ui.playToken++; ui.flash = null; ui.justEarned = null; ui.missReveal = false; ui.menuOpen = false; ui.hintOpen = false;
+    ui.playToken++; ui.flash = null; ui.justEarned = null; ui.menuOpen = false;
     S = freshState(S.sound); save();
   },
   skipRound() {
     const key = ORDER[S.idx], s = S.st[key]; if (S.screen !== 'station' || !s || s.done) return false;
     if (!armed('skipRound')) { render('teacher'); return false; }
-    ui.missReveal = false; STN[key].skipRound(s, C(key));
+    STN[key].skipRound(s, C(key));
   },
   skipStation() {
     const key = ORDER[S.idx], s = S.st[key]; if (S.screen !== 'station' || !s || s.done) return false;
-    if (!armed('skipStation')) { render('teacher'); return false; }
-    ui.playToken++; s.skippedStation = true; S.skips.stations++; finishStation(s);
+    if (!armed('skipStation')) { renderMenu(); return false; }
+    ui.playToken++; ui.menuOpen = false; s.skippedStation = true; S.skips.stations++; finishStation(s);
   }
 };
 
@@ -2109,31 +2147,21 @@ function renderHero() {
   const sc = Math.max(2, Math.min(Math.floor((hc.clientWidth - 20) / W), Math.floor((window.innerHeight - 420) / H)));
   hc.innerHTML = heroHTML(n, ui.justEarned, sc) + `<div class="hname">${esc(S.name || 'Герой')}</div>`;
 }
+function canSkipStation() {
+  if (S.screen !== 'station') return false;
+  const key = ORDER[S.idx], s = S.st[key]; return !!(s && !s.done && STN[key].fresh(s));
+}
 function renderMenu() {
-  $('#tmenu').innerHTML = tb('g.menu', '⋯', { title: 'Меню', cls: ui.menuOpen ? 'arm' : '' })
-    + (ui.menuOpen ? `<div class="menu">${tb('g.reset', armLabel('reset', '↺ Нова діагностика'), { cls: ui.arm === 'reset' ? 'arm' : '' })}</div>` : '');
+  const items = ui.menuOpen ? `<div class="menu"><div class="minfo" id="tinfo">${esc(infoText() || 'Урок ще не почався')}</div>
+    ${canSkipStation() ? tb('g.skipStation', armLabel('skipStation', '⏭ Пропустити станцію'), { cls: ui.arm === 'skipStation' ? 'arm' : '' }) : ''}
+    ${tb('g.reset', armLabel('reset', '↺ Нова діагностика'), { cls: ui.arm === 'reset' ? 'arm' : '' })}</div>` : '';
+  $('#tmenu').innerHTML = tb('g.menu', '⋯', { aria: 'Меню', cls: ui.menuOpen ? 'arm' : '' }) + items;
 }
-function hintKey() {
-  if (S.screen !== 'station') return S.screen;
-  const key = ORDER[S.idx], s = S.st[key];
-  return s ? `${key}:${s.done ? 'done' : STN[key].round(s)}` : key;
-}
-function hintLines() {
-  const H = CONFIG.teacherHints; let e;
-  if (S.screen === 'station') {
-    const key = ORDER[S.idx], s = S.st[key]; if (!s || s.done) return null;
-    e = H[key] && H[key][STN[key].round(s)];
-  } else e = H[S.screen] && H[S.screen][0];
-  return e ? (e[S.group] || e.all || null) : null;
-}
-function renderHint() {
-  const k = hintKey(); if (k !== ui.hintKey) { ui.hintKey = k; ui.hintOpen = false; }
-  const lines = hintLines(), btn = $('#hintbtn'), pop = $('#thintpop');
-  btn.disabled = !lines; btn.classList.toggle('on', !!(ui.hintOpen && lines));
-  if (ui.hintOpen && lines && S.screen !== 'report') {
-    pop.innerHTML = `<div class="ttl">Підказка для вчителя · H</div><ul>${lines.map(l => `<li>${esc(tpl(l))}</li>`).join('')}</ul>`;
-    pop.hidden = false; pop.style.bottom = ($('#teacher').offsetHeight + 8) + 'px';
-  } else pop.hidden = true;
+function renderPanel(v) {
+  $('#tactions').innerHTML = tpl(v.controls || '');
+  $('#tskip').innerHTML = v.canSkip ? tb('g.skipRound', ui.arm === 'skipRound' ? '⏭ Ще раз?' : '⏭', { aria: 'Пропустити раунд', cls: 'skip' + (ui.arm === 'skipRound' ? ' arm' : '') }) : '';
+  $('#tnext').innerHTML = v.next ? tb(v.next.act, tpl(v.next.label || 'Далі'), { primary: true, disabled: v.next.disabled }) : '';
+  renderMenu();
 }
 function setIskra(t) {
   const b = $('#iskra'); if (!t) t = '';
@@ -2144,25 +2172,26 @@ function render(part) {
   const v = view();
   document.body.dataset.screen = S.screen;
   if (S.screen === 'report') {
-    $('#report').innerHTML = tpl(v.html); setTimer(null, null); ui.hintOpen = false; renderHint();
+    $('#report').innerHTML = tpl(v.html); setTimer(null, null);
     const f = $('#cmpfile'); if (f) f.addEventListener('change', () => { if (f.files[0]) importCompare(f.files[0]); });
-    save(); return;
+    save(); sheetOnReport(); return;
   }
   if (part !== 'teacher') { $('#stage').innerHTML = tpl(v.child); renderMap(); renderHero(); setIskra(tpl(v.iskra)); }
-  $('#tactions').innerHTML = tpl(v.teacher || ''); renderMenu(); renderHint(); updateInfo();
+  renderPanel(v); updateInfo();
   if (part !== 'teacher') { setTimer(v.timer || null, v.onTimeUp || null); if (v.after) v.after(); }
   save();
 }
 
 /* ---------- події ---------- */
-const NOGUARD = new Set(['creativity.idea', 'creativity.undo', 'memory.erase', 'safe.erase', 'g.hint', 'g.menu', 'g.sound']);
+const NOGUARD = new Set(['creativity.plus', 'creativity.undo', 'creativity.pick', 'creativity.record', 'memory.erase', 'safe.erase', 'emotions.prev', 'g.menu', 'g.sound']);
 document.addEventListener('click', e => {
   if (ui.menuOpen && !e.target.closest('#tmenu')) { ui.menuOpen = false; if (ui.arm === 'reset') ui.arm = null; renderMenu(); }
   const el = e.target.closest('[data-act]');
   if (!el || el.disabled) return;
   const act = el.dataset.act, [ns, fn] = act.split('.'), arg = el.dataset.arg;
   // захист від подвійних кліків на кнопках вчителя (переходи між раундами й станціями)
-  if (el.closest('.teacher') && !NOGUARD.has(act)) { const now = Date.now(); if (now - ui.lastT < 450) return; ui.lastT = now; }
+  // друге натискання підтвердження (⏭, «Нова діагностика») не блокується
+  if (el.closest('.teacher') && !NOGUARD.has(act) && ui.arm !== fn) { const now = Date.now(); if (now - ui.lastT < 450) return; ui.lastT = now; }
   AUD.click();
   let res;
   if (ns === 'g') res = GA[fn](arg, el);
@@ -2177,10 +2206,68 @@ document.addEventListener('input', e => {
 document.addEventListener('keydown', e => {
   const typing = /INPUT|TEXTAREA/.test(e.target.tagName);
   if (e.key === 'Enter' && typing) e.target.blur();
-  if (!typing && (e.key === 'h' || e.key === 'H' || e.key === 'р' || e.key === 'Р') && S.screen !== 'report') { ui.hintOpen = !ui.hintOpen; renderHint(); }
-  if (e.key === 'Escape') { ui.hintOpen = false; ui.menuOpen = false; renderHint(); renderMenu(); }
+  // пробіл = «+1» у «Чарівній шкарпетці»
+  if (!typing && e.key === ' ' && S.screen === 'station' && ORDER[S.idx] === 'creativity') {
+    const s = S.st.creativity, R = s && s.rounds[s.round];
+    if (s && !s.done && s.phase === 'play' && R && R.type === 'ideas') { e.preventDefault(); AUD.click(); if (STN.creativity.act.plus(s) !== false) render(); }
+  }
+  if (e.key === 'Escape' && ui.menuOpen) { ui.menuOpen = false; renderMenu(); }
 });
 window.addEventListener('resize', () => { if (S.screen !== 'report') render(); });
+
+/* =====================================================================
+   GOOGLE ТАБЛИЦЯ (див. GOOGLE_SHEETS.md)
+   ===================================================================== */
+const SHEET_Q = CONFIG.storageKey + '-sheets-queue';
+function sheetRecord() {
+  const L = computeAll(), sk = CONFIG.skills;
+  const headers = ['id', 'Надіслано', 'Вчитель', 'Дитина', 'Вік', 'Група', 'Стать', 'Дата уроку', 'Тривалість, хв',
+    ...sk.map(x => 'Рівень: ' + x.area), ...sk.map(x => 'Метрика: ' + x.area), ...sk.map(x => 'Самооцінка: ' + x.area),
+    'Пропущено раундів', 'Версія гри', 'JSON'];
+  const row = [S.id, new Date().toISOString(), (S.teacher || '').trim(), (S.name || '').trim().split(/\s+/)[0] || '', S.age,
+    CONFIG.groups[S.group] ? CONFIG.groups[S.group].label : '', S.gender === 'f' ? 'дівчинка' : S.gender === 'm' ? 'хлопчик' : '',
+    fmtDate(S.date), lessonMinutes() || '',
+    ...ORDER.map(k => L[k].level || ''), ...ORDER.map(k => (L[k].level ? L[k].short : '')), ...ORDER.map(k => S.self[k] || ''),
+    S.skips.rounds, CONFIG.version, JSON.stringify(exportData())];
+  return { headers, row };
+}
+function sheetQueue() { try { return JSON.parse(localStorage.getItem(SHEET_Q)) || []; } catch (e) { return []; } }
+function sheetSaveQueue(q) { try { localStorage.setItem(SHEET_Q, JSON.stringify(q)); } catch (e) { } }
+function sheetStatusHTML() {
+  if (!CONFIG.sheets.endpoint) return '';
+  const st = S.sheet && S.sheet.status;
+  if (st === 'sent') return 'Надіслано в таблицю ✓';
+  if (st === 'failed') return `Не надіслано — ${tb('g.sheetRetry', 'повторити')}`;
+  if (st === 'pending') return 'Надсилаю в таблицю…';
+  return '';
+}
+function sheetShowStatus() { const el = $('#sheetStatus'); if (el) el.innerHTML = sheetStatusHTML(); }
+function sheetEnqueue() {
+  const { headers, row } = sheetRecord();
+  const q = sheetQueue().filter(x => x.id !== S.id);
+  q.push({ id: S.id, headers, row }); sheetSaveQueue(q);
+}
+async function sheetFlush() {
+  const { endpoint, token } = CONFIG.sheets; if (!endpoint) return;
+  let q = sheetQueue(); if (!q.length) return;
+  if (S.sheet && q.some(x => x.id === S.id)) { S.sheet.status = 'pending'; save(); sheetShowStatus(); }
+  for (const item of q.slice()) {
+    try {
+      // no-cors: відповідь прочитати не можна; успіх = запит пішов у мережу без помилки
+      await fetch(endpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ token, id: item.id, headers: item.headers, row: item.row }) });
+      q = sheetQueue().filter(x => x.id !== item.id); sheetSaveQueue(q);
+      if (S.sheet && item.id === S.id) S.sheet = { status: 'sent', at: Date.now() };
+    } catch (e) {
+      if (S.sheet && item.id === S.id) S.sheet = { status: 'failed', at: Date.now() };
+    }
+  }
+  save(); sheetShowStatus();
+}
+// перше відкриття звіту → у чергу й надіслати
+function sheetOnReport() {
+  if (!CONFIG.sheets.endpoint || S.sheet) { sheetShowStatus(); return; }
+  S.sheet = { status: 'pending' }; save(); sheetEnqueue(); sheetFlush();
+}
 
 /* =====================================================================
    САМОТЕСТИ: index.html?test=1
@@ -2225,8 +2312,25 @@ function selfTest() {
   // Пропуск раунду
   const rA = { cells: [{ k: 't' }, { k: 't' }], marks: [0, 1] }, rZ = { cells: [{ k: 't' }, { k: 'p' }], marks: [1] }, SK = { skipped: true }, tA = { l3: 0.85, l2: 0.5 };
   eq('Пропуск: пропущений раунд не рахується як нуль', [attentionLevel([rA, SK, rA], tA), attentionLevel([rA, rA], tA), attentionLevel([rA, rZ], tA)], [3, 3, 2]);
-  eq('Пропуск: усі раунди пропущено → null', [attentionLevel([SK, SK, SK], tA), creativityLevel([SK, SK], 2, { l3: { ideas: 8, cats: 3 }, l2: { ideas: 4 } }).level], [null, null]);
-  eq('Пропуск: креативність, поріг масштабується', creativityLevel([{ ideas: ['game', 'wear', 'tool', 'pets'] }, SK], 2, { l3: { ideas: 8, cats: 3 }, l2: { ideas: 4 } }).level, 3);
+  const T78 = CONFIG.stations.creativity['78'].thresholds, T910 = CONFIG.stations.creativity['910'].thresholds, OB = CONFIG.stations.creativity.obviousPairs;
+  eq('Пропуск: усі раунди пропущено → null', [attentionLevel([SK, SK, SK], tA), creativityLevel([SK, SK], 2, T78, OB).level], [null, null]);
+  eq('Пропуск: креативність, поріг масштабується', creativityLevel([{ type: 'ideas', n: 4 }, SK], 2, T78, OB).level, 3);
+  // Емоції: 1–2 вибори
+  const ok2 = ['joy', 'surprise'];
+  eq('Емоції: одна прийнятна → 1', emoScore(ok2, ['joy']), 1);
+  eq('Емоції: дві прийнятні → 1', emoScore(ok2, ['joy', 'surprise']), 1);
+  eq('Емоції: дві, одна прийнятна → 0,5', emoScore(ok2, ['joy', 'sad']), 0.5);
+  eq('Емоції: неприйнятні або порожньо → 0', [emoScore(ok2, ['sad']), emoScore(ok2, []), emoScore(ok2, ['sad', 'anger'])], [0, 0, 0]);
+  // Майстерня винаходів
+  const WS = { type: 'workshop', pairs: [['☂️', '🪣'], ['🪣', '☂️'], ['🧦', '🔦'], ['🧲', '🎈']] };
+  const mWS = creativityMetrics([{ type: 'ideas', n: 5 }, WS], OB);
+  eq('Винаходи: кількість, предмети, неочевидні (порядок у парі не важливий)', [mWS.ideas, mWS.inventions, mWS.items, mWS.unobvious, mWS.total], [5, 4, 6, 2, 9]);
+  eq('Креативність 7–8: 9 і 6 предметів → 3', creativityLevel([{ type: 'ideas', n: 5 }, WS], 2, T78, OB).level, 3);
+  eq('Креативність 7–8: 8, але 3 предмети → 2', creativityLevel([{ type: 'ideas', n: 6 }, { type: 'workshop', pairs: [['☂️', '🪣'], ['🪣', '🥄']] }], 2, T78, OB).level, 2);
+  eq('Креативність 9–10: 12 і 6 → 3; 6 → 2; 5 → 1', [
+    creativityLevel([{ type: 'ideas', n: 8 }, WS], 2, T910, OB).level,
+    creativityLevel([{ type: 'ideas', n: 2 }, WS], 2, T910, OB).level,
+    creativityLevel([{ type: 'ideas', n: 5 }, { type: 'workshop', pairs: [] }], 2, T910, OB).level], [3, 2, 1]);
   // Хранитель кодів
   const att = lens => lens.map(([len, ok]) => ({ len, ok }));
   const c78 = { thresholds: CONFIG.stations.memory['78'].thresholds }, c910 = { thresholds: CONFIG.stations.memory['910'].thresholds };
@@ -2256,7 +2360,23 @@ function selfTest() {
     safeLevel({ end: 'stopped', stoppedAt: 40, locks: [{ opened: false, attempts: [1], hint: null }] }, sc)], [3, 3, 2, 2, 1]);
   const seq = newSeq(9, 6);
   eq('Код: без однакових підряд', seq.every((x, i) => !i || x !== seq[i - 1]), true);
-  eq('Підказки вчителя: є для всіх станцій', ORDER.every(k => Array.isArray(CONFIG.teacherHints[k])), true);
+  eq('Підказок для вчителя в CONFIG немає', 'teacherHints' in CONFIG, false);
+  eq('«Що зникло?»: 12 предметів з назвами для легенди', CONFIG.stations.memory.items.length === 12 && CONFIG.stations.memory.items.every(x => x.e && x.name), true);
+  // Звіт з першого кліку та рядок таблиці (на тимчасовому стані)
+  const saved = S, savedArm = ui.arm;
+  try {
+    S = freshState(false); Object.assign(S, { name: 'Олеся Іваненко', teacher: 'Марія', group: '78', age: 8, gender: 'f', screen: 'final', lessonStart: Date.now() - 40 * 60000, lessonEnd: Date.now() });
+    S.st.attention = { done: true, phase: 'intro', round: 2, rounds: [rA, SK, rA] };
+    S.st.money = { done: true, skippedStation: true }; S.self.attention = 2;
+    GA.report();
+    eq('Звіт відкривається з першого кліку', S.screen, 'report');
+    const rec = sheetRecord(), col = h => rec.row[rec.headers.indexOf(h)];
+    eq('Таблиця: заголовки й рядок однакової довжини (33)', [rec.headers.length, rec.row.length], [33, 33]);
+    eq('Таблиця: id, лише ім’я, стать, тривалість', [col('id') === S.id, col('Дитина'), col('Стать'), col('Тривалість, хв')], [true, 'Олеся', 'дівчинка', 40]);
+    eq('Таблиця: рівень є / порожньо для пропущеної станції', [col('Рівень: Увага'), col('Рівень: Гроші'), col('Самооцінка: Увага')], [3, '', 2]);
+    eq('Таблиця: повний JSON в останній колонці', JSON.parse(rec.row[rec.row.length - 1]).name, 'Олеся Іваненко');
+  } catch (err) { eq('Звіт/таблиця: без винятків', String(err), ''); }
+  finally { S = saved; ui.arm = savedArm; }
 
   const pass = R.filter(r => r.ok).length, fail = R.length - pass;
   console.log(`%c[САМОТЕСТИ] ${pass}/${R.length} пройдено${fail ? `, ${fail} провалено` : ''}`, `font-weight:bold;color:${fail ? '#c00' : '#1F9D63'}`);
@@ -2267,9 +2387,11 @@ function selfTest() {
 
 /* ---------- старт ---------- */
 S = load() || freshState();
+if (!S.id) S.id = uuid();
 if ((!S.group || !S.gender) && S.screen !== 'setup') S.screen = 'setup';
 setInterval(() => { tick(); updateInfo(); }, 200);
 render();
+if (CONFIG.sheets.endpoint && sheetQueue().length) sheetFlush();   // повтор невдалих надсилань
 if (new URLSearchParams(location.search).get('test') === '1') selfTest();
 </script>
 </body>
