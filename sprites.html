@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Спрайти — службова сторінка</title>
+<style>
+body{font-family:system-ui,sans-serif;background:#CDE6FF;color:#1E2A5A;margin:20px}
+h1{font-size:22px}h2{font-size:17px;margin:26px 0 8px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+figure{margin:0;background:#fff;border:2px solid #1E2A5A;border-radius:10px;padding:6px;text-align:center}
+figcaption{font-size:11px;margin-top:2px}
+svg{display:block;margin:0 auto;image-rendering:pixelated}
+table{border-collapse:collapse;background:#fff}td,th{border:1px solid #ccd;padding:4px;text-align:center;font-size:11px}
+</style>
+</head>
+<body>
+<h1>Спрайти «Острова суперсил» (службова сторінка, не для уроку)</h1>
+<div id="out"></div>
+<script src="hero-pixel.js"></script>
+<script>
+const H = HeroPixel, out = document.getElementById('out');
+const fig = (svg, cap) => `<figure>${svg}<figcaption>${cap}</figcaption></figure>`;
+const HERO = ['fox', 'panda', 'lion', 'frog', 'octopus', 'unicorn'];
+let html = '';
+['b', 'a'].forEach(style => {
+  html += `<h2>Голови героя — стиль '${style}': без предметів, кожен предмет окремо, повний костюм</h2>`;
+  HERO.forEach(head => {
+    html += '<div class="row">' + fig(H.render({ style, head, cape: '#3D8BFF', items: [], scale: 3 }), head)
+      + H.ITEMS.map((n, i) => fig(H.render({ style, head, cape: '#3D8BFF', items: [i], scale: 3 }), n)).join('')
+      + fig(H.render({ style, head, cape: '#3D8BFF', items: [0, 1, 2, 3, 4, 5, 6, 7], scale: 3 }), 'повний костюм') + '</div>';
+  });
+});
+html += '<h2>Персонажі станцій</h2><div class="row">'
+  + fig(H.render({ style: 'b', head: 'beaver', cape: '#FF9F1C', scale: 4 }), 'Боб — звичайний')
+  + fig(H.render({ style: 'b', head: 'beaver', cape: '#FF9F1C', scale: 4, expression: 'joy' }), 'Боб — задоволений')
+  + fig(H.render({ style: 'b', head: 'beaver', cape: '#FF9F1C', scale: 4, expression: 'hurt' }), 'Боб — ображений')
+  + fig(H.render({ style: 'b', head: 'beaver', cape: '#FF9F1C', scale: 4, frame: 1 }), 'Боб — крок 1')
+  + fig(H.render({ style: 'b', head: 'beaver', cape: '#FF9F1C', scale: 4, frame: 2 }), 'Боб — крок 2')
+  + fig(H.render({ style: 'b', head: 'cat', cape: '#2EC4B6', scale: 4 }), 'котик')
+  + fig(H.render({ style: 'b', head: 'fox', cape: '#FF7EB6', scale: 4, blink: true }), 'моргання')
+  + fig(H.renderSpark({ scale: 5 }), 'Іскра, кадр 1') + fig(H.renderSpark({ scale: 5, frame: 1 }), 'Іскра, кадр 2')
+  + fig(H.renderSpark({ scale: 5, mic: true }), 'Іскра з мікрофоном') + '</div>';
+const FILM = ['fox', 'lion', 'frog', 'octopus', 'cat', 'panda', 'unicorn', 'beaver'];
+html += '<h2>14 виразів + порожнє обличчя на кожній голові Кіностудії</h2><table><tr><th></th>'
+  + ['blank', ...Object.keys(H.EXPRESSIONS)].map(e => `<th>${e === 'blank' ? 'порожнє' : H.EXPRESSIONS[e].label}</th>`).join('') + '</tr>';
+FILM.forEach(head => {
+  html += `<tr><th>${head}</th>` + ['blank', ...Object.keys(H.EXPRESSIONS)].map(e => `<td>${H.renderHead ? H.render({ style: 'b', head, expression: e, scale: 3 }) : ''}</td>`).join('') + '</tr>';
+});
+html += '</table>';
+out.innerHTML = html;
+</script>
+</body>
+</html>

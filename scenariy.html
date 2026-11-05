@@ -3,478 +3,139 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Сценарій уроку — Майстерня суперсил</title>
+<title>Сценарій уроку — Острів суперсил</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=Unbounded:wght@600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#1E2A5A;--sky:#CDE6FF;--yellow:#FFC93C;--purple:#6C4DFF;--red:#C8323C;--muted:#5B6690;--paper:#FFFDF6;
-  --head:'Unbounded','Arial Black',system-ui,sans-serif;--text:'Golos Text',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+:root{--navy:#1E2A5A;--muted:#5B6690;--accent:#6C4DFF;--red:#C8323C;--line:#DCE0EA;--head:'Unbounded','Arial Black',system-ui,sans-serif;--text:'Golos Text',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
 *{box-sizing:border-box}
-body{margin:0;background:var(--sky);color:var(--navy);font:16px/1.5 var(--text)}
-h1,h2,h3{font-family:var(--head);line-height:1.2;margin:0}
-.wrap{max-width:980px;margin:0 auto;padding:0 18px 60px}
-.bar{position:sticky;top:0;z-index:5;background:var(--sky);padding:12px 0;border-bottom:2px dashed rgba(30,42,90,.25);margin-bottom:22px}
-.bar .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-bottom:0}
-.bar h1{font-size:18px;flex:1;min-width:240px}
-.switch{display:flex;border:3px solid var(--navy);border-radius:999px;background:#fff;box-shadow:3px 3px 0 var(--navy);overflow:hidden}
-.switch button{font:700 15px var(--text);border:0;background:transparent;padding:9px 18px;cursor:pointer;color:var(--navy)}
-.switch button[aria-pressed="true"]{background:var(--purple);color:#fff}
-.card{background:#fff;border:4px solid var(--navy);border-radius:24px;box-shadow:6px 6px 0 var(--navy);padding:18px 22px;margin-bottom:22px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-.grid2 .card{margin-bottom:0}
-table{width:100%;border-collapse:collapse;font-size:15px}
-td,th{padding:6px 8px;border-bottom:1px solid #DDE3F0;text-align:left}
-td:last-child,th:last-child{text-align:right;white-space:nowrap;font-weight:700}
-tfoot td{border-bottom:0;border-top:3px solid var(--navy);font-weight:800}
-.card h2{font-size:18px;margin-bottom:10px}
-ul,ol{margin:6px 0;padding-left:22px}
-li{margin:3px 0}
-.stage{background:#fff;border:4px solid var(--navy);border-radius:26px;box-shadow:7px 7px 0 var(--navy);padding:20px 24px;margin-bottom:26px}
-.stage-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-.stage-head .ico{width:52px;height:52px;flex:none;border:4px solid var(--navy);border-radius:16px;background:var(--yellow);display:grid;place-items:center;font-size:26px}
-.stage-head h2{font-size:20px;flex:1}
-.time{font:800 15px var(--head);background:var(--yellow);border:3px solid var(--navy);border-radius:999px;padding:4px 14px;white-space:nowrap}
-.say{border-left:8px solid var(--purple);background:#F3F0FF;border-radius:0 18px 18px 0;padding:12px 18px;margin:0 0 14px}
-.say .lbl{color:var(--purple)}
-.say p{font-size:21px;line-height:1.45;font-weight:600;margin:6px 0}
-.lbl{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-.cols{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}
+body{margin:0;background:#EEF1F7;color:var(--navy);font:15px/1.5 var(--text)}
+.bar{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:10px 18px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.bar h1{font:700 17px var(--head);margin:0;flex:1;min-width:260px}
+.sw{display:flex;border:1.5px solid var(--navy);border-radius:999px;overflow:hidden}
+.sw button{font:700 14px var(--text);border:0;background:#fff;padding:7px 14px;cursor:pointer;color:var(--navy)}
+.sw button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.wrap{max-width:960px;margin:0 auto;padding:18px 18px 60px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin-bottom:16px}
+h2{font:700 18px var(--head);margin:0 0 10px}
+h3{font:800 15px var(--text);margin:12px 0 4px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{border-bottom:1px solid #E3E7F0;padding:5px 6px;text-align:left;vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.st-head{display:flex;align-items:center;gap:12px}
+.st-head .ic{font-size:30px}.st-head h2{flex:1;margin:0}
+.time{font:700 13px var(--head);background:#FFC93C;border:1.5px solid var(--navy);border-radius:999px;padding:2px 12px}
+.step{border-top:1px dashed var(--line);padding-top:8px;margin-top:10px}
+.say{border-left:5px solid var(--accent);background:#F6F4FF;border-radius:0 10px 10px 0;padding:8px 14px;font-size:17px;font-weight:600;margin:4px 0}
+.lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:14px}
 .dont{color:var(--red)}
-.dont .lbl{color:var(--red)}
-.bridge{margin-top:12px;padding:10px 14px;border:3px dashed var(--navy);border-radius:16px;font-weight:600}
-.bridge q{font-style:italic}
-.ifs{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;font-size:15px}
-.ifs div b{display:block}
-.note{font-size:14px;color:var(--muted)}
-.g78 .only-910, .g910 .only-78{display:none !important}
-@media (max-width:760px){.grid2,.cols,.ifs{grid-template-columns:1fr}}
+.note{font-size:13px;color:var(--muted)}
+ul{margin:4px 0;padding-left:20px}
+@media (max-width:720px){.cols{grid-template-columns:1fr}}
 @media print{
   @page{size:A4;margin:12mm}
-  body{background:none;font-size:12.5px}
-  .bar{position:static;background:none;border:0;padding:0 0 8px}
-  .switch{display:none}
-  .card,.stage{box-shadow:none;border-width:2px;break-inside:avoid;page-break-inside:avoid;margin-bottom:12px;padding:12px 14px}
-  .say{background:none;border-left-width:5px}
-  .say p{font-size:15px}
-  .stage-head .ico,.time{background:none}
-  .wrap{max-width:none;padding:0}
+  body{background:none;font-size:12px}.bar{position:static;border:0}.sw{display:none}
+  .card{break-inside:avoid;page-break-inside:avoid;border:1.5px solid #999;margin-bottom:10px;padding:10px 12px}
+  .say{background:none;font-size:13.5px}.time{background:none}.wrap{max-width:none;padding:0}
 }
-.keys{margin-top:12px;padding:10px 14px;background:#F6F8FF;border-radius:14px;font-size:15px}
-.keys .lbl{color:var(--navy)}
-.kbd{display:inline-block;border:1.5px solid var(--navy);border-radius:7px;padding:0 7px;font-weight:700;font-size:13px;background:#fff;white-space:nowrap}
-.legend-t td,.legend-t th{text-align:left !important;font-weight:500}
-.legend-t td:first-child{font-weight:800;width:60px}
-.legend-t td:nth-child(2){font-size:22px;width:50px}
-.legend-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 26px}
-.panel-demo{display:flex;align-items:center;gap:8px;border:1.5px dashed #9AA2BA;border-radius:12px;padding:8px 10px;margin:8px 0;font-size:14px;flex-wrap:wrap}
-.panel-demo .sp{flex:1;text-align:center;color:var(--muted)}
-@media print{ .keys{background:none;border:1px solid #ccc} .legend-card{break-before:page} }
 </style>
 </head>
-<body class="g78">
-<div class="bar"><div class="wrap">
-  <h1>✨ Майстерня суперсил — сценарій уроку <span class="note" id="grpname">· 7–8 років</span></h1>
-  <div class="switch" role="group" aria-label="Вікова група">
-    <button type="button" data-g="78" aria-pressed="true">7–8 років</button>
-    <button type="button" data-g="910" aria-pressed="false">9–10 років</button>
-  </div>
-</div></div>
-
-<div class="wrap">
-
-<div class="grid2">
-  <div class="card">
-    <h2>⏱ Таймінг</h2>
-    <table>
-      <tr><td>Привітання і створення героя</td><td>3 хв</td></tr>
-      <tr><td>🦅 Станція 1. Увага</td><td>5 хв</td></tr>
-      <tr><td>🔐 Станція 2. Пам’ять</td><td>4 хв</td></tr>
-      <tr><td>🗺️ Станція 3. Планування</td><td>6 хв</td></tr>
-      <tr><td>💛 Станція 4. Емоції</td><td>5 хв</td></tr>
-      <tr><td>🪙 Станція 5. Гроші</td><td>6 хв</td></tr>
-      <tr><td>💡 Станція 6. Креативність</td><td>5 хв</td></tr>
-      <tr><td>🛡️ Станція 7. Наполегливість</td><td>5 хв</td></tr>
-      <tr><td>🔋 Батарейки суперсил</td><td>3 хв</td></tr>
-      <tr><td>🏆 Фінал</td><td>3 хв</td></tr>
-      <tfoot><tr><td>Разом</td><td>45 хв</td></tr></tfoot>
-    </table>
-    <p class="note">Звіт для батьків — після уроку, без дитини на екрані. Скільки часу минуло, видно в меню «⋯».</p>
-  </div>
-  <div class="card">
-    <h2>🧭 Загальні правила</h2>
-    <ul>
-      <li>Ніколи не кажи «правильно» чи «неправильно» — ні словами, ні інтонацією.</li>
-      <li>Нейтральні фрази: «Записала», «Дякую, далі», «Прийнято», «Цікаво!».</li>
-      <li>Не підказуй і не порівнюй з іншими дітьми.</li>
-      <li>Хвали зусилля, а не результат: «Ти довго не здавався(-лася)», «Ти так уважно дивився(-лася)».</li>
-      <li>«🗝️ Підказка» в Сейфі й «⏹» — лише з ініціативи дитини.</li>
-      <li>Якщо дитина питає «Я правильно?» — «Тут немає неправильних відповідей, мені цікаво, як думаєш ти».</li>
-      <li><b>Усе на екрані бачать дитина й батьки</b>, зокрема нижню панель. Тому в грі немає підказок для вчителя — вони тільки тут, у сценарії.</li>
-    </ul>
-  </div>
+<body>
+<div class="bar"><h1>🏝️ Острів суперсил — сценарій уроку <span class="note" id="cur"></span></h1>
+  <div class="sw" id="swg"><button data-g="78">7–8 років</button><button data-g="910">9–10 років</button></div>
+  <div class="sw" id="swv"><button data-v="A">Версія А</button><button data-v="B">Версія Б</button></div>
 </div>
-
-<div class="card" style="margin-top:22px">
-  <h2>🎛 Нижня панель гри</h2>
-  <div class="panel-demo"><span class="kbd">⋯</span><span class="sp">нейтральні кнопки раунду: «Стерти», «+1», «1–12», «Не знає», «Записати»…</span><span class="kbd">⏭</span><span class="kbd">Далі</span></div>
-  <ul>
-    <li><span class="kbd">Далі</span> / <span class="kbd">Старт</span> праворуч — головна кнопка: почати раунд, завершити раунд, перейти далі. Її назва не залежить від відповідей дитини.</li>
-    <li><span class="kbd">⏭</span> — пропустити раунд. Спрацьовує з <b>другого</b> кліку (з’явиться «⏭ Ще раз?»). Пропущений раунд не рахується як нуль: рівень рахується з пройдених раундів. Дитина бачить нейтральне «Переходимо далі!», герой однаково отримує деталь костюма. Пропускай, якщо дитина дуже втомилась, засмутилась або бракує часу.</li>
-    <li><span class="kbd">⋯</span> ліворуч — меню: номер станції й час від початку уроку, «Пропустити станцію» (на вступному екрані станції, двічі) і «Нова діагностика» (двічі).</li>
-    <li>Кнопки по центру — тільки нейтральні дії раунду. Жодна не показує відповіді й не підписує, що оцінюється.</li>
-  </ul>
-</div>
-
-<div class="card">
-  <h2>💻 Технічна пам’ятка</h2>
-  <ol>
-    <li>До уроку відкрий <b>index.html</b> у браузері (Chrome або Edge), розгорни вікно на весь екран.</li>
-    <li>Ще до демонстрації заповни картку налаштування: ім’я дитини (лише ім’я, без прізвища), своє ім’я (необов’язково, піде у звіт), вікову групу, точний вік і «хлопчик / дівчинка». Від статі залежать форми слів на екрані («мріяв» чи «мріяла»).</li>
-    <li>У Zoom: «Демонстрація екрана» → обери <b>тільки вікно з грою</b>, не весь екран. Увімкни «Звук комп’ютера», якщо хочеш, щоб дитина чула сигнали.</li>
-    <li>Цей сценарій тримай на другому екрані або роздрукованим. Легенду кодів «Що зникло?» роздрукуй окремо — вона на останній картці.</li>
-    <li>Сторінка випадково перезавантажилась — нічого страшного: прогрес зберігається.</li>
-    <li><b>Спершу зупини демонстрацію екрана</b>, і лише потім натискай «Звіт для батьків» на фінальному екрані. Звіт відкривається з першого кліку, тож попередження в грі немає.</li>
-    <li>Для наступної дитини: <span class="kbd">⋯</span> → «Нова діагностика» (двічі).</li>
-  </ol>
-</div>
-
-<!-- ============ СТАРТ ============ -->
-<section class="stage">
-  <div class="stage-head"><span class="ico">🦸</span><h2>Привітання і створення героя</h2><span class="time">3 хв</span></div>
-  <div class="say"><div class="lbl">Скажи дитині</div>
-    <p>«Привіт! Сьогодні ти — новий учень Майстерні суперсил. На тебе чекають сім випробувань, і за кожне твій герой отримає частину костюма. Тут не можна програти: просто роби так, як уявляєш».</p>
-    <p>«Спершу створімо героя. Хто це буде — лисичка, панда, левеня, жабка, восьминіжка чи єдиноріг? А якого кольору плащ?»</p>
-  </div>
-  <div class="cols">
-    <div><div class="lbl">Що робиш ти</div><ol>
-      <li>Познайомся, запитай, як справи, чи добре чути й видно.</li>
-      <li>Клікай героя й колір, які обирає дитина. Не оцінюється.</li>
-      <li><span class="kbd">Далі</span> — до першої станції.</li></ol></div>
-    <div class="dont"><div class="lbl">Не кажи / не роби</div><ul>
-      <li>Не називай урок тестом чи перевіркою.</li>
-      <li>Не квап із вибором героя — це налаштування на гру.</li></ul></div>
-  </div>
-  <div class="bridge">Місток: <q>«Чудовий герой! Але без маски супергерой не супергерой. Здобудьмо її на першій станції!»</q></div>
-  <div class="ifs">
-    <div><b>Якщо соромиться:</b> «Можеш просто показати пальцем — я побачу».</div>
-    <div><b>Якщо дуже швидко:</b> «Супер! А як звуть твого героя?» — дай хвилинку на розмову.</div>
-    <div><b>Якщо втомилась:</b> «Потягнімося разом, як супергерої перед польотом!»</div>
-    <div><b>Якщо просить допомоги:</b> «Обирай того, хто подобається найбільше. Тут немає неправильного вибору».</div>
-  </div>
-</section>
-
-<!-- ============ 1. УВАГА ============ -->
-<section class="stage">
-  <div class="stage-head"><span class="ico">🦅</span><h2>Станція 1. Увага — «Знайди всі…»</h2><span class="time">5 хв</span></div>
-  <div class="say"><div class="lbl">Скажи дитині</div>
-    <p class="only-78">«Тут сховалися зірочки ⭐. Знайди якомога більше й називай мені їхні номери. Обережно: хитрі зірки 🌟 схожі, але не ті!».</p>
-    <p class="only-910">«Тут сховалися дзвіночки 🔔. Знайди якомога більше й називай мені їхні номери. Обережно: дзвоник 🛎️ схожий, але не той!».</p>
-    <p class="only-78">Перед 3-м раундом: «А тепер хитріше: шукаємо одразу двох — зірочки ⭐ і місяці 🌙. Пастки теж дві!».</p>
-    <p class="only-910">Перед 2-м раундом: «Увага, нове правило! Дзвіночки більше не шукаємо — тепер шукаємо місяці 🌙. А 🌛 — пастка».</p>
-    <p class="only-910">Перед 3-м раундом: «Фінальний раунд: шукаємо і дзвіночки 🔔, і місяці 🌙 одночасно».</p>
-  </div>
-  <div class="cols">
-    <div><div class="lbl">Що робиш ти</div><ol>
-      <li>Перед кожним раундом на екрані інструкція «Шукай … · Обережно, пастка …» — дочитай її вголос. Пастки показано лише тут, на полі під час пошуку їх не згадано.</li>
-      <li><span class="kbd">Старт</span> — з’являється поле й таймер 45 с.</li>
-      <li>Клікай номери, які називає дитина, навіть якщо це пастка. Виправилась — клікни ще раз, позначка зніметься.</li>
-      <li>Час вийшов або дитина каже «все» — <span class="kbd">Далі</span>. 3 раунди, складність зростає.</li></ol></div>
-    <div class="dont"><div class="lbl">Не кажи / не роби</div><ul>
-      <li>Не кажи «це не та» на пастку — просто позначай.</li>
-      <li>Не показуй курсором, де ще шукати, і не рахуй уголос.</li>
-      <li class="only-910">Не нагадуй про старе правило під час раунду.</li>
-      <li>Не підказуй, які рядки ще не переглянуто.</li></ul></div>
-  </div>
-  <div class="bridge">Місток: <q>«Орлине око в тебе вже прокидається! А тепер — сейф із секретним кодом».</q></div>
-  <div class="ifs">
-    <div><b>Якщо соромиться:</b> «Можеш називати тихенько або показувати цифри на пальцях».</div>
-    <div><b>Якщо дуже швидко:</b> між раундами — «Ти перевірив(-ла) всі рядки?» (лише в паузі).</div>
-    <div><b>Якщо втомилась:</b> між раундами — «Поморгай швидко-швидко, дай очам відпочити».</div>
-    <div><b>Якщо просить допомоги:</b> «Спробуй іти рядочок за рядочком, зліва направо» — це стратегія, не відповідь.</div>
-  </div>
-</section>
-
-<!-- ============ 2. ПАМ'ЯТЬ ============ -->
-<section class="stage">
-  <div class="stage-head"><span class="ico">🔐</span><h2>Станція 2. Пам’ять — «Код від сейфу» і «Що зникло?»</h2><span class="time">4 хв</span></div>
-  <div class="say"><div class="lbl">Скажи дитині</div>
-    <p>«Цей сейф показує свій код світлом. Іконки засвітяться по черзі — запам’ятай порядок і назви мені весь код».</p>
-    <p>Після кожної спроби: «Наступний код!»</p>
-    <p>«Що зникло?»: «Зараз з’являться предмети. Запам’ятай їх усі — потім екран моргне, і один сховається. Скажеш, який?»</p>
-    <p class="only-910">Додай: «Решта предметів ще й перемішається — не дай себе заплутати!»</p>
-    <p>Після відповіді, на екрані «Ось як було»: «Дякую! Подивимось, як було спочатку».</p>
-  </div>
-  <div class="cols">
-    <div><div class="lbl">Що робиш ти</div><ol>
-      <li><span class="kbd">Старт</span> → іконки засвічуються по черзі.</li>
-      <li>Дитина називає код — клікай іконки на екрані по черзі. <span class="kbd">Стерти</span> — прибрати останню. <span class="kbd">Далі</span> — навіть із неповним кодом.</li>
-      <li class="only-78">Код починається з 3 іконок, максимум — 6.</li>
-      <li class="only-910">Код починається з 4 іконок, максимум — 7.</li>
-      <li>Повторила правильно — код довшає на одну іконку. Помилилась — ще одна спроба на тій самій довжині; друга помилка — частина завершена. Не більше 5 показів коду.</li>
-      <li>«Що зникло?» — 2 набори (<span class="only-78">5 і 6 предметів</span><span class="only-910">7 і 8 предметів</span>): <span class="kbd">Старт</span> → 5 с показу → дитина називає предмет → натисни його <b>номер</b> <span class="kbd">1</span>–<span class="kbd">12</span> за легендою (остання картка) або <span class="kbd">Не знає</span>.</li>
-      <li>Екран «Ось як було» показує весь набір, зниклий предмет м’яко підсвічено. <span class="kbd">Далі</span> — наступний набір.</li></ol></div>
-    <div class="dont"><div class="lbl">Не кажи / не роби</div><ul>
-      <li>Не повторюй код уголос разом із показом.</li>
-      <li>Не кажи «майже» або «ой» після спроби.</li>
-      <li>На екрані «Ось як було» не коментуй, чи вгадала дитина, — лише «Дякую!».</li></ul></div>
-  </div>
-  <div class="bridge">Місток: <q>«Хранитель кодів отримує пояс! Тепер треба все спланувати…»</q></div>
-  <div class="ifs">
-    <div><b>Якщо соромиться:</b> «Можна називати іконки як завгодно: “котик, сонце”».</div>
-    <div><b>Якщо дуже швидко:</b> нічого не змінюй — довжина коду росте сама.</div>
-    <div><b>Якщо втомилась:</b> «Ще один код — і новий тип гри». Зовсім важко — <span class="kbd">⏭</span>.</div>
-    <div><b>Якщо просить допомоги:</b> «Деякі герої шепочуть код собі під ніс, поки дивляться» — стратегія, не відповідь. Показ не повторюємо.</div>
-  </div>
-</section>
-
-<!-- ============ 3. ПЛАНУВАННЯ ============ -->
-<section class="stage">
-  <div class="stage-head"><span class="ico">🗺️</span><h2>Станція 3. Планування</h2><span class="time">6 хв</span></div>
-  <div class="say"><div class="lbl">Скажи дитині</div>
-    <p class="only-78">«Завтра в героя школа: малювання, фізкультура і читання. А на вулиці дощ! Що покладемо в рюкзак? Називай — і річ полетить у рюкзак».</p>
-    <p class="only-78">«Ранок героя: ось його справи, але вони переплутались. Що він робить спочатку, а що потім? Розстав по порядку».</p>
-    <p class="only-910">«Ось вечір героя з 14:00 до 20:00. О 17:00 у нього гурток, о 19:00 — вечеря. Куди поставимо інші справи? Праворуч — правила, на які варто зважити».</p>
-    <p class="only-910">Після першого плану (читай разом з Іскрою): «Ой! Тренер переніс гурток на 15:00! Що тепер змінимо?»</p>
-  </div>
-  <div class="cols">
-    <div><div class="lbl">Що робиш ти</div><ol class="only-78">
-      <li>Клікай речі, які називає дитина. Передумала — клік у рюкзаку виймає річ.</li>
-      <li><span class="kbd">Далі</span> → «Ранок героя».</li>
-      <li>Клікай картки в тому порядку, як каже дитина; клік у клітинці повертає картку.</li>
-      <li>Коли всі 6 стоять — <span class="kbd">Далі</span>.</li></ol>
-      <ol class="only-910">
-      <li>Дитина каже «собаку на 14:00» → клікни справу, потім годину. Клік по заповненій годині звільняє її.</li>
-      <li><span class="kbd">Далі</span> → оголошення про гурток → <span class="kbd">Далі</span>.</li>
-      <li>Справа з 15:00 повертається в список — дитина переплановує → <span class="kbd">Далі</span>.</li></ol></div>
-    <div class="dont"><div class="lbl">Не кажи / не роби</div><ul>
-      <li>Не питай «А ти впевнений(-а)?» — це підказка.</li>
-      <li class="only-78">Не нагадуй про погоду чи розклад, якщо дитина сама не подивилась.</li>
-      <li class="only-910">Не перечитуй правила замість дитини — вони на екрані.</li>
-      <li>Не вимагай одного «правильного» порядку — оцінюються правила.</li></ul></div>
-  </div>
-  <div class="bridge">Місток: <q>«Майстер планів отримує черевики! А тепер — про почуття».</q></div>
-  <div class="ifs">
-    <div><b>Якщо соромиться:</b> «Уяви, що це твій рюкзак / твій вечір. Як ти зробив(-ла) би?»</div>
-    <div><b>Якщо дуже швидко:</b> «Глянь ще раз на весь план — усе так, як ти хочеш?» (одне питання на раунд, однакове для всіх).</div>
-    <div><b>Якщо втомилась:</b> «Ще трішки — і отримаємо черевики».</div>
-    <div><b>Якщо просить допомоги:</b> «Подивись на <span class="only-78">розклад і погоду</span><span class="only-910">правила праворуч</span>» — без конкретних речей.</div>
-  </div>
-</section>
-
-<!-- ============ 4. ЕМОЦІЇ ============ -->
-<section class="stage">
-  <div class="stage-head"><span class="ico">💛</span><h2>Станція 4. Емоції — «Покажи емоцію» і «Детектор»</h2><span class="time">5 хв</span></div>
-  <div class="say"><div class="lbl">Скажи дитині</div>
-    <p>«Розминка! Покажи обличчям емоцію, яку назве Іскра. А я спробую вгадати… ой, я вже бачу!»</p>
-    <p class="only-78">«Тепер ти — детектор емоцій. Я прочитаю історію, а ти скажи, що відчуває герой. Можна обрати одну емоцію або дві».</p>
-    <p class="only-910">«Тепер ти — детектор емоцій. Прочитай історію вголос і скажи, що відчуває герой. Можна обрати одну емоцію або дві — почуття часто змішуються».</p>
-  </div>
-  <div class="cols">
-    <div><div class="lbl">Що робиш ти</div><ol>
-      <li>Розминка: дитина показує емоцію → <span class="kbd">Далі</span>. Три емоції, не оцінюється. Соромиться — «Можна показати очима або рукою».</li>
-      <li class="only-78">Детектор: прочитай ситуацію вголос рівним голосом, клікни емоцію (або дві), які назвала дитина.</li>
-      <li class="only-910">Детектор: дитина читає сама; клікни емоцію (або дві), які вона назвала.</li>
-      <li>Повторний клік знімає вибір. Передумала про попередню ситуацію — <span class="kbd">←</span>.</li>
-      <li><span class="kbd">Далі</span> → наступна ситуація.</li></ol></div>
-    <div class="dont"><div class="lbl">Не кажи / не роби</div><ul>
-      <li>Не підказуй інтонацією, читаючи ситуацію.</li>
-      <li>Не кажи «а може, ще одна?» чи «а може, сум?».</li>
-      <li>Не оцінюй емоції як «погані» чи «хороші».</li></ul></div>
-  </div>
-  <div class="bridge">Місток: <q>«Знавець емоцій отримує щит! Час у крамницю».</q></div>
-  <div class="ifs">
-    <div><b>Якщо соромиться показувати:</b> «Можна показати рукою або тільки очима» — і йдіть далі.</div>
-    <div><b>Якщо дуже швидко:</b> «А чому так?» — одне питання, відповідь не впливає на вибір.</div>
-    <div><b>Якщо втомилась:</b> «Ще дві історії».</div>
-    <div><b>Якщо просить допомоги:</b> «Уяви, що це сталося з тобою. Що б ти відчув(-ла)?»</div>
-  </div>
-</section>
-
-<!-- ============ 5. ГРОШІ ============ -->
-<section class="stage">
-  <div class="stage-head"><span class="ico">🪙</span><h2>Станція 5. Гроші</h2><span class="time">6 хв</span></div>
-  <div class="say"><div class="lbl">Скажи дитині</div>
-    <p class="only-78">«Ми йдемо на пікнік! У тебе 10 монет. Треба взяти щось поїсти й попити. Що купиш?»</p>
-    <p class="only-78">«Тепер ти платиш у крамниці. Кекс коштує 7 монет. Які монетки покладеш на тарілочку, щоб вийшло рівно 7?»</p>
-    <p class="only-910">«Пікнік на трьох! У тебе 60 гривень. Потрібна їжа на всіх і півтора літра напою. Що купиш?»</p>
-    <p class="only-910">«А тепер — що вигідніше? Подумай і скажи». На останньому: «Скільки решти тобі дадуть?»</p>
-  </div>
-  <div class="cols">
-    <div><div class="lbl">Що робиш ти</div><ol class="only-78">
-      <li>Клікай товари, які обирає дитина; клік у кошику повертає. Монет не вистачає — гра скаже про це сама.</li>
-      <li><span class="kbd">Далі</span> → «Точна сума».</li>
-      <li>Клікай монети, які називає дитина; клік на тарілці прибирає монету. <span class="kbd">Далі</span> — оплата.</li>
-      <li>Три покупки: 7, 9 і 12 монет.</li></ol>
-      <ol class="only-910">
-      <li>Клік по товару — +1 штука; клік у кошику — −1.</li>
-      <li><span class="kbd">Далі</span> → «Що вигідніше?».</li>
-      <li>Клікни варіант, який назвала дитина, → <span class="kbd">Далі</span>.</li>
-      <li>Решту набирай на клавіатурі цифрами, які каже дитина.</li></ol></div>
-    <div class="dont"><div class="lbl">Не кажи / не роби</div><ul>
-      <li>Не рахуй замість дитини і не підсумовуй уголос.</li>
-      <li>Не кажи «а воду не забув(-ла)?».</li>
-      <li>Не коментуй вибір іграшок чи солодощів.</li></ul></div>
-  </div>
-  <div class="bridge">Місток: <q>«Мудрий скарбничий отримує плащ! А тепер — найчарівніша станція».</q></div>
-  <div class="ifs">
-    <div><b>Якщо соромиться:</b> «Уяви, що ти в справжній крамниці. Що ти береш першим?»</div>
-    <div><b>Якщо дуже швидко:</b> нічого не кажи — швидкість теж частина результату.</div>
-    <div><b>Якщо втомилась:</b> «Остання покупка — і буде плащ».</div>
-    <div><b>Якщо просить допомоги:</b> «Можна рахувати на пальцях або вголос» — без підказки суми.</div>
-  </div>
-</section>
-
-<!-- ============ 6. КРЕАТИВНІСТЬ ============ -->
-<section class="stage">
-  <div class="stage-head"><span class="ico">💡</span><h2>Станція 6. Креативність — «Чарівна шкарпетка» і «Майстерня винаходів»</h2><span class="time">5 хв</span></div>
-  <div class="say"><div class="lbl">Скажи дитині</div>
-    <p>«Ось чарівна шкарпетка 🧦. Що ще можна з нею зробити, крім того, щоб носити? Спершу трішки подумай — пісочний годинник покаже, коли почнемо. А потім кажи все, що спадає на думку, — кожна ідея запалить іскорку ✨».</p>
-    <p>«А тепер — Майстерня винаходів! Тут <span class="only-78">вісім</span><span class="only-910">десять</span> предметів. Поєднай будь-які два й розкажи, який винахід вийшов. Винаходів може бути скільки завгодно!»</p>
-    <p>Нейтральна реакція на кожну ідею: «Записала! А ще?» (не «Класно!»).</p>
-  </div>
-  <div class="cols">
-    <div><div class="lbl">Що робиш ти</div><ol>
-      <li><span class="kbd">Старт</span> → екран «Подумай…» з пісочним годинником, 15 с (ідеї ще не рахуються). Дитина готова раніше — <span class="kbd">Далі</span>.</li>
-      <li>Шкарпетка, 90 с: на кожну нову ідею — <span class="kbd">+1</span> або <b>пробіл</b>. Помилилась — <span class="kbd">Стерти</span>. Повтор тієї самої ідеї не рахуй.</li>
-      <li>Майстерня, 90 с (після такої самої паузи): дитина називає два предмети й винахід → клікни обидва предмети на екрані → <span class="kbd">Записати</span>. Пара з’явиться на «полиці винаходів».</li>
-      <li>Час вийшов або ідеї закінчились — <span class="kbd">Далі</span>.</li></ol>
-      <p class="note">Що рахує гра: кількість ідей і винаходів, скільки різних предметів використано (гнучкість) і скільки пар неочевидні (оригінальність). На екрані цього не видно.</p></div>
-    <div class="dont"><div class="lbl">Не кажи / не роби</div><ul>
-      <li>Не кажи «Класно!», «Оригінально!» — тільки «Записала! А ще?».</li>
-      <li>Не пропонуй своїх ідей-прикладів і не підказуй, які предмети ще не використано.</li>
-      <li>Не відкидай «дивні» ідеї — рахується все.</li></ul></div>
-  </div>
-  <div class="bridge">Місток: <q>«Генератор ідей отримує зірку! Залишилось останнє, найхитріше випробування — сейф».</q></div>
-  <div class="ifs">
-    <div><b>Якщо соромиться:</b> «Можна навіть найсмішніші ідеї. Що б зробив твій герой?»</div>
-    <div><b>Якщо дуже швидко:</b> просто натискай +1, не гальмуй.</div>
-    <div><b>Якщо замовкла:</b> почекай 5–7 с, потім «А якщо шкарпетка величезна? А якщо крихітна?» / «А якщо поєднати щось із парасолькою?» — без готової ідеї.</div>
-    <div><b>Якщо просить допомоги:</b> «Подумай, де це могло б знадобитися: вдома, на вулиці, в казці?»</div>
-  </div>
-</section>
-
-<!-- ============ 7. СЕЙФ ============ -->
-<section class="stage">
-  <div class="stage-head"><span class="ico">🛡️</span><h2>Станція 7. Наполегливість — «Сейф, що не здається»</h2><span class="time">5 хв</span></div>
-  <div class="say"><div class="lbl">Скажи дитині</div>
-    <p>«Цей сейф не любить здаватися. Називай фрукти, а сейф підкаже кольорами: зелений — фрукт на своєму місці, жовтий — він є в коді, але в іншому місці, сірий — його в коді немає».</p>
-    <p>«Фрукти в коді не повторюються. Якщо захочеш підказку або відпочити — просто скажи».</p>
-  </div>
-  <div class="cols">
-    <div><div class="lbl">Що робиш ти</div><ol>
-      <li><span class="kbd">Старт</span> — загальний таймер 5 хв.</li>
-      <li>Клікай фрукти в тому порядку, як каже дитина → <span class="kbd">Перевірити</span>. <span class="kbd">Стерти</span> — прибрати останній.</li>
-      <li><span class="kbd">🗝️</span> (підказка) — тільки якщо дитина сама попросила. Один раз на замок.</li>
-      <li><span class="kbd">⏹</span> (завершити станцію) — тільки якщо дитина сама каже, що далі не хоче.</li>
-      <li>Відкрила замок 1 → <span class="kbd">Далі</span> → замок 2 (бонус).</li></ol></div>
-    <div class="dont"><div class="lbl">Не кажи / не роби</div><ul>
-      <li>Не пропонуй підказку сама і не питай «Може, зупинимось?».</li>
-      <li>Не пояснюй, який фрукт куди ставити.</li>
-      <li>Не зітхай і не квап дитину.</li></ul></div>
-  </div>
-  <div class="bridge">Місток: <q>«Незламний герой отримує корону! Ти пройшов(-ла) всі сім станцій!»</q></div>
-  <div class="ifs">
-    <div><b>Якщо соромиться:</b> «Можеш показувати фрукти пальцем на екрані».</div>
-    <div><b>Якщо дуже швидко:</b> «Подивись на кольори минулих спроб» — один раз.</div>
-    <div><b>Якщо втомилась / засмутилась:</b> «Ти вже стільки спроб зробив(-ла) — це і є суперсила». Хоче зупинитись — <span class="kbd">⏹</span>.</div>
-    <div><b>Якщо просить допомоги:</b> «Дякую, що сказав(-ла)! Попросити допомоги — теж суперсила» → <span class="kbd">🗝️</span>.</div>
-  </div>
-</section>
-
-<!-- ============ БАТАРЕЙКИ ============ -->
-<section class="stage">
-  <div class="stage-head"><span class="ico">🔋</span><h2>Батарейки суперсил</h2><span class="time">3 хв</span></div>
-  <div class="say"><div class="lbl">Скажи дитині</div>
-    <p>«У кожної суперсили є батарейка. Як ти думаєш, скільки в ній поділок — одна, дві чи три? Тут немає правильної відповіді — мені цікава твоя думка».</p>
-    <p>Наприклад: «Увага — це помічати деталі. Скільки поділок у твоєї уваги?»</p>
-  </div>
-  <div class="cols">
-    <div><div class="lbl">Що робиш ти</div><ol>
-      <li>По черзі називай суперсилу з поясненням.</li>
-      <li>Клікай поділку, яку назвала дитина (повторний клік зменшує).</li>
-      <li><span class="kbd">Далі</span> — фінал.</li></ol></div>
-    <div class="dont"><div class="lbl">Не кажи / не роби</div><ul>
-      <li>Не кажи «А мені здається, у тебе більше / менше».</li>
-      <li>Не нагадуй, як ішло на станції.</li></ul></div>
-  </div>
-  <div class="bridge">Місток: <q>«А тепер — подивимось на твого героя в повному костюмі!»</q></div>
-  <div class="ifs">
-    <div><b>Якщо соромиться:</b> «Покажи на пальцях: один, два чи три».</div>
-    <div><b>Якщо всюди ставить 3:</b> приймай без коментарів.</div>
-    <div><b>Якщо втомилась:</b> називай швидше, без пояснень.</div>
-    <div><b>Якщо просить допомоги:</b> «Як ти почувався(-лася), коли це робив(-ла)? Легко чи важко?»</div>
-  </div>
-</section>
-
-<!-- ============ ФІНАЛ ============ -->
-<section class="stage">
-  <div class="stage-head"><span class="ico">🏆</span><h2>Фінал</h2><span class="time">3 хв</span></div>
-  <div class="say"><div class="lbl">Скажи дитині</div>
-    <p>«Дивись, який у тебе герой! Ти пройшов(-ла) усі сім випробувань Майстерні. Твоя найяскравіша суперсила сьогодні — [титул з екрана]. Мені дуже сподобалось, як ти [конкретне зусилля: не здавався(-лася) біля сейфа / вигадував(-ла) винаходи]. Дякую тобі!»</p>
-  </div>
-  <div class="cols">
-    <div><div class="lbl">Що робиш ти</div><ol>
-      <li>Дай подивитися на героя, порадійте разом.</li>
-      <li>Попрощайся з дитиною.</li>
-      <li><b>Зупини демонстрацію екрана.</b></li>
-      <li>«Звіт для батьків» — відкривається з першого кліку.</li></ol></div>
-    <div class="dont"><div class="lbl">Не кажи / не роби</div><ul>
-      <li>Не називай рівні, бали, слабкі місця.</li>
-      <li>Не натискай «Звіт для батьків», поки йде демонстрація.</li></ul></div>
-  </div>
-  <div class="bridge">Місток до батьків: <q>«Зараз я підготую для батьків Карту суперсил — там видно, що вже сильне і що будемо тренувати».</q></div>
-  <div class="ifs">
-    <div><b>Якщо соромиться:</b> просто покажи героя — слова не обов’язкові.</div>
-    <div><b>Якщо питає «А я переміг(-ла)?»:</b> «Ти пройшов(-ла) всі випробування — це і є перемога».</div>
-    <div><b>Якщо втомилась:</b> скороти фінал до однієї фрази й подяки.</div>
-    <div><b>Якщо питає про рівні:</b> «Твій герой зібрав повний костюм — це головне».</div>
-  </div>
-</section>
-
-<div class="card">
-  <h2>📄 Після уроку: звіт для батьків</h2>
-  <ol>
-    <li>Переконайся, що демонстрацію зупинено, і натисни «Звіт для батьків».</li>
-    <li>Звіт складається автоматично: підсумок, профіль (радар і таблиця), розгорнуто по кожній навичці з ідеями вправ удома, стиль роботи, самооцінка, рекомендації й методологічна примітка. Пропущені станції позначено «Не оцінено».</li>
-    <li>«Зберегти PDF» → у вікні друку обери «Зберегти як PDF», формат A4 (2–3 сторінки).</li>
-    <li>«Завантажити дані (JSON)» — збережи файл: він потрібен для калібрування порогів і для повторного порівняння.</li>
-    <li>Якщо налаштовано Google Таблицю, результати надсилаються туди самі. Унизу звіту — «Надіслано в таблицю ✓» або «Не надіслано — повторити» (тоді перевір інтернет і натисни «повторити»).</li>
-    <li>Якщо дитина вже проходила діагностику — «Порівняти з попередньою» і обери її старий JSON: у таблиці з’явиться «було → стало», на радарі — друга лінія.</li>
-    <li>Обговорюючи з батьками, починай із сильних навичок, потім — зони росту й план курсу. Рівні — це результат однієї гри, а не вікова норма.</li>
-  </ol>
-</div>
-
-<div class="card legend-card">
-  <h2>🔢 Легенда кодів «Що зникло?»</h2>
-  <p class="note">Кнопки <span class="kbd">1</span>–<span class="kbd">12</span> у панелі закріплені за предметами й однакові на кожному уроці. Дитина цих номерів не бачить.</p>
-  <div class="legend-grid">
-    <table class="legend-t">
-      <tr><td>1</td><td>🍎</td><td>яблуко</td></tr><tr><td>2</td><td>🧸</td><td>ведмедик</td></tr><tr><td>3</td><td>🚗</td><td>машинка</td></tr>
-      <tr><td>4</td><td>🎈</td><td>кулька</td></tr><tr><td>5</td><td>⚽</td><td>м’яч</td></tr><tr><td>6</td><td>🐟</td><td>рибка</td></tr>
-    </table>
-    <table class="legend-t">
-      <tr><td>7</td><td>📕</td><td>книжка</td></tr><tr><td>8</td><td>✏️</td><td>олівець</td></tr><tr><td>9</td><td>☂️</td><td>парасолька</td></tr>
-      <tr><td>10</td><td>🎩</td><td>капелюх</td></tr><tr><td>11</td><td>🔑</td><td>ключ</td></tr><tr><td>12</td><td>🕰️</td><td>годинник</td></tr>
-    </table>
-  </div>
-  <p class="note">Якщо в CONFIG змінять список <code>stations.memory.items</code>, онови й цю легенду.</p>
-</div>
-
-</div>
+<div class="wrap" id="out"></div>
+<script src="config.js"></script>
+<script src="core.js"></script>
 <script>
-(function () {
-  var KEY = 'majsternia-scenariy-group';
-  function setG(g) {
-    document.body.className = 'g' + g;
-    document.querySelectorAll('.switch button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.g === g ? 'true' : 'false'); });
-    document.getElementById('grpname').textContent = '· ' + (g === '78' ? '7–8 років' : '9–10 років');
-    try { localStorage.setItem(KEY, g); } catch (e) {}
-  }
-  document.querySelectorAll('.switch button').forEach(function (b) { b.addEventListener('click', function () { setG(b.dataset.g); }); });
-  var saved = null; try { saved = localStorage.getItem(KEY); } catch (e) {}
-  setG(saved === '910' ? '910' : '78');
-})();
+/* Статичний сценарій: усі тексти беруться з config.js, тож не розходяться з пультом і грою. */
+let G = '78', VER = 'A';
+try { G = localStorage.getItem('ostriv-scen-g') || '78'; VER = localStorage.getItem('ostriv-scen-v') || 'A'; } catch (e) { }
+const E = s => esc(String(s ?? '')).replace(/\{([^{}|]*)\|([^{}|]*)\}/g, '$1($2)');   // рід: «мріяв(ла)» — вчитель обирає форму
+const P = v => pick78(v, G);
+const STEPS = {
+  hero: ['pick'], emotions: ['intro', 'frames', 'calmReady', 'calm'], safe: ['intro', 'trial', 'play', 'opened'],
+  money: { '78': ['intro', 'buy', 'sell', 'evening'], '910': ['intro', 'day', 'sell910', 'evening910'] },
+  hike: { '78': ['intro', 'pack', 'bridge'], '910': ['intro', 'plan', 'rain', 'replan'] },
+  bob: { '78': ['intro', 'talk', 'trade', 'bye'], '910': ['intro', 'talk', 'trade', 'haggle', 'bye'] },
+  playground: { '78': ['intro', 'judge', 'rules'], '910': ['intro', 'piles', 'compromise'] },
+  radio: { '78': ['intro', 'q', 'ask'], '910': ['intro', 'q', 'ask', 'opinion'] }, final: ['batteries', 'crown']
+};
+const CODES = { emotions: ['calm'], bob: G => (G === '910' ? ['bobTalk', 'bobHaggle'] : ['bobTalk']), playground: G => (G === '78' ? ['judge'] : []), radio: G => (G === '910' ? ['radioAnswer', 'radioAsk', 'radioOpinion'] : ['radioAnswer', 'radioAsk']) };
+function codesTable(key) {
+  const c = CONFIG.codes[key];
+  return `<h3>Коди: ${E(c.title)}</h3><table><tr><th style="width:34%">Код на пульті</th><th>Приклади відповідей</th></tr>${c.items.map(i => `<tr><td><b>${E(i.label)}</b></td><td>${(i.ex || []).map(E).join('<br>')}</td></tr>`).join('')}</table>`;
+}
+function contentBlock(key) {
+  const V = CONFIG.versions[VER][key] || {}, C = Object.assign({}, V, V[G] || {});
+  if (key === 'emotions') return G === '78'
+    ? `<h3>Комікси (вчитель читає підписи)</h3><ul>${C.comics.map(c => `<li><b>${E(c.title)}:</b> ${c.frames.map(f => E(f.caption)).join(' → ')}</li>`).join('')}</ul>`
+    : `<h3>Історії (дитина читає сама)</h3><ul>${C.cases.map(c => `<li><b>${E(c.title)}.</b> ${E(c.text)}<br><span class="note">${c.frames.map(f => E(f.question)).join(' / ')}</span></li>`).join('')}</ul>`;
+  if (key === 'safe') return `<p class="note"><b>Пробна спроба:</b> перед справжнім сейфом — маленький замок на ${C.trial.slots} місця з ${C.trial.fruits.length} фруктів (${C.trial.fruits.join(' ')}). Розв’язуєте разом, можна пояснювати кольори; не оцінюється, без таймера. Потім — замок 1 (${C.locks[0].slots} місця з ${C.locks[0].fruits.length} фруктів) і бонусний замок 2. Таймер станції — ${CONFIG.thresholds.safe.totalSec / 60} хв. «Застрягла» = 3 спроби поспіль без нового зеленого.</p>`;
+  if (key === 'money') return G === '78'
+    ? `<p class="note">${E(C.title)}: ${C.budget} монет. Товари: ${C.goods.map(g => `${g.e} ${E(g.name)} (${g.price})`).join(', ')}. Увечері: скарбничка на ${E(C.goal.name.toLowerCase())} (${C.goal.price}) і ${E(C.shelf.name.toLowerCase())} (${C.shelf.price}).</p>`
+    : `<p class="note">${E(C.title)}: старт ${C.start} грн, оренда ${C.rent} грн/день, ціль — ${E(C.goal.name.toLowerCase())} за ${C.goal.price} грн. Погода по днях: ${C.weather.map(w => CONFIG.weatherNames[w].name.toLowerCase()).join(', ')}. Пастка: ${E(C.trap.name)} (${C.trap.price} грн).</p>`;
+  if (key === 'hike') return G === '78'
+    ? `<p class="note">Прогноз: ${E(C.forecast.text)}. Речі: ${C.items.map(i => E(i.name.toLowerCase())).join(', ')}. Шляхи: ${C.routes.map(r => `${E(r.name.toLowerCase())} (${r.suns}☀️)`).join(', ')}.</p>`
+    : `<p class="note">Справи: ${C.blocks.map(b => `${E(b.name.toLowerCase())} (${b.dur} год)`).join(', ')}. Правила: ${Object.values(C.rules).map(E).join('; ')}. Несподіванка: ${E(C.rain.text)}.</p>`;
+  if (key === 'bob') return `<p class="note">Потрібна ${E(C.need.name)}. Бажання Боба: «${E(C.wish.text)}» Рюкзак: ${C.items.map(i => E(i.name.toLowerCase())).join(', ')}. Після двох «Вимагає» Боб іде; максимум ${C.maxReplies} реплік. Плащ Боб дарує за будь-якого результату.</p>`;
+  if (key === 'playground') return G === '78'
+    ? `<p class="note">Суперечка за ${E(C.judge.about)}: Мія — «${E(C.judge.mia)}», Тім — «${E(C.judge.tim)}». Картки правил: ${C.cards.map(c => `«${E(c.text)}»`).join(', ')}.</p>`
+    : `<p class="note">Фрази: ${C.phrases.map(p => `«${E(p.text)}»`).join(' ')} Бажання: Котики — ${E(C.teams.cats.wishes.join(', ').toLowerCase())}; Лисички — ${E(C.teams.foxes.wishes.join(', ').toLowerCase())}.</p>`;
+  if (key === 'radio') return `<h3>Питання</h3><ol>${C.questions.map(q => `<li>${E(q)}</li>`).join('')}</ol>${G === '910' ? `<p class="note">Теми «Думки за 30 секунд»: ${C.topics.map(t => `«${E(t)}»`).join(', ')}.</p>` : ''}`;
+  return '';
+}
+function vars(key) {
+  const V = CONFIG.versions[VER][key] || {}, C = Object.assign({}, V, V[G] || {});
+  const v = { title: '[назва комікса]', caption: '[підпис кадру]', question: '[питання]', n: '[номер дня]', text: '' };
+  if (key === 'hike' && G === '78') v.text = C.forecast.text;
+  if (key === 'bob') v.text = C.need ? C.need.name : '';
+  if (key === 'playground' && G === '78') v.text = C.judge.about;
+  return v;
+}
+function station(key) {
+  const L = CONFIG.locations[key], steps = P(STEPS[key]), sc = CONFIG.script[key], sk = CONFIG.skills.find(s => s.key === key);
+  const stepsHtml = steps.map(st => { const x = sc[st]; if (!x) return ''; const vv = key === 'bob' && st === 'haggle' ? { text: (CONFIG.versions[VER].bob.lines || {}).haggle } : vars(key);
+    return `<div class="step"><div class="say">${E(fill(P(x.say), vv))}</div><div class="cols"><div><div class="lbl">Що робиш ти</div>${E(fill(P(x.do), vv))}</div>${x.dont ? `<div class="dont"><div class="lbl" style="color:var(--red)">Не кажи / не роби</div>${E(P(x.dont))}</div>` : '<div></div>'}</div></div>`; }).join('');
+  const codes = (typeof CODES[key] === 'function' ? CODES[key](G) : CODES[key] || []).map(codesTable).join('');
+  const probes = sk ? `<p class="note">Навичка: <b>${E(sk.area)}</b>. Проби: ${probeNames(key, G).filter(p => p !== '—').map(E).join(' · ')}.</p>` : '';
+  return `<div class="card"><div class="st-head"><span class="ic">${L.icon}</span><h2>${E(L.name)}</h2><span class="time">${L.minutes} хв</span></div>${probes}${contentBlock(key)}${stepsHtml}${codes}
+    ${key !== 'hero' && key !== 'final' ? `<div class="step"><div class="say">${E(CONFIG.script.done.say)}</div><div class="note">Після кожної локації: ${E(CONFIG.script.done.do)} Предмет костюма видається завжди, навіть якщо станцію пропущено.</div></div>` : ''}</div>`;
+}
+function render() {
+  document.querySelectorAll('#swg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.g === G));
+  document.querySelectorAll('#swv button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === VER));
+  document.getElementById('cur').textContent = `· ${CONFIG.groups[G].label} · ${CONFIG.versionsMeta[VER]}`;
+  const timing = CONFIG.order.map(k => `<tr><td>${CONFIG.locations[k].icon} ${E(CONFIG.locations[k].name)}</td><td>${CONFIG.locations[k].minutes} хв</td></tr>`).join('');
+  const total = CONFIG.order.reduce((a, k) => a + CONFIG.locations[k].minutes, 0);
+  document.getElementById('out').innerHTML = `
+  <div class="card"><h2>Таймінг</h2><table>${timing}<tr><td><b>Разом</b></td><td><b>${total} хв + запас до ${CONFIG.planMinutes}</b></td></tr></table></div>
+  <div class="card"><h2>Загальні правила</h2><ul>
+    <li>Нейтральні фрази: «Записала», «Дякую, далі», «Прийнято», «Цікаво!».</li>
+    <li>Не підказуй і не повторюй відповідь дитини оцінною інтонацією.</li>
+    <li>Не порівнюй з іншими дітьми.</li>
+    <li>«Дитина попросила підказку» і «Дитина зупинилась» — лише з ініціативи дитини.</li>
+    <li>Хвали зусилля, а не результат. Під час уроку на пульті немає балів — вони з’являться лише у звіті.</li>
+    <li>Тексти зі словами на кшталт «мріяв(ла)» читай у роді дитини.</li></ul></div>
+  <div class="card"><h2>Технічна пам’ятка</h2><ol>
+    <li>Відкрий <b>pult.html</b> — це пульт, його дитина не бачить.</li>
+    <li>Заповни налаштування: ім’я дитини (без прізвища), своє ім’я, групу, вік, стать і версію (А — вхідна, Б — повторна).</li>
+    <li>Натисни «Відкрити вікно гри». Якщо браузер його заблокував — дозволь спливні вікна або відкрий index.html вручну в тому самому браузері.</li>
+    <li>Коли на пульті «Вікно гри підключено», у Zoom демонструй <b>тільки вікно «Острів суперсил»</b>, не весь екран. Щоб у грі був звук, один раз клікни у вікні гри до демонстрації.</li>
+    <li>Гарячі клавіші пульта: Enter — «Далі», пробіл — «+1 спосіб» у Кіностудії, Ctrl+Z — «Стерти останнє».</li>
+    <li>Після фіналу звіт для батьків відкривається на пульті. Там же — «Зберегти PDF».</li></ol></div>
+  ${CONFIG.order.map(station).join('')}`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.g) G = b.dataset.g; if (b.dataset.v) VER = b.dataset.v;
+  try { localStorage.setItem('ostriv-scen-g', G); localStorage.setItem('ostriv-scen-v', VER); } catch (er) { }
+  render();
+});
+render();
 </script>
 </body>
 </html>

@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Пульт вчителя — не демонструвати</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=Unbounded:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1E2A5A;--muted:#5B6690;--line:#DCE0EA;--soft:#F4F6FB;--accent:#6C4DFF;--red:#C8323C;--yellow:#FFC93C;
+  --head:'Unbounded','Arial Black',system-ui,sans-serif;--text:'Golos Text',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:#EEF1F7;color:var(--navy);font:15px/1.45 var(--text)}
+button{font-family:inherit;color:inherit}
+.hdr{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:14px;padding:10px 18px;background:#fff;border-bottom:1px solid var(--line)}
+.hdr h1{font:700 16px var(--head);margin:0}
+.hdr .warn{font-size:12px;font-weight:700;color:var(--red);border:1.5px solid var(--red);border-radius:6px;padding:1px 6px}
+.conn{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700}
+.conn i{width:10px;height:10px;border-radius:50%;background:#C8323C}
+.conn.on i{background:#1F9D63}
+details.memo{font-size:13px;margin-left:auto}
+details.memo summary{cursor:pointer;font-weight:700}
+details.memo div{position:absolute;right:70px;top:44px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;max-width:420px;box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.menu{position:relative}
+.menu .pop{position:absolute;right:0;top:36px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.12);padding:8px;display:flex;flex-direction:column;gap:6px;min-width:260px;z-index:20}
+.b{font:600 14px/1.1 var(--text);padding:9px 14px;border:1.5px solid var(--navy);border-radius:10px;background:#fff;cursor:pointer;text-align:left}
+.b:hover{background:var(--soft)}
+.b.primary{background:var(--navy);color:#fff}
+.b.big{font-size:17px;padding:14px 22px}
+.b.sel{background:#EEEBFF;border-color:var(--accent);outline:2px solid var(--accent)}
+.b:disabled{opacity:.4;cursor:not-allowed}
+.b.arm{background:#FFE7A8}
+.b.ghost{border-color:#B8BFD4;color:var(--muted)}
+.wrap{max-width:1280px;margin:0 auto;padding:16px 18px 40px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.setup{max-width:720px;margin:20px auto;display:flex;flex-direction:column;gap:12px}
+.frow{display:grid;grid-template-columns:170px 1fr;align-items:center;gap:12px}
+.frow label,.frow .l{font-weight:700}
+.inp{font:600 16px var(--text);padding:8px 12px;border:1.5px solid var(--navy);border-radius:10px;width:100%}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.lesson{display:grid;grid-template-columns:230px minmax(0,1fr);gap:16px;align-items:start}
+.stages{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.stg{display:flex;justify-content:space-between;gap:6px;padding:6px 8px;border-radius:8px}
+.stg.cur{background:#EEEBFF;font-weight:700}
+.stg .st{font-size:12px;color:var(--muted)}
+.stg.done .st{color:#1F7A4C}.stg.skip .st{color:#9A6B00}
+.total{margin-top:8px;font-weight:800;font-size:15px}
+.say{border-left:6px solid var(--accent);background:#F6F4FF;border-radius:0 12px 12px 0;padding:12px 16px}
+.say .lbl,.lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
+.say p{font-size:21px;line-height:1.4;font-weight:600;margin:6px 0 0}
+.dodont{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px;font-size:14px}
+.dont{color:var(--red)}
+.input{margin-top:12px}
+.grid{display:flex;flex-wrap:wrap;gap:8px}
+.codes{display:flex;flex-direction:column;gap:6px}
+.ex{font-size:13px;color:var(--muted);margin:2px 0 6px 6px}
+.ex ul{margin:2px 0;padding-left:18px}
+.info{background:var(--soft);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:10px}
+.actions{position:sticky;bottom:0;display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-top:14px;padding:12px 0;background:linear-gradient(transparent,#EEF1F7 30%)}
+.timer{font:800 22px var(--head);background:var(--yellow);border:2px solid var(--navy);border-radius:999px;padding:2px 14px}
+.ft{display:inline-grid;place-items:center;width:40px;height:40px;border:2px solid var(--navy);border-radius:10px;font-size:22px;background:#fff}
+.ft.empty{border-style:dashed}
+.fb-g{background:#1F9D63}.fb-y{background:#FFC93C}.fb-x{background:#B9C0CF}
+.hrow{display:flex;gap:6px;align-items:center;margin:3px 0}
+.hours{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.hint{font-size:13px;color:var(--muted)}
+.noti{background:#FFF6DA;border:1px solid #F1D27A;border-radius:10px;padding:10px 12px;font-size:14px}
+table.batt td{padding:4px 8px}
+/* ---------- звіт ---------- */
+.rp{background:#fff;max-width:900px;margin:0 auto;padding:34px 28px 50px;font-size:15px;line-height:1.55;border:1px solid var(--line);border-radius:6px}
+.rp h1{font:700 28px var(--head);margin:4px 0 14px}
+.rp h2{font:800 18px var(--text);margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid #D5DAE6}
+.rp h3{font:700 16px var(--text);margin:0}
+.rp-brand{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B7393}
+.rp-meta{display:flex;flex-wrap:wrap;gap:8px 28px;margin:0;padding:12px 0;border-top:2px solid var(--navy);border-bottom:1px solid #D5DAE6}
+.rp-meta div{display:flex;flex-direction:column}.rp-meta dt{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#6B7393;font-weight:700}.rp-meta dd{margin:0;font-weight:600}
+.rp section{margin-top:24px}
+.rp p{margin:0 0 8px}.rp ul{margin:4px 0 8px;padding-left:20px}
+.rp-profile{display:grid;grid-template-columns:270px minmax(0,1fr);gap:20px;align-items:start}
+.rp table{width:100%;border-collapse:collapse;font-size:13px}
+.rp th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#6B7393;border-bottom:1px solid var(--navy);padding:5px}
+.rp td{border-bottom:1px solid #E3E7F0;padding:6px 5px;vertical-align:top}
+.rp td.nm{font-weight:700}
+.lv{display:inline-block;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:700;white-space:nowrap}
+.lv1{background:#EEEBFF;color:#4B36C9}.lv2{background:#C9BEFF;color:#2A1C8A}.lv3{background:#6C4DFF;color:#fff}.lv0{background:#F1F2F6;color:#6B7393}
+.dots3{color:#6C4DFF;white-space:nowrap}
+.rp-skill{border-top:1px solid #E3E7F0;padding:10px 0;break-inside:avoid}
+.rp-skill .hd{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.rp-skill dl{display:grid;grid-template-columns:170px minmax(0,1fr);gap:3px 14px;margin:4px 0 0;font-size:14px}
+.rp-skill dt{color:#6B7393;font-weight:600}.rp-skill dd{margin:0}.rp-skill dd ul{margin:0;padding-left:18px}
+.rp-note{font-size:12.5px;color:#6B7393}
+.rp-legend{display:flex;gap:14px;font-size:12px;color:#4A5378;margin-top:6px;flex-wrap:wrap}
+.radar{width:100%;height:auto}
+.rp-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:18px auto 0;max-width:900px}
+@media print{
+  @page{size:A4;margin:12mm 13mm}
+  body{background:#fff}
+  .hdr,.no-print,.actions,.lesson,.setup{display:none !important}
+  .wrap{padding:0;max-width:none}
+  .rp{border:0;padding:0;max-width:none;font-size:9.6pt;line-height:1.38}
+  .rp h1{font-size:17pt;margin:2px 0 8px}.rp h2{font-size:11.5pt;margin-bottom:5px;padding-bottom:3px;break-after:avoid}.rp h3{font-size:10pt}
+  .rp section{margin-top:12px}
+  .rp-profile{grid-template-columns:135px minmax(0,1fr);gap:10px}
+  .rp-profile table{font-size:7.4pt;table-layout:fixed}
+  .rp-profile th:nth-child(1){width:15%}.rp-profile th:nth-child(2){width:33%}.rp-profile th:nth-child(3){width:30%}.rp-profile th:nth-child(4){width:12%}.rp-profile th:nth-child(5){width:10%}
+  .lv{font-size:6.8pt;padding:0 4px}
+  .rp-legend{font-size:7pt}
+  .rp p,.rp ul{margin-bottom:4px}
+  .rp table{font-size:8pt}.rp td{padding:2px 4px;line-height:1.3}.rp th{padding:3px 4px;font-size:7.4pt}
+  .rp-skills{display:grid;grid-template-columns:1fr 1fr;column-gap:18px}
+  .rp-skill{padding:6px 0}
+  .rp-skill dl{display:block;font-size:8.5pt;margin-top:2px}
+  .rp-skill dt{display:inline;font-weight:700;color:var(--navy)}.rp-skill dt::after{content:': '}
+  .rp-skill dd{display:inline}.rp-skill dd::after{content:'';display:block;margin-bottom:1px}
+  .rp-skill dd ul{display:block;margin:0;padding-left:14px}
+  .rp tr,.rp li,.rp-skill,.rp p{break-inside:avoid}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <h1>Пульт вчителя</h1><span class="warn">не демонструвати</span>
+  <span class="conn" id="conn"><i></i><span>Вікно гри не знайдено</span></span>
+  <details class="memo"><summary>Пам’ятка</summary><div>Демонструй у Zoom <b>тільки вікно «Острів суперсил»</b> (не весь екран). Пульт — окреме вікно, дитина його не бачить. Обидва вікна мають бути відкриті в одному браузері на одному комп’ютері.</div></details>
+  <div class="menu" id="menu"></div>
+</header>
+<div class="wrap" id="app"></div>
+<script src="config.js"></script>
+<script src="hero-pixel.js"></script>
+<script src="core.js"></script>
+<script>
+let S = SYNC.load() || freshState();
+const ui = { lastPing: 0, arm: null, armT: null, menu: false, ex: {}, view: null, lastT: 0, blocked: false, undo: [] };
+const $ = q => document.querySelector(q);
+const T = s => tplG(s, S.setup.gender);
+const ctx = () => ctxOf(S, S.cur);
+const b = (attrs, label, o = {}) => `<button class="b${o.cls ? ' ' + o.cls : ''}" ${attrs}${o.disabled ? ' disabled' : ''}${o.title ? ` title="${esc(o.title)}"` : ''}>${label}</button>`;
+const act = (name, arg, label, o = {}) => b(`data-act="${name}"${arg !== undefined ? ` data-arg="${esc(arg)}"` : ''}`, label, o);
+const g = (name, label, o = {}) => b(`data-g="${name}"${o.arg !== undefined ? ` data-arg="${esc(o.arg)}"` : ''}`, label, o);
+function armed(key) {
+  if (ui.arm === key) { ui.arm = null; clearTimeout(ui.armT); return true; }
+  ui.arm = key; clearTimeout(ui.armT); ui.armT = setTimeout(() => { ui.arm = null; render(); }, 4000); return false;
+}
+const armLabel = (key, label) => (ui.arm === key ? 'Точно? Натисни ще раз' : label);
+function commit() { SYNC.publish(S); render(); }
+const connected = () => Date.now() - ui.lastPing < 2600;
+
+/* ---------- синхронізація ---------- */
+SYNC.init('pult', m => {
+  if (!m) return;
+  if (m.type === 'ping') { const was = connected(); ui.lastPing = Date.now(); if (!was) renderHeader(); }
+  if (m.type === 'hello') { ui.lastPing = Date.now(); SYNC.publish(S); renderHeader(); }
+});
+
+/* ---------- шапка ---------- */
+function renderHeader() {
+  const c = $('#conn'); c.classList.toggle('on', connected()); c.querySelector('span').textContent = connected() ? 'Вікно гри підключено' : 'Вікно гри не знайдено';
+  $('#menu').innerHTML = g('menu', '⋯', { title: 'Меню' }) + (ui.menu ? `<div class="pop">
+    ${g('reset', armLabel('reset', '↺ Нова діагностика'), { cls: ui.arm === 'reset' ? 'arm' : '' })}
+    ${g('openGame', '↗ Відкрити вікно гри ще раз')}
+    ${g('sound', S.sound ? '🔊 Звук у грі: увімкнено' : '🔇 Звук у грі: вимкнено')}</div>` : '');
+}
+
+/* ---------- налаштування ---------- */
+function viewSetup() {
+  const s = S.setup, chip = (key, val, label) => b(`data-set="${key}" data-arg="${val}"`, label, { cls: s[key] == val ? 'sel' : '' });
+  const ok = s.name.trim() && s.group && s.age && s.gender;
+  return `<div class="setup">
+    <div class="panel"><h2 style="font:700 18px var(--head);margin:0 0 12px">Налаштування уроку</h2>
+      <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="frow"><label for="f-name">Ім’я дитини</label><input class="inp" id="f-name" data-bind="name" value="${esc(s.name)}" placeholder="лише ім’я, без прізвища" maxlength="24"></div>
+      <div class="frow"><label for="f-teacher">Ім’я вчителя</label><input class="inp" id="f-teacher" data-bind="teacher" value="${esc(s.teacher)}" maxlength="40"></div>
+      <div class="frow"><span class="l">Вікова група</span><div class="chips">${chip('group', '78', '7–8 років')}${chip('group', '910', '9–10 років')}</div></div>
+      <div class="frow"><span class="l">Вік</span><div class="chips">${s.group ? CONFIG.groups[s.group].ages.map(a => chip('age', a, a)).join('') : '<span class="hint">спершу оберіть групу</span>'}</div></div>
+      <div class="frow"><span class="l">Стать</span><div class="chips">${chip('gender', 'm', 'Хлопчик')}${chip('gender', 'f', 'Дівчинка')}</div></div>
+      <div class="frow"><span class="l">Версія</span><div class="chips">${chip('version', 'A', CONFIG.versionsMeta.A)}${chip('version', 'B', CONFIG.versionsMeta.B)}</div></div>
+      </div></div>
+    <div class="panel"><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">${g('openGame', '↗ Відкрити вікно гри', { cls: connected() ? '' : 'primary' })}
+      <span class="hint">${connected() ? '✓ Вікно гри підключено. Демонструй у Zoom саме його.' : 'Відкрий вікно гри й перетягни його на екран, який демонструватимеш.'}</span></div>
+      ${ui.blocked ? `<div class="noti" style="margin-top:10px">Браузер заблокував нове вікно. Дозволь спливні вікна для цієї сторінки або відкрий гру вручну: <a href="index.html" target="ostriv-game">index.html</a> (в окремому вікні того самого браузера).</div>` : ''}</div>
+    <div style="display:flex;justify-content:flex-end">${g('start', 'Почати урок →', { cls: 'primary big', disabled: !(ok && connected()) })}</div>
+    ${!connected() ? '<div class="hint" style="text-align:right">«Почати» стане активною, коли вікно гри буде підключено.</div>' : ''}
+  </div>`;
+}
+
+/* ---------- сценарій кроку ---------- */
+function scriptOf() {
+  const key = S.cur, s = S.st[key]; if (!s) return {};
+  const c = ctx(), gr = S.setup.group;
+  let sc;
+  if (key === 'hero') sc = CONFIG.script.hero.pick;
+  else if (key === 'final') sc = CONFIG.script.final[s.step];
+  else if (s.step === 'done') sc = CONFIG.script.done;
+  else if (key === 'safe' && s.phase === 'opened') sc = CONFIG.script.safe.opened;
+  else sc = CONFIG.script[key][s.step];
+  sc = sc || {};
+  const vars = {};
+  if (key === 'emotions' && s.step === 'frames') { const f = emFrames(c)[s.fi]; Object.assign(vars, { title: f.title, caption: T(f.caption || ''), question: T(f.question || '') }); }
+  if (key === 'money') vars.n = (s.day || 0) + 1;
+  if (key === 'hike' && gr === '78') vars.text = c.C.forecast.text;
+  if (key === 'bob') vars.text = s.step === 'haggle' ? c.C.lines.haggle : c.C.need.name;
+  if (key === 'playground' && gr === '78') vars.text = c.C.judge.about;
+  if (key === 'radio' && s.step === 'q') vars.question = T(c.C.questions[s.qi]);
+  const P = v => T(fill(pick78(v, gr) || '', vars));
+  return { say: P(sc.say), do: P(sc.do), dont: P(sc.dont) };
+}
+function codesBlock(key, buttonsFn) {
+  const C = CONFIG.codes[key], open = ui.ex[key];
+  return `<div class="codes"><div class="lbl">${esc(C.title)}</div>${C.note ? `<div class="hint">${esc(C.note)}</div>` : ''}<div class="grid">${C.items.map(buttonsFn).join('')}</div>
+    <div>${b(`data-g="ex" data-arg="${key}"`, open ? 'Сховати приклади' : 'Приклади', { cls: 'ghost' })}</div>
+    ${open ? `<div class="ex">${C.items.map(it => `<div><b>${esc(T(it.label))}:</b> ${(it.ex || []).map(e => esc(T(e))).join(' · ')}</div>`).join('')}</div>` : ''}</div>`;
+}
+function timerHTML(ends) { return ends ? `<span class="timer" data-ends="${ends}">${fmtTime(Math.ceil((ends - Date.now()) / 1000))}</span>` : ''; }
+
+/* ---------- блоки введення за станціями ---------- */
+const IN = {};
+IN.hero = () => `<div class="lbl">Герой</div><div class="grid">${CONFIG.heroes.map(h => act('head', h.id, h.name, { cls: S.hero.head === h.id ? 'sel' : '' })).join('')}</div>
+  <div class="lbl" style="margin-top:10px">Колір шарфика</div><div class="grid">${CONFIG.capes.map(c => act('cape', c.id, `<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${c.color};border:1px solid #1E2A5A;vertical-align:-2px"></span> ${c.name}`, { cls: S.hero.cape === c.id ? 'sel' : '' })).join('')}</div>`;
+IN.emotions = s => {
+  const c = ctx(), F = emFrames(c);
+  if (s.step === 'frames') {
+    const f = F[s.fi], list = c.C.emotions.concat(f.extra || []), ch = s.ans[s.fi] || [];
+    const info = S.setup.group === '78' ? `Комікс «${esc(f.title)}», кадр ${f.fi + 1} з ${f.n}: <b>${esc(T(f.caption))}</b>` : `Історія «${esc(f.title)}», питання ${f.fi + 1} з ${f.n}: <b>${esc(T(f.question))}</b><br><span class="hint">${esc(T(f.text))}</span>`;
+    return `<div class="info">${info} · кадр ${s.fi + 1} з ${F.length}</div><div class="lbl">Емоція, яку назвала дитина (1 або 2)</div>
+      <div class="grid">${list.map(id => act('pick', id, CONFIG.emotionNames[id], { cls: ch.includes(id) ? 'sel' : '' })).join('')}</div>
+      <div style="margin-top:10px">${act('prev', undefined, '← Попередній кадр', { disabled: s.fi === 0 })}</div>`;
+  }
+  if (s.step === 'calmReady' || s.step === 'calm') return `${s.step === 'calm' ? `<div class="info">Час: ${timerHTML(s.calm.endsAt)} · записано способів: <b>${s.calm.n}</b></div>` : ''}
+    ${codesBlock('calm', it => it.id === 'plus' ? act('plus', undefined, '+1 спосіб <span class="hint">(пробіл)</span>', { cls: 'big', disabled: s.step !== 'calm' }) : act('none', undefined, 'Не знає'))}`;
+  return '';
+};
+IN.safe = s => {
+  const c = ctx();
+  const hist = atts => atts.map((a, k) => `<div class="hrow">${k + 1}. ${a.guess.map((f, i) => `<span class="ft ${({ green: 'fb-g', yellow: 'fb-y', grey: 'fb-x' })[a.fb[i]]}">${f}</span>`).join('')}</div>`).join('');
+  if (s.step === 'trial') {
+    const t = s.trial;
+    return `<div class="info">Пробний замок (не оцінюється): ${Array.from({ length: c.C.trial.slots }, (_, i) => `<span class="ft${t.guess[i] ? '' : ' empty'}">${t.guess[i] || ''}</span>`).join(' ')} ${t.opened ? ' — відкрито' : ''}</div>
+      <div class="grid">${c.C.trial.fruits.map(f => act('fruit', f, f, { cls: 'big' })).join('')}</div>
+      <div class="grid" style="margin-top:8px">${act('check', undefined, 'Перевірити', { cls: 'primary', disabled: t.guess.length !== c.C.trial.slots })}${act('erase', undefined, 'Стерти фрукт')}</div>${hist(t.attempts)}`;
+  }
+  if (s.step !== 'play') return '';
+  if (s.phase === 'opened') return `<div class="info">Замок 1 відкрито. Час: ${timerHTML(s.endsAt)}</div><div class="grid">${act('stop', undefined, 'Дитина зупинилась')}</div>`;
+  const L = c.C.locks[s.lock], lk = s.locks[s.lock];
+  const guess = Array.from({ length: L.slots }, (_, i) => lk.hint && lk.hint.pos === i ? `<span class="ft fb-g">${lk.hint.fruit}</span>` : `<span class="ft${s.guess[i] ? '' : ' empty'}">${s.guess[i] || ''}</span>`).join(' ');
+  const full = Array.from({ length: L.slots }, (_, i) => (lk.hint && lk.hint.pos === i) || s.guess[i]).every(Boolean);
+  let h = ''; s.locks.forEach((l, li) => { h += `<div class="lbl" style="margin-top:6px">Замок ${li + 1}</div>` + hist(l.attempts); });
+  return `<div class="info">Замок ${s.lock + 1}${s.lock ? ' (бонус)' : ''} · час ${timerHTML(s.endsAt)} · спроба: ${guess}</div>
+    <div class="grid">${L.fruits.map(f => act('fruit', f, f, { cls: 'big' })).join('')}</div>
+    <div class="grid" style="margin-top:8px">${act('check', undefined, 'Перевірити', { cls: 'primary', disabled: !full })}${act('erase', undefined, 'Стерти фрукт')}
+      ${act('hint', undefined, 'Дитина попросила підказку', { disabled: !!lk.hint })}${act('stop', undefined, 'Дитина зупинилась')}</div>
+    <div class="hint" style="margin-top:6px">«Підказку» й «зупинилась» — лише з ініціативи дитини.</div>${h}`;
+};
+IN.money = s => {
+  const c = ctx(), C = c.C;
+  if (S.setup.group === '78') {
+    if (s.step === 'buy') return `<div class="info">У гаманці: ${C.budget - ST.money.spent78(s, C)} з ${C.budget} монет</div><div class="lbl">Товари (клік — купити / повернути)</div>
+      <div class="grid">${C.goods.map(gd => act('toggle', gd.id, `${gd.e} ${gd.name} · ${gd.price} мон.`, { cls: s.cart.includes(gd.id) ? 'sel' : '' })).join('')}</div>`;
+    if (s.step === 'sell') return `<div class="info">Виручка: ${s.revenue} монет. Увечері буде ${s.coins} монет.</div>`;
+    if (s.step === 'evening') return `<div class="info">Гаманець: <b>${s.coins}</b> · скарбничка (${C.goal.name.toLowerCase()}, ${C.goal.price}): <b>${s.piggy}</b> · ${C.shelf.name.toLowerCase()} (${C.shelf.price}): <b>${s.shelf}</b></div>
+      <div class="grid">${act('piggy', undefined, `+1 у скарбничку (${C.goal.name.toLowerCase()})`, { cls: 'big', disabled: !s.coins })}${act('shelf', undefined, `+1 на ${C.shelf.name.toLowerCase()}`, { cls: 'big', disabled: !s.coins || s.shelf >= C.shelf.price })}</div>`;
+    return '';
+  }
+  const d = s.days[s.day] || {};
+  const top = `<div class="info">День ${s.day + 1} з ${C.weather.length} · ${CONFIG.weatherNames[d.weather || C.weather[0]].name} · гаманець: <b>${s.wallet} грн</b> · скарбничка: <b>${s.piggy} грн</b> · запас: ${C.ingredients.map(i => `${i.name.toLowerCase()} ${s.inv[i.id]} дн.`).join(', ')}</div>`;
+  if (s.step === 'day') return top + `<div class="lbl">Закупівля</div><div class="grid">${C.ingredients.flatMap(i => [act('buy', i.id + ':small', `${i.e} ${i.name}: звичайна (${i.small.days} дн.) · ${i.small.price} грн`), act('buy', i.id + ':big', `${i.e} ${i.name}: велика (${i.big.days} дн.) · ${i.big.price} грн`)]).join('')}
+      ${act('trap', undefined, `${C.trap.e} ${C.trap.name} · ${C.trap.price} грн`, { cls: d.trap ? 'sel' : '' })}</div>
+      <div class="lbl" style="margin-top:10px">Ціна склянки</div><div class="grid">${C.prices.map(p => act('price', p, `${p} грн`, { cls: d.price === p ? 'sel' : '' })).join('')}</div>
+      <div class="hint" style="margin-top:6px">Оренда ${C.rent} грн списується автоматично на початку дня.</div>`;
+  if (s.step === 'sell910') return top + `<div class="info">Покупців: ${d.customers}, виручка ${d.revenue} грн${d.noIngr ? ' (бракувало інгредієнтів)' : ''}.</div>`;
+  if (s.step === 'evening910') return top + `<div class="lbl">Що вирішила дитина</div><div class="grid">${[['all', 'Відкласти весь прибуток'], ['half', 'Відкласти половину'], ['none', 'Нічого не відкладати']].map(([k, l]) => act('save', k, l, { cls: d.save === k ? 'sel' : '' })).join('')}</div>`;
+  return '';
+};
+IN.hike = s => {
+  const c = ctx(), C = c.C;
+  if (S.setup.group === '78') {
+    if (s.step === 'pack') return `<div class="info">Прогноз: ${C.forecast.e} ${esc(C.forecast.text)} · у рюкзаку ${s.pack.length} з ${C.pockets}</div><div class="grid">${C.items.map(i => act('item', i.id, `${i.e} ${i.name}`, { cls: s.pack.includes(i.id) ? 'sel' : '' })).join('')}</div>`;
+    if (s.step === 'bridge') return `<div class="info">До темряви: ${'☀️'.repeat(C.sunsLeft)}</div><div class="grid">${C.routes.map(r => act('route', r.id, `${r.e} ${r.name} · ${'☀️'.repeat(r.suns)}${r.danger ? ' · ⚠️' : ''}`, { cls: s.route === r.id ? 'sel' : '' })).join('')}</div>`;
+    return '';
+  }
+  if (s.step !== 'plan' && s.step !== 'replan') return '';
+  const placed = C.blocks.filter(bl => s.plan[bl.id] !== undefined), pool = C.blocks.filter(bl => s.plan[bl.id] === undefined);
+  return `<div class="lbl">1. Справа</div><div class="grid">${pool.map(bl => act('sel', bl.id, `${bl.e} ${bl.name} · ${bl.dur} год`, { cls: s.sel === bl.id ? 'sel' : '' })).join('') || '<span class="hint">усі справи в розкладі</span>'}</div>
+    <div class="lbl" style="margin-top:10px">2. Година початку</div><div class="hours">${C.hours.map(h => act('place', h, `${String(h).padStart(2, '0')}:00`, { disabled: !s.sel })).join('')}</div>
+    <div class="lbl" style="margin-top:10px">У розкладі (клік — прибрати)</div><div class="grid">${placed.sort((x, y) => s.plan[x.id] - s.plan[y.id]).map(bl => act('remove', bl.id, `${String(s.plan[bl.id]).padStart(2, '0')}:00 ${bl.e} ${bl.name}`)).join('') || '<span class="hint">порожньо</span>'}</div>`;
+};
+IN.bob = s => {
+  const c = ctx(), C = c.C, line = T(ST.bob.lineText(s, C));
+  const top = `<div class="info">Боб каже: «${esc(line)}» · реплік: ${s.replies.length} з ${C.maxReplies}</div>`;
+  if (s.step === 'talk') return top + codesBlock('bobTalk', it => act('code', it.id, it.label, { cls: 'big' }));
+  if (s.step === 'trade') return top + `<div class="lbl">Що дитина віддає Бобу</div><div class="grid">${C.items.map(i => act('give', i.id, `${i.e} ${i.name}`, { disabled: s.tries.includes(i.id) })).join('')}</div>`;
+  if (s.step === 'haggle') return top + codesBlock('bobHaggle', it => act('haggle', it.id, it.label, { cls: 'big' }));
+  if (s.step === 'bye') return top;
+  return '';
+};
+IN.playground = s => {
+  const C = ctx().C;
+  if (s.step === 'judge') return `<div class="info">Мія: «${esc(C.judge.mia)}» · Тім: «${esc(C.judge.tim)}»</div>` + codesBlock('judge', it => act('mark', it.id, it.label, { cls: s.marks.includes(it.id) ? 'sel' : '' }));
+  if (s.step === 'rules' || s.step === 'compromise') return `<div class="lbl">Картки, які обрала дитина (${s.step === 'rules' ? 2 : 3})</div><div class="grid">${C.cards.map(cd => act('card', cd.id, esc(cd.text), { cls: s.cards.includes(cd.id) ? 'sel' : '' })).join('')}</div>
+    ${s.step === 'compromise' ? `<div class="info" style="margin-top:10px">Бажання: Котики — ${C.teams.cats.wishes.join(', ').toLowerCase()}; Лисички — ${C.teams.foxes.wishes.join(', ').toLowerCase()}</div>` : ''}`;
+  if (s.step === 'piles') return `<div class="lbl">Куди дитина поклала фразу</div>${C.phrases.map((p, i) => `<div style="display:flex;gap:8px;align-items:center;margin:4px 0"><span style="flex:1">«${esc(p.text)}»</span>${act('pile', i + ':blame', 'Звинувачення', { cls: s.piles[i] === 'blame' ? 'sel' : '' })}${act('pile', i + ':i', 'Я-повідомлення', { cls: s.piles[i] === 'i' ? 'sel' : '' })}</div>`).join('')}`;
+  return '';
+};
+IN.radio = s => {
+  const C = ctx().C;
+  if (s.step === 'q') return `<div class="info">Питання ${s.qi + 1} з ${C.questions.length}: <b>${esc(T(C.questions[s.qi]))}</b></div>` + codesBlock('radioAnswer', it => act('code', it.id, it.label, { cls: s.answers[s.qi] === it.id ? 'sel' : '' }));
+  if (s.step === 'ask') return codesBlock('radioAsk', it => act('ask', it.id, it.label, { cls: s.ask === it.id ? 'sel' : '' }));
+  if (s.step === 'opinion') return `${s.running || s.ended ? `<div class="info">Час: ${timerHTML(s.running ? s.endsAt : null)} ${s.ended ? 'час вийшов' : ''}</div>` : ''}<div class="lbl">Картка-тема</div><div class="grid">${C.topics.map((t, i) => act('topic', i, esc(t), { cls: s.topic === i ? 'sel' : '', disabled: s.running || s.ended })).join('')}</div>
+    <div style="margin-top:10px">${codesBlock('radioOpinion', it => act('mark', it.id, it.label, { cls: s.marks.includes(it.id) ? 'sel' : '' }))}</div>`;
+  return '';
+};
+IN.final = s => s.step === 'batteries' ? `<table class="batt">${CONFIG.skills.map(sk => `<tr><td>${CONFIG.locations[sk.key].icon} ${esc(sk.selfQ)}</td><td>${[1, 2, 3].map(n => act('self', sk.key + ':' + n, '🔋'.repeat(n), { cls: S.self[sk.key] === n ? 'sel' : '' })).join(' ')}</td></tr>`).join('')}</table>` : '';
+
+/* ---------- урок ---------- */
+function stageList() {
+  const lm = S.t.lessonStart ? Math.floor(((S.t.lessonEnd || Date.now()) - S.t.lessonStart) / 60000) : 0;
+  return `<div class="panel"><div class="lbl">Етапи</div><div class="stages">${ORDER.map(k => {
+    const s = S.st[k], L = CONFIG.locations[k], cur = k === S.cur && S.phase === 'lesson';
+    const st = !s ? 'не почато' : s.skipped ? 'пропущено' : s.done ? 'пройдено' : 'триває';
+    return `<div class="stg${cur ? ' cur' : ''}${s && s.done && !s.skipped ? ' done' : ''}${s && s.skipped ? ' skip' : ''}"><span>${L.icon} ${esc(L.name)} <span class="st">· ${st}</span></span><span class="st">${L.minutes} хв</span></div>`;
+  }).join('')}</div><div class="total" id="total">${lm} хв з ${CONFIG.planMinutes}</div></div>`;
+}
+function viewLesson() {
+  const key = S.cur, s = curStation(S), M = ST[key], sc = scriptOf(), c = ctx();
+  const canNext = s.step === 'done' ? true : M.canNext(s, c, S);
+  const label = s.step === 'done' ? 'Далі: наступна локація →' : (M.nextLabel ? M.nextLabel(s) : 'Далі') + (s.step === 'done' ? '' : ' →');
+  const canSkip = !s.done && key !== 'hero' && key !== 'final';
+  return `<div class="lesson">${stageList()}<div>
+    <div class="panel"><div class="say"><div class="lbl">Скажи дитині</div><p>${esc(sc.say || '')}</p></div>
+      <div class="dodont"><div><div class="lbl">Що робиш ти</div>${esc(sc.do || '')}</div><div class="dont"><div class="lbl" style="color:var(--red)">Не кажи</div>${esc(sc.dont || '')}</div></div></div>
+    <div class="panel input">${(IN[key] && IN[key](s)) || '<span class="hint">На цьому кроці вводити нічого не треба.</span>'}</div>
+    <div class="actions">${g('undo', 'Стерти останнє <span class="hint">Ctrl+Z</span>', { disabled: !ui.undo.length })}
+      ${canSkip ? g('skipProbe', armLabel('skipProbe', '⏭ Пропустити пробу'), { cls: ui.arm === 'skipProbe' ? 'arm' : 'ghost' }) + g('skipStation', armLabel('skipStation', 'Пропустити станцію'), { cls: ui.arm === 'skipStation' ? 'arm' : 'ghost' }) : ''}
+      ${key === 'final' && s.step === 'crown' ? g('report', 'Відкрити звіт для батьків →', { cls: 'primary big' }) : g('next', esc(label) + ' <span class="hint" style="color:#cfd3e6">Enter</span>', { cls: 'primary big', disabled: !canNext })}</div>
+  </div></div>`;
+}
+
+/* =====================================================================
+   ЗВІТ ДЛЯ БАТЬКІВ
+   ===================================================================== */
+const RP = {
+  lv: l => (l ? `<span class="lv lv${l}">${CONFIG.levelNames[l]}</span>` : '<span class="lv lv0">Не оцінено</span>'),
+  dots: n => (n ? `<span class="dots3">${'●'.repeat(n)}${'○'.repeat(3 - n)}</span>` : '<span class="rp-note">—</span>'),
+  list: a => (a.length <= 1 ? a.join('') : a.slice(0, -1).join(', ') + ' і ' + a[a.length - 1]),
+  name: k => skillOf(k).area.toLowerCase(),
+  measured: sk => pick78(sk.measured, S.setup.group),
+  probe: p => (p ? `${esc(p.short)} ${RP.lv(p.level)}` : '<span class="rp-note">пропущено</span>')
+};
+function radarSVG(L) {
+  const cx = 210, cy = 185, R = 118, K = SKILL_KEYS, n = K.length;
+  const pt = (i, v) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return [cx + Math.cos(a) * R * v / 3, cy + Math.sin(a) * R * v / 3]; };
+  let svg = '';
+  [1, 2, 3].forEach(r => { svg += `<polygon points="${K.map((_, i) => pt(i, r).join(',')).join(' ')}" fill="none" stroke="#DCE0EA"/>`; });
+  K.forEach((k, i) => { const [x, y] = pt(i, 3), [lx, ly] = pt(i, 3.6), off = !L[k].level;
+    svg += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#DCE0EA"/><text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="600" fill="${off ? '#A3AAC0' : '#1E2A5A'}" font-family="Golos Text, system-ui">${esc(skillOf(k).area)}${off ? '*' : ''}</text>`; });
+  const poly = (vals, attrs) => { const p = K.map((k, i) => (vals[k] ? pt(i, vals[k]) : null)).filter(Boolean); if (!p.length) return ''; if (p.length === 1) return `<circle cx="${p[0][0]}" cy="${p[0][1]}" r="4" ${attrs}/>`; return `<polygon points="${p.map(q => q.join(',')).join(' ')}" ${attrs}/>`; };
+  const res = Object.fromEntries(K.map(k => [k, L[k].level]));
+  svg += poly(res, 'fill="rgba(108,77,255,.12)" stroke="#6C4DFF" stroke-width="2.5" stroke-linejoin="round"');
+  K.forEach((k, i) => { if (res[k]) { const [x, y] = pt(i, res[k]); svg += `<circle cx="${x}" cy="${y}" r="3.5" fill="#6C4DFF"/>`; } });
+  svg += poly(S.self, 'fill="none" stroke="#1E2A5A" stroke-width="1.8" stroke-dasharray="6 5" opacity=".75"');
+  return `<svg class="radar" viewBox="0 0 420 370" role="img" aria-label="Профіль навичок">${svg}</svg>`;
+}
+function rpSummary(L) {
+  const ev = SKILL_KEYS.filter(k => L[k].level), out = [], min = lessonMinutes(S);
+  out.push(`${esc(S.setup.name)} пройш{ов|ла} ${ev.length === 7 ? 'усі сім локацій' : `${ev.length} із 7 локацій з оцінкою`}${min ? ` за ${min} хв` : ''}.`);
+  if (!ev.length) return out.join(' ');
+  const lv = ev.map(k => L[k].level), max = Math.max(...lv), mn = Math.min(...lv);
+  if (max > mn) {
+    const strong = ev.filter(k => L[k].level === max).slice(0, 2), weak = ev.filter(k => L[k].level === mn).slice(0, 2);
+    out.push(`Найсильніше сьогодні проявились ${RP.list(strong.map(RP.name))}: дитина ${RP.list(strong.map(k => skillOf(k).strong))}.`);
+    out.push(`Найбільший простір для росту — ${RP.list(weak.map(RP.name))}: ${RP.list(weak.map(k => skillOf(k).grow))}.`);
+  } else out.push(CONFIG.report.evenStart);
+  const sf = S.st.safe;
+  if (sf && sf.locks && sf.locks.length && !sf.skipped) {
+    if (sf.locks.some(l => l.hint)) out.push('Біля сейфа дитина сама попросила підказку — це цінне вміння звертатися по допомогу.');
+    else if (sf.end === 'time' || (sf.locks[0] && sf.locks[0].opened)) out.push('Біля сейфа дитина працювала до кінця, не здаючись.');
+  }
+  let u = 0, o = 0, s2 = 0; SKILL_KEYS.forEach(k => { const a = S.self[k], l = L[k].level; if (!a || !l) return; a < l ? u++ : a > l ? o++ : s2++; });
+  if (u > o && u >= s2) out.push('Себе дитина оцінює скромніше, ніж показала гра, — їй важливо чути про свої успіхи.');
+  else if (o > u && o >= s2) out.push('Себе дитина оцінює трохи вище за результати гри — це звичайна для віку впевненість, на яку можна спиратися.');
+  else if (s2) out.push('Себе дитина бачить досить точно.');
+  return out.slice(0, 5).join(' ');
+}
+function rpStyle(L) {
+  const out = [], sf = S.st.safe;
+  if (sf && sf.locks && sf.locks.length && !sf.skipped && sf.end !== 'skipped') {
+    const hints = sf.locks.filter(l => l.hint).length, stuck = sf.locks.filter(l => l.stuckAt !== null).length, att = sf.locks.reduce((a, l) => a + l.attempts.length, 0);
+    out.push(`<b>Звернення по допомогу.</b> Біля сейфа ${stuck ? 'дитина застрягала (3 спроби поспіль без нового зеленого)' : 'дитина не застрягала'}; підказку ${hints ? `просила ${hints} ${pl(hints, ['раз', 'рази', 'разів'])}` : 'не просила'}.`);
+    out.push(`<b>Наполегливість.</b> Спроб біля сейфа — ${att}; ${sf.end === 'stopped' ? `зупинилась на ${fmtTime(sf.stoppedAt)}` : sf.end === 'time' ? 'працювала до кінця часу' : 'відкрила обидва замки'}.`);
+  }
+  const hk = S.st.hike;
+  if (S.setup.group === '910' && hk && hk.plan1 && hk.plan2) out.push(`<b>Зміна плану.</b> У розкладі походу порушень до зливи — ${hk.plan1.v.length}, після — ${hk.plan2.v.length}.`);
+  if (S.setup.group === '78' && hk && hk.route) { const r = ctxOf(S, 'hike').C.routes.find(x => x.id === hk.route); out.push(`<b>Зміна плану.</b> Коли міст виявився зламаним, дитина обрала «${esc(r.name.toLowerCase())}».`); }
+  const bb = S.st.bob;
+  if (bb && bb.replies && !bb.skipped) out.push(`<b>Розмова.</b> Із Бобом — ${bb.replies.length} ${pl(bb.replies.length, ['репліка', 'репліки', 'реплік'])}${bb.left ? '; Боб пішов після двох вимог' : ''}.`);
+  const corr = SKILL_KEYS.reduce((a, k) => a + ((S.st[k] && S.st[k].corr) || 0), 0);
+  out.push(`<b>Самовиправлення.</b> ${corr ? `Дитина змінювала свою відповідь ${corr} ${pl(corr, ['раз', 'рази', 'разів'])}.` : 'Дитина відповідала одразу, без виправлень.'}`);
+  if (S.skips.probes || S.skips.stations) out.push(`<b>Пропуски.</b> Пропущено проб — ${S.skips.probes}, станцій — ${S.skips.stations}.`);
+  return out;
+}
+function rpSelf(L) {
+  const u = [], o = [], same = [];
+  const rows = CONFIG.skills.map(sk => { const a = S.self[sk.key], l = L[sk.key].level; let rel = '—';
+    if (a && l) { if (a < l) { rel = 'скромніше за результат'; u.push(sk.key); } else if (a > l) { rel = 'вище за результат'; o.push(sk.key); } else { rel = 'точно'; same.push(sk.key); } }
+    return `<tr><td class="nm">${esc(sk.area)}</td><td>${RP.dots(a)}</td><td>${RP.lv(l)}</td><td>${rel}</td></tr>`; }).join('');
+  const parts = []; if (u.length) parts.push(`недооцінює себе: ${RP.list(u.map(RP.name))}`); if (same.length) parts.push(`бачить себе точно: ${RP.list(same.map(RP.name))}`); if (o.length) parts.push(`оцінює себе вище, ніж показала гра: ${RP.list(o.map(RP.name))}`);
+  return `<table><thead><tr><th>Навичка</th><th>Самооцінка</th><th>Результат</th><th>Як бачить себе</th></tr></thead><tbody>${rows}</tbody></table><p style="margin-top:8px">${parts.length ? 'Дитина ' + parts.join('; ') + '.' : 'Самооцінку не заповнено.'}${u.length ? ' Там, де дитина себе недооцінює, особливо важливо помічати й називати її успіхи.' : ''}</p>`;
+}
+function rpRecommend(L) {
+  const ev = SKILL_KEYS.filter(k => L[k].level); if (!ev.length) return '<p>Недостатньо даних.</p>';
+  const lv = ev.map(k => L[k].level), equal = Math.max(...lv) === Math.min(...lv);
+  const pickK = ev.slice().sort((a, z) => equal ? (S.self[a] || 4) - (S.self[z] || 4) : L[a].level - L[z].level || ((S.self[z] || 0) - L[z].level) - ((S.self[a] || 0) - L[a].level)).slice(0, 2);
+  const why = k => { const sk = skillOf(k), l = L[k].level, a = S.self[k];
+    return equal ? `<li><b>${esc(sk.area)}.</b> Дитина сама оцінює цю навичку найскромніше — успіхи тут найбільше підсилять віру в себе. ${esc(sk.training)}</li>`
+      : `<li><b>${esc(sk.area)}.</b> Рівень «${CONFIG.levelNames[l]}» — тут найбільший простір для росту${a && a > l ? ', а дитина поки оцінює цю навичку вище, ніж показала гра' : ''}. ${esc(sk.training)}</li>`; };
+  return `<h3 style="margin-bottom:4px">З чого почати на курсі</h3><ul>${pickK.map(why).join('')}</ul><h3 style="margin:8px 0 4px">Що помічати й хвалити вдома</h3><ul>${pickK.map(k => `<li><b>${esc(skillOf(k).area)}:</b> ${esc(skillOf(k).praise)}</li>`).join('')}<li>Хваліть зусилля, спроби й стратегію, а не лише результат.</li></ul>`;
+}
+function viewReport() {
+  const L = scoreAll(S), gr = S.setup.group, min = lessonMinutes(S);
+  const meta = [['Дитина', esc(S.setup.name)], ['Вік', `${S.setup.age} ${pl(S.setup.age, ['рік', 'роки', 'років'])}`], ['Група', CONFIG.groups[gr].label], ['Дата', fmtDate(S.date)], ['Тривалість', min ? `${min} хв` : '—'], ['Версія', S.setup.version === 'A' ? 'вхідна (А)' : 'повторна (Б)']];
+  if (S.setup.teacher.trim()) meta.push(['Вчитель', esc(S.setup.teacher)]);
+  const table = CONFIG.skills.map(sk => { const r = L[sk.key], pn = probeNames(sk.key, gr);
+    return `<tr><td class="nm">${esc(sk.area)}</td><td>${esc(RP.measured(sk))}</td><td>${r.skipped && !r.p1 && !r.p2 ? esc(CONFIG.report.skippedStation) : `${esc(pn[0])}: ${RP.probe(r.p1)}${r.single ? '' : `<br>${esc(pn[1])}: ${RP.probe(r.p2)}`}`}</td><td>${RP.lv(r.level)}</td><td>${RP.dots(S.self[sk.key])}</td></tr>`; }).join('');
+  const skills = CONFIG.skills.map(sk => { const r = L[sk.key], pn = probeNames(sk.key, gr), Tx = r.level ? sk.levels[r.level] : null;
+    const probes = r.p1 || r.p2 ? `<ul>${r.p1 ? `<li>${esc(pn[0])}: ${esc(r.p1.ev)}</li>` : `<li>${esc(pn[0])}: пропущено</li>`}${r.single ? '' : r.p2 ? `<li>${esc(pn[1])}: ${esc(r.p2.ev)}</li>` : `<li>${esc(pn[1])}: ${sk.key === 'safe' ? 'не оцінено' : 'пропущено'}</li>`}</ul>` : esc(S.st[sk.key] && S.st[sk.key].skipped ? CONFIG.report.skippedStation : CONFIG.report.skippedAll);
+    return `<div class="rp-skill"><div class="hd"><h3>${esc(sk.area)}</h3>${RP.lv(r.level)}</div><dl><dt>Навіщо це</dt><dd>${esc(sk.about)}</dd><dt>Що робила дитина</dt><dd>${probes}</dd>
+      ${Tx ? `<dt>Що означає рівень</dt><dd>${esc(Tx.meaning)}</dd><dt>Вдома й у школі</dt><dd>${esc(Tx.life)}</dd><dt>Вправи вдома (5–10 хв)</dt><dd><ul>${Tx.home.map(h => `<li>${esc(h)}</li>`).join('')}</ul></dd>` : ''}</dl></div>`; }).join('');
+  const next = fmtDate(addMonths(S.date, CONFIG.repeatMonths));
+  const html = `<div class="rp"><div class="rp-brand">${esc(CONFIG.report.brand)}</div><h1>${esc(CONFIG.report.title)}</h1>
+    <dl class="rp-meta">${meta.map(([a, z]) => `<div><dt>${a}</dt><dd>${z}</dd></div>`).join('')}</dl>
+    <section><h2>1. Підсумок</h2><p>${rpSummary(L)}</p></section>
+    <section><h2>2. Профіль</h2><div class="rp-profile"><div>${radarSVG(L)}<div class="rp-legend"><span>— результат</span><span>- - самооцінка</span></div>${SKILL_KEYS.some(k => !L[k].level) ? '<div class="rp-note">* не оцінено — пропущено</div>' : ''}</div>
+      <table><thead><tr><th>Навичка</th><th>Що вимірювали</th><th>Результати двох проб</th><th>Рівень</th><th>Самооцінка</th></tr></thead><tbody>${table}</tbody></table></div></section>
+    <section><h2>3. По кожній навичці</h2><div class="rp-skills">${skills}</div></section>
+    <section><h2>4. Стиль роботи</h2><ul>${rpStyle(L).map(x => `<li>${x}</li>`).join('')}</ul><p class="rp-note">Це спостереження, а не оцінки.</p></section>
+    <section><h2>5. Самооцінка й результат</h2>${rpSelf(L)}</section>
+    <section><h2>6. Рекомендації</h2>${rpRecommend(L)}</section>
+    <section><h2>7. Наступний крок</h2><p>Повторна діагностика — <b>${next}</b>, ${S.setup.version === 'A' ? 'версія Б (повторна)' : 'наступна версія за планом курсу'}. Вона покаже, як змінилися навички.</p></section>
+    <section><h2>8. Методологічна примітка</h2><p class="rp-note" style="font-size:13px">${esc(CONFIG.report.method)}</p></section></div>
+    <div class="rp-actions no-print">${g('print', 'Зберегти PDF', { cls: 'primary' })}<span id="sheetStatus" class="rp-note">${sheetStatusHTML()}</span><span style="flex:1"></span>${g('back', '← До уроку')}</div>`;
+  return T(html);
+}
+
+/* ---------- Google Таблиця ---------- */
+const SHEET_Q = CONFIG.storageKey + '-sheets-queue';
+const sheetQueue = () => { try { return JSON.parse(localStorage.getItem(SHEET_Q)) || []; } catch (e) { return []; } };
+const sheetSave = q => { try { localStorage.setItem(SHEET_Q, JSON.stringify(q)); } catch (e) { } };
+function sheetStatusHTML() {
+  if (!CONFIG.sheets.endpoint) return '';
+  const st = S.sheet && S.sheet.status;
+  return st === 'sent' ? 'Надіслано в таблицю ✓' : st === 'failed' ? `Не надіслано — ${g('sheetRetry', 'повторити')}` : st === 'pending' ? 'Надсилаю в таблицю…' : '';
+}
+function sheetShow() { const el = $('#sheetStatus'); if (el) el.innerHTML = sheetStatusHTML(); }
+async function sheetFlush() {
+  const { endpoint, token } = CONFIG.sheets; if (!endpoint) return;
+  let q = sheetQueue(); if (!q.length) return;
+  for (const it of q.slice()) {
+    try {
+      await fetch(endpoint, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ token, id: it.id, headers: it.headers, row: it.row }) });
+      q = sheetQueue().filter(x => x.id !== it.id); sheetSave(q);
+      if (it.id === S.id) S.sheet = { status: 'sent', at: Date.now() };
+    } catch (e) { if (it.id === S.id) S.sheet = { status: 'failed', at: Date.now() }; }
+  }
+  SYNC.publish(S); sheetShow();
+}
+function sheetOnReport() {
+  if (!CONFIG.sheets.endpoint || S.sheet) { sheetShow(); return; }
+  const { headers, row } = sheetRecord(S);
+  sheetSave(sheetQueue().filter(x => x.id !== S.id).concat([{ id: S.id, headers, row }]));
+  S.sheet = { status: 'pending' }; SYNC.publish(S); sheetFlush();
+}
+
+/* ---------- рендер ---------- */
+function render() {
+  renderHeader();
+  const app = $('#app');
+  let html;
+  if (S.phase === 'setup') html = viewSetup();
+  else if (S.phase === 'report' && ui.view !== 'lesson') { html = viewReport(); app.innerHTML = html; sheetOnReport(); return; }
+  else html = viewLesson();
+  app.innerHTML = html;
+}
+
+/* ---------- дії ---------- */
+function openGame() {
+  const w = window.open('index.html', 'ostriv-game', 'width=1280,height=800');
+  ui.blocked = !w; if (w) setTimeout(() => SYNC.publish(S), 600); render();
+}
+function doUndo() {
+  if (!ui.undo.length) return;
+  const n = S.fx ? S.fx.n : 0, prev = JSON.parse(ui.undo.pop());
+  prev.fx = { n: n + 1, kind: '', data: null, at: Date.now() };
+  S = prev; const s = S.st[S.cur]; if (s) s.corr = (s.corr || 0) + 1;
+  commit();
+}
+const GA = {
+  menu() { ui.menu = !ui.menu; renderHeader(); return false; },
+  reset() { if (!armed('reset')) { renderHeader(); return false; } const snd = S.sound; S = freshState(snd); ui.undo = []; ui.menu = false; ui.view = null; commit(); return false; },
+  openGame() { openGame(); return false; },
+  sound() { S.sound = !S.sound; commit(); return false; },
+  start() { if (!connected()) return false; A.start(S); ui.undo = []; commit(); return false; },
+  next() { const before = S.cur + (S.st[S.cur] && S.st[S.cur].step); A.next(S); ui.undo = []; if (S.phase === 'report') ui.view = null; commit(); void before; return false; },
+  undo() { doUndo(); return false; },
+  skipProbe() { if (!armed('skipProbe')) { render(); return false; } A.skipProbe(S); ui.undo = []; commit(); return false; },
+  skipStation() { if (!armed('skipStation')) { render(); return false; } A.skipStation(S); ui.undo = []; commit(); return false; },
+  report() { ui.view = null; render(); return false; },
+  back() { ui.view = 'lesson'; render(); return false; },
+  print() { window.print(); return false; },
+  sheetRetry() { sheetFlush(); return false; },
+  ex(a) { ui.ex[a] = !ui.ex[a]; render(); return false; }
+};
+document.addEventListener('click', e => {
+  if (ui.menu && !e.target.closest('#menu')) { ui.menu = false; renderHeader(); }
+  const el = e.target.closest('[data-act],[data-g],[data-set]'); if (!el || el.disabled) return;
+  if (el.dataset.set) { const k = el.dataset.set, v = el.dataset.arg; S.setup[k] = k === 'age' ? +v : v; if (k === 'group' && !CONFIG.groups[v].ages.includes(S.setup.age)) S.setup.age = null; commit(); return; }
+  if (el.dataset.g) {
+    const fn = el.dataset.g;
+    if (['next', 'skipProbe', 'skipStation', 'start'].includes(fn) && ui.arm !== fn) { const now = Date.now(); if (now - ui.lastT < 450) return; ui.lastT = now; }
+    GA[fn](el.dataset.arg); return;
+  }
+  doAct(el.dataset.act, el.dataset.arg);
+});
+function doAct(name, arg) {
+  const snap = JSON.stringify(S);
+  const r = A.act(S, name, arg);
+  if (r === false) return;
+  if (r === 'fx') { SYNC.publish(S); return; }
+  ui.undo.push(snap); if (ui.undo.length > 60) ui.undo.shift();
+  commit();
+}
+document.addEventListener('input', e => { const k = e.target.dataset.bind; if (!k) return; S.setup[k] = e.target.value; SYNC.publish(S); const btn = document.querySelector('[data-g="start"]'); if (btn) { const s = S.setup; btn.disabled = !(s.name.trim() && s.group && s.age && s.gender && connected()); } });
+document.addEventListener('keydown', e => {
+  if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+  if (S.phase !== 'lesson') return;
+  if (e.key === ' ') { const s = S.st[S.cur]; if (S.cur === 'emotions' && s && s.step === 'calm') { e.preventDefault(); doAct('plus'); } else e.preventDefault(); }
+  if (e.key === 'Enter') { e.preventDefault(); const nb = document.querySelector('[data-g="next"]'); if (nb && !nb.disabled) { const now = Date.now(); if (now - ui.lastT >= 450) { ui.lastT = now; GA.next(); } } }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'я')) { e.preventDefault(); doUndo(); }
+});
+
+/* ---------- таймер і стан підключення ---------- */
+setInterval(() => {
+  if (A.tick(S)) { ui.undo = []; commit(); }
+  document.querySelectorAll('.timer[data-ends]').forEach(el => { el.textContent = fmtTime(Math.ceil(Math.max(0, (+el.dataset.ends - Date.now()) / 1000))); });
+  const t = $('#total'); if (t && S.t.lessonStart) t.textContent = `${Math.floor(((S.t.lessonEnd || Date.now()) - S.t.lessonStart) / 60000)} хв з ${CONFIG.planMinutes}`;
+  const c = $('#conn'); if (c && c.classList.contains('on') !== connected()) { renderHeader(); if (S.phase === 'setup') render(); }
+}, 250);
+
+render();
+SYNC.publish(S);
+if (CONFIG.sheets.endpoint && sheetQueue().length) sheetFlush();
+if (new URLSearchParams(location.search).get('test') === '1') selfTest();
+</script>
+</body>
+</html>
