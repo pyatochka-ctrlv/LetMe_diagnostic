@@ -23,14 +23,14 @@ h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15}
 .dot{position:relative;width:40px;height:40px;border:3px solid var(--navy);border-radius:50%;background:#fff;display:grid;place-items:center;font-size:19px;box-shadow:3px 3px 0 var(--navy);opacity:.5;filter:grayscale(.6)}
 .dot.done{background:var(--yellow);opacity:1;filter:none}
 .dot.cur{opacity:1;filter:none;outline:4px solid var(--purple);outline-offset:3px}
-.main{display:grid;grid-template-columns:212px minmax(0,1fr);gap:18px;padding:4px 18px 16px;min-height:0}
+.main{display:grid;grid-template-columns:200px minmax(0,1fr);gap:16px;padding:4px 18px 16px;min-height:0}
 .aside{display:flex;flex-direction:column;gap:12px;min-height:0}
 .iskra{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
 .iskra-face{display:flex;align-items:center;gap:8px;font-family:var(--head);font-weight:700;font-size:14px}
 .spark{position:relative;width:56px;height:56px}
 .spark .f2{position:absolute;inset:0;animation:twinkle 1.2s steps(1) infinite}
 @keyframes twinkle{0%{opacity:0}50%{opacity:1}}
-.bubble{position:relative;background:#fff;border:3px solid var(--navy);border-radius:18px;box-shadow:4px 4px 0 var(--navy);padding:10px 12px;font-size:16px;line-height:1.35;font-weight:600;min-height:44px}
+.bubble{position:relative;background:#fff;border:3px solid var(--navy);border-radius:18px;box-shadow:4px 4px 0 var(--navy);padding:10px 12px;font-size:15px;line-height:1.35;font-weight:600;min-height:44px}
 .bubble::before{content:"";position:absolute;left:18px;top:-11px;width:16px;height:16px;background:#fff;border-left:3px solid var(--navy);border-top:3px solid var(--navy);transform:rotate(45deg)}
 .bubble.say{animation:say .45s ease}
 @keyframes say{0%{transform:scale(.9);opacity:.3}100%{transform:none;opacity:1}}
@@ -46,21 +46,23 @@ h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15}
 @keyframes jump{0%,100%{transform:none}40%{transform:translateY(-24px)}}
 .px svg .pop{transform-box:fill-box;transform-origin:center;animation:pop .7s cubic-bezier(.3,1.6,.5,1)}
 @keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
-.stage{position:relative;background:var(--paper);border:5px solid var(--navy);border-radius:30px;box-shadow:9px 9px 0 var(--navy);padding:14px 22px 16px;min-height:0;display:flex;flex-direction:column;overflow:hidden}
-.shead{display:flex;align-items:center;gap:14px;margin-bottom:10px;min-height:50px}
-.sicon{display:grid;place-items:center;width:50px;height:50px;border:4px solid var(--navy);border-radius:16px;background:var(--yellow);box-shadow:4px 4px 0 var(--navy);font-size:26px;flex:none}
+.stage{position:relative;background:var(--paper);border:5px solid var(--navy);border-radius:30px;box-shadow:9px 9px 0 var(--navy);padding:12px 20px 14px;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.shead{display:flex;align-items:center;gap:12px;margin-bottom:6px;min-height:44px}
+.sicon{display:grid;place-items:center;width:44px;height:44px;border:4px solid var(--navy);border-radius:14px;background:var(--yellow);box-shadow:3px 3px 0 var(--navy);font-size:22px;flex:none}
 .kicker{font-size:13px;font-weight:700;color:var(--muted)}
-.shead h2{font-size:22px}
-.timer{margin-left:auto;background:var(--yellow);border:4px solid var(--navy);border-radius:999px;padding:4px 22px;font:800 28px/1.2 var(--head);box-shadow:5px 5px 0 var(--navy);min-width:120px;text-align:center;font-variant-numeric:tabular-nums}
+.shead h2{font-size:19px}
+/* текст завдання для дитини (і для батьків поруч) */
+.task{font:800 23px/1.3 var(--head);background:#FFF3C4;border:3px solid var(--navy);border-radius:16px;padding:8px 14px;margin-bottom:10px;box-shadow:3px 3px 0 var(--navy)}
+.timer{margin-left:auto;background:var(--yellow);border:4px solid var(--navy);border-radius:999px;padding:3px 18px;font:800 24px/1.2 var(--head);box-shadow:4px 4px 0 var(--navy);min-width:100px;text-align:center;font-variant-numeric:tabular-nums}
 .timer.pulse{animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{50%{transform:scale(1.07)}}
 .sbody{flex:1;min-height:0;display:flex;flex-direction:column}
-.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;min-height:0}
-.card{background:#fff;border:4px solid var(--navy);border-radius:22px;box-shadow:6px 6px 0 var(--navy);padding:14px 18px}
-.huge{font-family:var(--head);font-size:36px;font-weight:800}
-.lead{font-size:20px;font-weight:600;line-height:1.35;max-width:780px}
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;min-height:0}
+.card{background:#fff;border:4px solid var(--navy);border-radius:22px;box-shadow:6px 6px 0 var(--navy);padding:12px 16px}
+.huge{font-family:var(--head);font-size:34px;font-weight:800}
+.lead{font-size:19px;font-weight:600;line-height:1.35;max-width:820px}
 .muted{color:var(--muted)}
-.pill{display:inline-block;background:var(--yellow);border:3px solid var(--navy);border-radius:999px;padding:4px 14px;font-weight:800;font-size:14px;box-shadow:3px 3px 0 var(--navy)}
+.pill{display:inline-block;background:var(--yellow);border:3px solid var(--navy);border-radius:999px;padding:3px 12px;font-weight:800;font-size:14px;box-shadow:3px 3px 0 var(--navy)}
 .sel{outline:5px solid var(--purple) !important;outline-offset:3px}
 .tile{border:4px solid var(--navy);border-radius:20px;background:#fff;box-shadow:4px 4px 0 var(--navy);display:grid;place-items:center}
 .toast{position:absolute;left:50%;top:18px;transform:translateX(-50%);background:var(--yellow);border:4px solid var(--navy);border-radius:18px;box-shadow:5px 5px 0 var(--navy);padding:10px 22px;font:700 20px var(--head);z-index:20;animation:toast 1.9s ease forwards;white-space:nowrap}
@@ -71,29 +73,35 @@ h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15}
 .flysp{position:absolute;font-size:30px;pointer-events:none}
 .flysp.new{animation:spfly .8s ease-out}
 @keyframes spfly{0%{transform:translate(var(--fx),var(--fy)) scale(.2);opacity:0}100%{transform:none;opacity:1}}
+.speech{position:relative;background:#fff;border:4px solid var(--navy);border-radius:20px;box-shadow:5px 5px 0 var(--navy);padding:12px 18px;font:700 20px/1.3 var(--head)}
 
 /* мапа */
 .map{position:relative;flex:1;border-radius:22px;overflow:hidden;background:#7FC8F8}
 .map svg.isl{position:absolute;inset:0;width:100%;height:100%}
 .loc{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px}
-.loc .ic{width:52px;height:52px;border:4px solid var(--navy);border-radius:50%;background:#fff;display:grid;place-items:center;font-size:26px;box-shadow:3px 3px 0 var(--navy)}
+.loc .ic{width:48px;height:48px;border:4px solid var(--navy);border-radius:50%;background:#fff;display:grid;place-items:center;font-size:24px;box-shadow:3px 3px 0 var(--navy)}
 .loc.done .ic{background:var(--yellow)}
 .loc.cur .ic{outline:5px solid var(--purple);outline-offset:3px}
 .loc .nm{font:700 12px var(--head);background:#fff;border:2px solid var(--navy);border-radius:8px;padding:1px 6px;white-space:nowrap}
 .loc .star{position:absolute;top:-10px;right:-10px;font-size:20px}
 .walker{position:absolute;transform:translate(-50%,-100%);transition:left 1.3s steps(14),top 1.3s steps(14);z-index:5}
-.splash{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;align-items:center;gap:18px;background:#fff;border:5px solid var(--navy);border-radius:26px;box-shadow:8px 8px 0 var(--navy);padding:14px 26px;animation:say .5s ease .9s both}
-.splash .bigic{font-size:64px;line-height:1}
-.batt{position:absolute;transform:translate(-50%,10px);display:flex;gap:2px;border:2px solid var(--navy);border-radius:5px;padding:2px;background:#fff}
-.batt i{width:12px;height:12px;border:1.5px solid var(--navy);border-radius:2px;background:#fff}
-.batt i.on{background:var(--yellow)}
+.splash{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);display:flex;align-items:center;gap:16px;background:#fff;border:5px solid var(--navy);border-radius:24px;box-shadow:8px 8px 0 var(--navy);padding:12px 22px;width:min(760px,92%);animation:say .5s ease .9s both}
+.splash .bigic{font-size:58px;line-height:1}
+.splash .lore{font-size:17px;font-weight:600;line-height:1.35}
 
 /* кадри */
-.strip{display:flex;gap:16px;justify-content:center;align-items:stretch}
+.strip{display:flex;gap:16px;justify-content:center;align-items:stretch;width:100%}
 .frame{flex:1;max-width:300px;border:4px solid var(--navy);border-radius:20px;background:#FFF3D1;box-shadow:5px 5px 0 var(--navy);padding:10px;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
 .frame.future{opacity:.35}
-.frame .props{font-size:42px;line-height:1}
+.frame .props{font-size:40px;line-height:1}
 .frame .q{font-size:15px;font-weight:700;text-align:center}
+.frame .lab{font:800 14px var(--head);background:#fff;border:2px solid var(--navy);border-radius:999px;padding:2px 10px}
+.frame.shows{background:#FFFFFF;border-color:#9AA2BA;border-style:dashed}
+.frame.feels{background:#2B335A;color:#fff}
+.frame.feels .q{color:#fff}
+.ghost{filter:grayscale(1) brightness(1.6);opacity:.55;animation:glow 1.6s ease-in-out infinite}
+@keyframes glow{50%{filter:grayscale(1) brightness(2.1) drop-shadow(0 0 10px #fff);opacity:.8}}
+.maskbadge{position:absolute;top:8px;right:10px;font-size:30px}
 .alt{position:relative}
 .alt .b{position:absolute;inset:0;animation:alt 2.4s steps(1) infinite}
 @keyframes alt{0%{opacity:0}50%{opacity:1}}
@@ -102,86 +110,115 @@ h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15}
 .casetxt{font-size:17px;font-weight:600;line-height:1.4;max-width:900px;text-align:left}
 
 /* сейф */
-.safe{flex:1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:24px;min-height:0}
-.safeL{display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center}
-.ft{width:72px;height:72px;border:4px solid var(--navy);border-radius:18px;background:#fff;display:grid;place-items:center;font-size:40px}
+.safe{flex:1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px;min-height:0}
+.safeL{display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center}
+.ft{width:68px;height:68px;border:4px solid var(--navy);border-radius:18px;background:#fff;display:grid;place-items:center;font-size:38px}
 .ft.empty{border-style:dashed;background:rgba(255,255,255,.5)}
 .ft.hint{background:#D7F5E6;border-color:var(--green)}
 .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.legend{display:flex;flex-direction:column;gap:6px;font-size:15px;font-weight:600;background:#fff;border:3px solid var(--navy);border-radius:16px;padding:8px 14px}
+.legend{display:flex;flex-direction:column;gap:5px;font-size:15px;font-weight:600;background:#fff;border:3px solid var(--navy);border-radius:16px;padding:8px 14px}
 .legend span{display:flex;align-items:center;gap:8px}
 .legend i{width:22px;height:22px;border-radius:6px;border:2px solid var(--navy);display:inline-block}
 .fb-g{background:var(--green) !important}.fb-y{background:var(--yellow) !important}.fb-x{background:#B9C0CF !important}
 .history{background:var(--soft);border:3px solid var(--navy);border-radius:22px;padding:12px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;min-height:0}
 .hrow{display:flex;align-items:center;gap:8px}
-.hrow .ft{width:46px;height:46px;font-size:26px;border-width:3px;border-radius:12px}
+.hrow .ft{width:44px;height:44px;font-size:24px;border-width:3px;border-radius:12px}
 
-/* лавка */
-.shop{flex:1;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:22px;min-height:0}
-.goods{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-content:start}
-.good{border:3px solid var(--navy);border-radius:18px;background:#fff;box-shadow:4px 4px 0 var(--navy);padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px}
-.good .e{font-size:40px}.good .n{font-size:15px;font-weight:700}
+/* крамниця */
+.shop{flex:1;display:grid;grid-template-columns:150px minmax(0,1.3fr) minmax(0,1fr);gap:18px;min-height:0;align-items:start}
+.owl{display:flex;flex-direction:column;align-items:center;gap:8px}
+.owl .speech{font-size:15px;padding:8px 10px}
+.goods{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:start}
+.goods.g4{grid-template-columns:repeat(3,1fr)}
+.good{border:3px solid var(--navy);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--navy);padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center}
+.good .e{font-size:34px}.good .n{font-size:14px;font-weight:700;line-height:1.2}
+.price{font:800 14px var(--head);background:var(--yellow);border:2px solid var(--navy);border-radius:999px;padding:1px 9px}
 .good.taken{opacity:.3}
 .coinrow{display:flex;flex-wrap:wrap;gap:3px;justify-content:center}
 .coin{width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFE28A,var(--yellow) 60%,#E8A915);border:2px solid var(--navy);display:inline-block}
-.coin.empty{background:transparent;border-style:dashed;opacity:.5}
-.basket{background:var(--soft);border:3px dashed var(--navy);border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:10px}
-.bank{display:flex;flex-direction:column;align-items:center;gap:6px}
-.bar{width:100%;height:22px;border:3px solid var(--navy);border-radius:999px;background:#fff;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--yellow)}
-.queue{display:flex;gap:10px;font-size:44px}
-.queue span{animation:walkin 1.2s ease both}
-@keyframes walkin{0%{transform:translateX(160px);opacity:0}100%{transform:none;opacity:1}}
+.bigcoin{display:inline-grid;place-items:center;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFE28A,var(--yellow) 60%,#E8A915);border:4px solid var(--navy);box-shadow:3px 3px 0 var(--navy);font:800 24px var(--head)}
+.basket{background:var(--soft);border:3px dashed var(--navy);border-radius:20px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.cartline{display:flex;align-items:center;gap:8px;background:#fff;border:3px solid var(--navy);border-radius:12px;padding:4px 10px;font-weight:700;font-size:15px}
+.plate{min-height:110px;background:#fff;border:4px solid var(--navy);border-radius:50%/40%;box-shadow:5px 5px 0 var(--navy);display:flex;flex-wrap:wrap;gap:6px;align-content:center;justify-content:center;padding:14px 36px;width:min(520px,100%)}
+.plate .bigcoin{width:48px;height:48px;font-size:18px;border-width:3px}
+.display{min-width:160px;font:800 40px var(--head);background:#fff;border:4px solid var(--navy);border-radius:18px;padding:4px 18px;text-align:center;min-height:62px}
+.opts{display:flex;gap:22px;justify-content:center}
+.opt{min-width:240px;font:700 24px var(--head);padding:22px;border:4px solid var(--navy);border-radius:20px;background:#fff;box-shadow:5px 5px 0 var(--navy)}
 
 /* похід */
-.items{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
-.item{border:3px solid var(--navy);border-radius:16px;background:#fff;box-shadow:3px 3px 0 var(--navy);padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;font-weight:700;text-align:center}
-.item .e{font-size:32px}
+.items{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;width:100%}
+.item{border:3px solid var(--navy);border-radius:14px;background:#fff;box-shadow:3px 3px 0 var(--navy);padding:6px 10px;display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden}
+.item .e{font-size:28px;flex:none}
 .item.in{opacity:.3}
-.pack{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;background:#FFE6B0;border:4px solid var(--navy);border-radius:24px;padding:12px;box-shadow:5px 5px 0 var(--navy)}
-.pocket{height:64px;border:3px dashed var(--navy);border-radius:14px;display:grid;place-items:center;font-size:32px;background:rgba(255,255,255,.5)}
+.pack{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;background:#FFE6B0;border:4px solid var(--navy);border-radius:22px;padding:10px;box-shadow:5px 5px 0 var(--navy)}
+.pocket{height:58px;border:3px dashed var(--navy);border-radius:14px;display:grid;place-items:center;font-size:30px;background:rgba(255,255,255,.5)}
 .routes{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .route{border:4px solid var(--navy);border-radius:20px;background:#fff;box-shadow:5px 5px 0 var(--navy);padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
-.route .e{font-size:46px}.route .nm{font:700 16px var(--head)}
+.route .e{font-size:44px}.route .nm{font:700 16px var(--head)}
 .danger{background:#FFE7A8;border:2px solid var(--navy);border-radius:8px;padding:2px 8px;font-weight:800;font-size:13px}
-.tl{display:grid;grid-template-columns:70px 1fr;gap:4px;width:100%}
-.tl .h{font:800 15px var(--head);text-align:right;padding-right:6px;height:34px;line-height:34px}
-.tl .slot{position:relative;border-bottom:2px dashed rgba(30,42,90,.25);height:34px}
-.blk{position:absolute;left:0;right:0;border:3px solid var(--navy);border-radius:12px;background:#fff;box-shadow:3px 3px 0 var(--navy);display:flex;align-items:center;gap:8px;padding:0 10px;font-weight:700;font-size:15px;z-index:2}
+.plan{flex:1;display:grid;grid-template-columns:auto minmax(0,1fr) 250px;gap:16px;min-height:0}
+.pool{display:flex;flex-direction:column;gap:8px;min-width:250px}
+.task-card{border:3px solid var(--navy);border-radius:14px;background:#fff;box-shadow:3px 3px 0 var(--navy);padding:8px 12px;display:flex;align-items:center;gap:10px;font-size:17px;font-weight:700;white-space:nowrap}
+.task-card .e{font-size:28px}
+.tl{position:relative;display:grid;grid-template-rows:repeat(12,1fr);height:100%;min-height:0}
+.tl .r{display:grid;grid-template-columns:62px 1fr;align-items:start}
+.tl .h{font:800 14px var(--head);line-height:1;transform:translateY(-1px)}
+.tl .r .line{border-top:2px dashed rgba(30,42,90,.25);height:100%}
+.blk{position:absolute;left:66px;right:0;border:3px solid var(--navy);border-radius:12px;background:#fff;box-shadow:3px 3px 0 var(--navy);display:flex;align-items:center;gap:10px;padding:0 12px;font-weight:700;font-size:17px;z-index:2;white-space:nowrap;overflow:hidden}
+.blk .e{font-size:26px}
 .blk.rainzone{background:repeating-linear-gradient(45deg,#DDE8F7,#DDE8F7 8px,#fff 8px,#fff 16px);border-style:dashed;box-shadow:none;z-index:1;color:var(--muted)}
-.rules{font-size:15px;line-height:1.55;font-weight:600}
+.rules{font-size:16px;line-height:1.55;font-weight:600;height:100%}
 
 /* Боб */
-.bob{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:center;min-height:0}
-.speech{position:relative;background:#fff;border:4px solid var(--navy);border-radius:22px;box-shadow:6px 6px 0 var(--navy);padding:16px 20px;font:700 22px/1.3 var(--head)}
+.bob{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:18px;align-items:center;min-height:0}
+.bobfig{position:relative}
+.rope{position:absolute;bottom:22%;right:-6%;font-size:46px;transform:rotate(-15deg)}
 .walkoff{animation:walkoff 2.2s steps(12) forwards}
 @keyframes walkoff{to{transform:translateX(700px)}}
-.bag{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.inv{display:flex;gap:6px;justify-content:center;background:#8B8B8B;border:4px solid #373737;padding:6px;border-radius:4px;margin-top:8px;box-shadow:inset 3px 3px 0 #C6C6C6,inset -3px -3px 0 #555}
+.slot{width:150px;height:76px;background:#8B8B8B;border:3px solid;border-color:#373737 #fff #fff #373737;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;text-shadow:1px 1px 0 #000;gap:2px;text-align:center;line-height:1.1;padding:2px}
+.slot .e{font-size:30px;text-shadow:none}
+.slot.used{opacity:.35}
+.slot.given{outline:4px solid var(--yellow)}
+.bubbles{display:flex;flex-direction:column;gap:8px}
+.bubbles .me{align-self:flex-end;background:#EEEBFF;border:3px solid var(--navy);border-radius:16px;padding:6px 12px;font-weight:700}
 
 /* майданчик */
 .kids{display:flex;gap:40px;justify-content:center;align-items:flex-end}
 .kid{display:flex;flex-direction:column;align-items:center;gap:8px;position:relative}
-.wish{background:#fff;border:3px solid var(--navy);border-radius:16px;padding:8px 12px;font-weight:700;font-size:16px;box-shadow:3px 3px 0 var(--navy);max-width:220px}
+.wish{background:#fff;border:3px solid var(--navy);border-radius:16px;padding:6px 12px;font-weight:700;font-size:16px;box-shadow:3px 3px 0 var(--navy);max-width:230px}
 .think{position:absolute;top:-28px;left:50%;transform:translateX(-50%);font:800 24px var(--head);letter-spacing:4px;animation:think 1.5s steps(3) infinite}
 @keyframes think{0%{opacity:.3}50%{opacity:1}}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.rcard{border:3px solid var(--navy);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--navy);padding:12px;font-weight:700;font-size:16px;text-align:center}
-.piles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;flex:1;min-height:0}
-.pilecol{background:var(--soft);border:3px dashed var(--navy);border-radius:18px;padding:10px;display:flex;flex-direction:column;gap:8px}
-.pilecol h3{font-size:15px;text-align:center}
-.phrase{background:#fff;border:3px solid var(--navy);border-radius:12px;padding:8px 10px;font-weight:700;font-size:15px}
-.teams{display:flex;justify-content:space-around;gap:20px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%}
+.rcard{border:3px solid var(--navy);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--navy);padding:10px;font-weight:700;font-size:16px;text-align:center}
+.teams{display:flex;justify-content:space-around;gap:20px;width:100%}
 .team{display:flex;flex-direction:column;align-items:center;gap:4px}
+.chat{flex:1;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px;background:#E6EEF9;border:4px solid var(--navy);border-radius:22px;padding:10px 14px;min-height:0;width:100%}
+.chat .ttl{font:800 15px var(--head);display:flex;gap:8px;align-items:center}
+.msgs{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;overflow:hidden}
+.msg{max-width:70%;background:#fff;border:2px solid var(--navy);border-radius:14px 14px 14px 4px;padding:5px 10px;font-size:16px;font-weight:600}
+.msg b{display:block;font-size:12px;color:var(--muted)}
+.msg.me{align-self:flex-end;background:#DCF8C6;border-radius:14px 14px 4px 14px}
+.replies{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.reply{background:#fff;border:3px solid var(--navy);border-radius:14px;box-shadow:3px 3px 0 var(--navy);padding:8px 12px;font-weight:700;font-size:16px;text-align:left}
 
 /* радіо */
 .onair{display:inline-flex;align-items:center;gap:8px;background:#C8323C;color:#fff;border:3px solid var(--navy);border-radius:12px;padding:4px 14px;font:800 16px var(--head);box-shadow:3px 3px 0 var(--navy)}
 .onair i{width:12px;height:12px;border-radius:50%;background:#fff;animation:lamp 1s steps(1) infinite}
 @keyframes lamp{50%{opacity:.2}}
-.topics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.guest{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.plate-name{font:800 18px var(--head);background:#fff;border:3px solid var(--navy);border-radius:10px;padding:3px 14px;box-shadow:3px 3px 0 var(--navy);max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mic{position:absolute;right:-30px;bottom:40%;font-size:40px}
+.topics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%}
 
+/* фінал */
+.battery{display:flex;gap:6px;border:4px solid var(--navy);border-radius:12px;padding:6px;background:#fff;position:relative}
+.battery::after{content:"";position:absolute;right:-12px;top:50%;width:8px;height:24px;transform:translateY(-50%);background:var(--navy);border-radius:0 4px 4px 0}
+.battery i{width:70px;height:46px;border:3px solid var(--navy);border-radius:6px;background:#fff}
+.battery i.on{background:var(--yellow)}
 .final{flex:1;display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;justify-content:center}
 .final .huge{color:var(--purple)}
-@media (max-width:1180px){.main{grid-template-columns:176px minmax(0,1fr);gap:14px;padding:4px 14px 12px}.items{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:1180px){.main{grid-template-columns:170px minmax(0,1fr);gap:12px;padding:4px 12px 12px}.task{font-size:20px}}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important}}
 </style>
 </head>
@@ -200,9 +237,9 @@ h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15}
 <script src="hero-pixel.js"></script>
 <script src="core.js"></script>
 <script>
-/* ВІКНО ГРИ: лише відображає стан, який надсилає пульт. Жодних кнопок і текстів для вчителя. */
+/* ВІКНО ГРИ: лише відображає стан, який надсилає пульт. Жодних кнопок і текстів для МІКа. */
 const HP = window.HeroPixel, $ = q => document.querySelector(q);
-let S = null, lastFx = null, lastKey = '', lastBubble = '', prevCur = null, walkFrom = null;
+let S = null, lastFx = null, lastBubble = '', walkFrom = null;
 const reduced = () => window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 const T = s => tplG(s, S && S.setup.gender);
 const G = () => S.setup.group;
@@ -222,8 +259,8 @@ function hero(opts, scale, cls = '') {
   if (reduced()) return `<div class="px ${cls}">${HP.render(o)}</div>`;
   return `<div class="px sway ${cls}">${HP.render(o)}<div class="blink">${HP.render(Object.assign({}, o, { blink: true, pop: undefined }))}</div></div>`;
 }
-function npc(head, cape, scale, expression, extra = {}) {
-  return `<div class="px">${HP.render(Object.assign({ style: CONFIG.heroStyle, head, cape, items: [], scale, expression }, extra))}</div>`;
+function npc(head, cape, scale, expression, extra = {}, cls = '') {
+  return `<div class="px ${cls}">${HP.render(Object.assign({ style: CONFIG.heroStyle, head, cape, items: [], scale, expression }, extra))}</div>`;
 }
 function emoFace(head, chosen, scale, cape) {
   const c = cape || '#9AA2BA';
@@ -272,14 +309,31 @@ function setBubble(t) {
 function iskraLine() {
   if (!S || S.phase === 'setup') return CONFIG.iskra.idle;
   const key = S.cur, s = S.st[key]; if (!s) return '';
-  if (key === 'hero') return CONFIG.iskra.hero.pick;
+  if (key === 'hero') return CONFIG.iskra.hero;
   if (key === 'final') return CONFIG.iskra.final[s.step] || '';
-  if (s.step === 'intro') return CONFIG.iskra.intro[key];
+  if (s.step === 'intro') return CONFIG.iskra.intro;
   if (s.step === 'done') return CONFIG.iskra.done;
   if (key === 'radio' && s.step === 'q' && typeof s.answers[s.qi] === 'number') return 'Дякую! Наступне питання…';
-  if (key === 'safe' && s.phase === 'opened') return CONFIG.iskra.safe.opened;
-  const m = CONFIG.iskra[key] || {};
-  return m[s.step] || m[s.step.replace('910', '')] || '';
+  if (key === 'safe' && s.locks && s.locks[s.lock] && s.locks[s.lock].opened) return CONFIG.iskra.safe.opened;
+  return (CONFIG.iskra[key] || {})[s.step] || '';
+}
+// текст завдання для поточного кроку (екран дитини)
+function taskText() {
+  if (!S || S.phase === 'setup') return '';
+  const key = S.cur, s = S.st[key]; if (!s) return '';
+  const g = G(), Tk = CONFIG.task, vars = {};
+  if (key === 'hero') return Tk.hero.pick;
+  if (s.step === 'done') return Tk.done;
+  if (s.step === 'intro') return '';
+  if (key === 'final') { const k = s.list && s.list[s.bi]; vars.selfQ = k ? skillOf(k).selfQ : ''; return fill(Tk.final[s.step], vars); }
+  const c = ctxOf(S, key);
+  if (key === 'emotions' && s.step === 'frames') vars.question = (emFrames(c)[s.fi] || {}).question || '';
+  if (key === 'money' && s.step === 'exact') { const t = c.C.targets[s.t]; if (t) { vars.price = t.sum; vars.item = t.acc; } }
+  if (key === 'money' && s.step === 'deal') vars.question = (c.C.deals[s.q] || {}).text || '';
+  if (key === 'radio') { vars.guest = guestName(s); if (s.step === 'q') vars.question = `${guestName(s)} питає: ${c.C.questions[s.qi]}`; }
+  if (key === 'safe' && s.locks && s.locks[s.lock] && s.locks[s.lock].opened) return Tk.safe.opened;
+  if (key === 'bob' && s.step === 'trade') return s.line === 'offerHidden' || s.line === 'offerKnown' ? Tk.bob.tradeAsk : Tk.bob.trade;
+  return fill(pick78((Tk[key] || {})[s.step], g) || '', vars);
 }
 
 /* ---------- мапа ---------- */
@@ -296,8 +350,7 @@ function islandSVG() {
 function mapView(opts = {}) {
   const locs = CONFIG.order.filter(k => k !== 'final' || opts.all).map(k => {
     const L = CONFIG.locations[k], s = S.st[k], done = s && s.done && k !== S.cur, cur = k === S.cur;
-    const batt = opts.batteries && CONFIG.skills.find(x => x.key === k) ? `<div class="batt">${[1, 2, 3].map(n => `<i class="${(S.self[k] || 0) >= n ? 'on' : ''}"></i>`).join('')}</div>` : '';
-    return `<div class="loc${done ? ' done' : ''}${cur ? ' cur' : ''}" style="left:${L.x}%;top:${L.y}%"><div class="ic">${L.icon}</div><div class="nm">${esc(L.name)}</div>${done ? '<span class="star">⭐</span>' : ''}${batt}</div>`;
+    return `<div class="loc${done ? ' done' : ''}${cur ? ' cur' : ''}" style="left:${L.x}%;top:${L.y}%"><div class="ic">${L.icon}</div><div class="nm">${esc(L.name)}</div>${done ? '<span class="star">⭐</span>' : ''}</div>`;
   }).join('');
   const L = CONFIG.locations[S.cur], from = walkFrom ? CONFIG.locations[walkFrom] : L;
   const w = S.hero.head ? `<div class="walker" id="walker" style="left:${from.x}%;top:${from.y - 3}%">${hero({}, 3)}</div>` : '';
@@ -305,137 +358,167 @@ function mapView(opts = {}) {
 }
 function head(sk, title, timer) {
   const L = CONFIG.locations[sk];
-  return `<div class="shead"><span class="sicon">${L.icon}</span><div><div class="kicker">${esc(L.name)}</div><h2>${esc(title)}</h2></div>${timer ? `<div class="timer" id="timer" data-ends="${timer}">${fmtTime(Math.ceil((timer - Date.now()) / 1000))}</div>` : ''}</div>`;
+  const task = taskText();   // текст завдання — одразу під заголовком сцени
+  return `<div class="shead"><span class="sicon">${L.icon}</span><div><div class="kicker">${esc(L.name)}</div><h2>${esc(title)}</h2></div>${timer ? `<div class="timer" id="timer" data-ends="${timer}">${fmtTime(Math.ceil((timer - Date.now()) / 1000))}</div>` : ''}</div>${task ? `<div class="task" id="task">${esc(T(task))}</div>` : ''}`;
 }
 
 /* ---------- сцени станцій ---------- */
 const V = {};
 V.hero = () => `${head('hero', 'Хто твій герой?')}<div class="center" style="flex-direction:row;gap:40px">
-  <div class="card">${hero({}, sc(360, 30))}</div>
+  <div class="card">${hero({}, sc(400, 30))}</div>
   <div style="display:flex;flex-direction:column;gap:22px"><div class="row">${CONFIG.heroes.map(h => `<div class="tile${S.hero.head === h.id ? ' sel' : ''}" style="padding:6px">${HP.renderHead(h.id, 4)}</div>`).join('')}</div>
   <div class="row">${CONFIG.capes.map(c => `<div class="tile${S.hero.cape === c.id ? ' sel' : ''}" style="width:62px;height:62px;border-radius:50%;background:${c.color}"></div>`).join('')}</div></div></div>`;
 V.intro = key => {
   const L = CONFIG.locations[key];
-  return head(key, L.name) + mapView({ extra: `<div class="splash"><div class="bigic">${L.icon}</div><div><div class="kicker">Наступна локація</div><div class="huge" style="font-size:32px">${esc(L.name)}</div></div></div>` });
+  return head(key, L.name) + mapView({ extra: `<div class="splash"><div class="bigic">${L.icon}</div><div><div class="huge" style="font-size:26px">${esc(L.name)}</div><div class="lore">${esc(T(CONFIG.lore[key] || ''))}</div></div></div>` });
 };
 V.done = key => {
   const it = CONFIG.costume[key], s = S.st[key];
-  return head(key, s.skipped ? 'Переходимо далі!' : 'Локацію пройдено!') + `<div class="center">${hero({ pop: it }, sc(400, 30), 'jump')}
-    <div class="huge" style="font-size:30px">Новий предмет: ${esc(HP.ITEMS[it])}!</div></div>`;
+  return head(key, s.skipped ? 'Переходимо далі!' : 'Локацію пройдено!') + `<div class="center">${hero({ pop: it }, sc(440, 30), 'jump')}
+    <div class="huge" style="font-size:28px">Новий предмет: ${esc(HP.ITEMS[it])}!</div></div>`;
 };
 V.emotions = s => {
   const ctx = ctxOf(S, 'emotions'), F = emFrames(ctx), f = F[s.fi];
+  if (s.step === 'caseIntro') {
+    const h = f.heads[f.who];
+    return head('emotions', f.title) + `<div class="center"><div class="strip" style="max-width:640px">
+      <div class="frame shows"><span class="maskbadge">🎭</span>${npc(h, '#FFB703', sc(470, 30), 'joy')}<span class="lab">Показує іншим</span></div>
+      <div class="frame feels">${npc(h, '#FFB703', sc(470, 30), 'blank', {}, 'ghost')}<span class="lab" style="color:var(--navy)">Насправді</span></div></div></div>`;
+  }
   if (s.step === 'frames') {
     if (G() === '78') {
       const comicFrames = F.map((x, i) => ({ x, i })).filter(o => o.x.ci === f.ci);
-      return head('emotions', f.title) + `<div class="center"><div class="strip" style="width:100%">${comicFrames.map(({ x, i }) =>
-        `<div class="frame${i === s.fi ? ' sel' : ''}${i > s.fi ? ' future' : ''}"><div class="props">${x.props}</div>${emoFace(x.head, s.ans[i], sc(470, 30), '#FFB703')}<div class="pill">${x.fi + 1}</div></div>`).join('')}</div></div>`;
+      return head('emotions', f.title) + `<div class="center"><div class="strip">${comicFrames.map(({ x, i }) =>
+        `<div class="frame${i === s.fi ? ' sel' : ''}${i > s.fi ? ' future' : ''}"><div class="props">${x.props}</div>${emoFace(x.head, s.ans[i], sc(520, 30), '#FFB703')}<div class="pill">${x.fi + 1}</div></div>`).join('')}</div></div>`;
     }
     const caseFrames = F.map((x, i) => ({ x, i })).filter(o => o.x.ci === f.ci);
-    return head('emotions', f.title) + `<div class="center" style="gap:12px"><div class="card casetxt">${esc(T(f.text))}</div><div class="strip" style="width:100%">${caseFrames.map(({ x, i }) =>
-      `<div class="frame${i === s.fi ? ' sel' : ''}${i > s.fi ? ' future' : ''}" style="max-width:380px">${emoFace(x.heads[x.who], s.ans[i], sc(560, 30), '#FFB703')}<div class="q">${esc(T(x.question))}</div></div>`).join('')}</div></div>`;
+    const fr = ({ x, i }) => {
+      const hd = x.heads[x.who], big = sc(610, 30);
+      if (x.kind === 'shows') return `<div class="frame shows${i === s.fi ? ' sel' : ''}" style="max-width:360px"><span class="maskbadge">🎭</span>${npc(hd, '#FFB703', big, 'joy')}<span class="lab">Показує іншим</span></div>`;
+      if (x.kind === 'feels') { const ch = s.ans[i]; return `<div class="frame feels${i === s.fi ? ' sel' : ''}${i > s.fi ? ' future' : ''}" style="max-width:360px">${ch && ch.length ? emoFace(hd, ch, big, '#FFB703') : npc(hd, '#FFB703', big, 'blank', {}, 'ghost')}<span class="lab" style="color:var(--navy)">Насправді</span></div>`; }
+      return `<div class="frame${i === s.fi ? ' sel' : ''}${i > s.fi ? ' future' : ''}" style="max-width:360px">${emoFace(hd, s.ans[i], big, '#FFB703')}<div class="q">${esc(T(x.question))}</div></div>`;
+    };
+    return head('emotions', f.title) + `<div class="center" style="gap:10px"><div class="card casetxt">${esc(T(f.text))}</div><div class="strip">${caseFrames.map(fr).join('')}</div></div>`;
   }
+  // «Що допоможе?» — без таймера на екрані дитини
   const h = ctx.C.calmHead;
   const sparks = Array.from({ length: s.calm.n }, (_, i) => { const a = i * 2.4, r = 30 + (i % 4) * 6; const x = 50 + Math.cos(a) * r * 1.2, y = 50 + Math.sin(a) * r; return `<span class="flysp${i === s.calm.n - 1 ? ' new' : ''}" style="left:${x}%;top:${y}%;--fx:${(50 - x) * 4}px;--fy:${(50 - y) * 4}px">✨</span>`; }).join('');
-  return head('emotions', 'Що допоможе?', s.step === 'calm' ? s.calm.endsAt : null) + `<div class="center" style="position:relative">${sparks}<div style="position:relative">${s.step === 'calmReady' || s.step === 'calm' ? '<span class="steam">💨</span>' : ''}${npc(h, '#FF5A5F', sc(380, 30), 'anger')}</div></div>`;
+  return head('emotions', 'Що допоможе?') + `<div class="center" style="position:relative">${sparks}<div style="position:relative"><span class="steam">💨</span>${npc(h, '#FF5A5F', sc(430, 30), 'anger')}</div></div>`;
 };
 V.safe = s => {
-  const ctx = ctxOf(S, 'safe');
+  const ctx = ctxOf(S, 'safe'), L = s.lock === 0 ? ctx.C.warm : ctx.C.hard, lk = s.locks[s.lock];
   const legend = '<div class="legend"><span><i class="fb-g"></i> на своєму місці</span><span><i class="fb-y"></i> є, але в іншому місці</span><span><i class="fb-x"></i> немає</span></div>';
-  const fruitsRow = list => `<div class="row">${list.map(f => `<div class="ft" style="box-shadow:3px 3px 0 var(--navy)">${f}</div>`).join('')}</div>`;
   const hist = atts => atts.map((a, k) => `<div class="hrow"><b style="width:22px">${k + 1}</b>${a.guess.map((f, i) => `<div class="ft ${({ green: 'fb-g', yellow: 'fb-y', grey: 'fb-x' })[a.fb[i]]}">${f}</div>`).join('')}</div>`).join('');
-  if (s.step === 'trial') {
-    const t = s.trial, slots = Array.from({ length: ctx.C.trial.slots }, (_, i) => t.guess[i] ? `<div class="ft">${t.guess[i]}</div>` : '<div class="ft empty"></div>').join('');
-    return head('safe', 'Пробний замок') + `<div class="safe"><div class="safeL"><div class="huge" style="font-size:24px">${t.opened ? '🔓 Відкрито!' : '🔒 Маленький замок'}</div><div class="row">${slots}</div>${fruitsRow(ctx.C.trial.fruits)}${legend}</div><div class="history">${hist(t.attempts)}</div></div>`;
-  }
-  if (s.phase === 'opened') return head('safe', 'Сейф', s.endsAt) + `<div class="center"><div style="font-size:100px;line-height:1">🔓</div><div class="huge">Замок 1 відкрито!</div><div class="lead">Але за ним — ще один замок.</div></div>`;
-  const L = ctx.C.locks[s.lock], lk = s.locks[s.lock];
+  if (lk && lk.opened) return head('safe', s.lock === 0 ? 'Розминка' : 'Складніший замок') + `<div class="center"><div style="font-size:96px;line-height:1">🔓</div><div class="huge">Замок відкрито!</div></div>`;
   const guess = Array.from({ length: L.slots }, (_, i) => lk.hint && lk.hint.pos === i ? `<div class="ft hint">${lk.hint.fruit}</div>` : s.guess[i] ? `<div class="ft">${s.guess[i]}</div>` : '<div class="ft empty"></div>').join('');
-  let h = ''; s.locks.forEach((l, li) => { if (s.locks.length > 1) h += `<div class="kicker">Замок ${li + 1}</div>`; h += hist(l.attempts); });
-  return head('safe', 'Сейф', s.endsAt) + `<div class="safe"><div class="safeL"><div class="huge" style="font-size:24px">🔒 Замок ${s.lock + 1}</div><div class="row">${guess}</div>${fruitsRow(L.fruits)}${legend}</div><div class="history">${h}</div></div>`;
+  return head('safe', s.lock === 0 ? 'Замок 1 · розминка' : 'Замок 2 · складніший') + `<div class="safe"><div class="safeL"><div class="row">${guess}</div>
+    <div class="row">${L.fruits.map(f => `<div class="ft" style="box-shadow:3px 3px 0 var(--navy)">${f}</div>`).join('')}</div>${legend}</div><div class="history">${hist(lk.attempts)}</div></div>`;
 };
 V.money = s => {
-  const ctx = ctxOf(S, 'money'), C = ctx.C, coins = (n, total) => `<div class="coinrow">${'<i class="coin"></i>'.repeat(Math.max(0, n))}${total ? '<i class="coin empty"></i>'.repeat(Math.max(0, total - n)) : ''}</div>`;
-  if (G() === '78') {
-    if (s.step === 'buy') {
-      const left = C.budget - ST.money.spent78(s, C);
-      return head('money', C.title) + `<div class="shop"><div class="goods">${C.goods.map(g => `<div class="good${s.cart.includes(g.id) ? ' taken' : ''}"><span class="e">${g.e}</span><span class="n">${esc(g.name)}</span>${coins(g.price)}</div>`).join('')}</div>
-        <div class="basket"><div class="kicker">Гаманець</div>${coins(left)}<div class="kicker">Кошик</div><div class="row">${s.cart.map(id => { const g = C.goods.find(x => x.id === id); return `<div class="good" style="outline:4px solid var(--purple)"><span class="e">${g.e}</span></div>`; }).join('')}</div></div></div>`;
+  const ctx = ctxOf(S, 'money'), C = ctx.C, owlL = C.owl.lines;
+  const coins = n => `<div class="coinrow">${'<i class="coin"></i>'.repeat(Math.max(0, n))}</div>`;
+  const owl = line => `<div class="owl">${line ? `<div class="speech">${esc(T(line))}</div>` : ''}${npc('owl', '#8B5A2B', sc(560, 30))}<b>Сова Ухта</b></div>`;
+  if (s.step === 'picnic') {
+    if (G() === '78') {
+      const left = C.budget - ST.money.spent(s, C, '78');
+      return head('money', 'Пікнік за 10 монет') + `<div class="shop">${owl(owlL.hello)}<div class="goods">${C.goods.map(g => `<div class="good${s.cart.includes(g.id) ? ' taken' : ''}"><span class="e">${g.e}</span><span class="n">${esc(g.name)}</span><span class="price">${g.price} 🪙</span></div>`).join('')}</div>
+        <div class="basket"><b>Гаманець</b>${coins(left)}<b>Кошик</b><div class="row">${s.cart.map(id => `<span style="font-size:36px">${C.goods.find(x => x.id === id).e}</span>`).join('')}</div></div></div>`;
     }
-    if (s.step === 'sell') return head('money', 'Продаж') + `<div class="center"><div style="font-size:70px">${C.drink}🏪</div><div class="queue">${['🧒', '👧', '👦', '👩', '🧑'].slice(0, Math.max(1, Math.round(s.revenue / 3))).map((e, i) => `<span style="animation-delay:${i * 0.25}s">${e}</span>`).join('')}</div><div class="card">${coins(s.revenue)}</div></div>`;
-    return head('money', 'Вечір') + `<div class="shop"><div class="bank card"><div style="font-size:60px">🐷${C.goal.e}</div><div class="lead">${esc(C.goal.name)}</div>${coins(s.piggy, C.goal.price)}</div>
-      <div style="display:flex;flex-direction:column;gap:14px"><div class="card bank"><div class="kicker">Гаманець</div>${coins(s.coins)}</div><div class="card bank"><div style="font-size:48px">${C.shelf.e}</div><div class="lead">${esc(C.shelf.name)}</div>${coins(s.shelf, C.shelf.price)}</div></div></div>`;
+    const left = C.budget - ST.money.spent(s, C, '910');
+    return head('money', 'Пікнік за 60 грн') + `<div class="shop">${owl(owlL.hello)}<div class="goods g4">${C.goods.map(g => `<div class="good"><span class="e">${g.e}</span><span class="n">${esc(g.name)}</span><span class="price">${g.price} грн</span></div>`).join('')}</div>
+      <div class="basket"><b>Залишок: <span class="pill">${left} грн</span> з ${C.budget}</b><b>Кошик</b>${Object.entries(s.cart).map(([id, n]) => { const g = C.goods.find(x => x.id === id); return `<div class="cartline"><span style="font-size:22px">${g.e}</span>${esc(g.name)} × ${n}</div>`; }).join('')}</div></div>`;
   }
-  const d = s.days[s.day] || {}, w = CONFIG.weatherNames[d.weather || C.weather[0]];
-  const top = `<div class="row" style="gap:18px;align-items:center"><span class="pill">День ${s.day + 1} з ${C.weather.length}</span><span class="pill">${w.e} ${w.name}</span><span class="pill">👛 ${s.wallet} грн</span><span class="pill">🐷 ${s.piggy} / ${C.goal.price} грн</span></div>`;
-  if (s.step === 'day') {
-    return head('money', C.title) + `<div class="center" style="gap:16px">${top}<div class="row">${C.ingredients.map(i => `<div class="card" style="text-align:center"><div style="font-size:40px">${i.e}</div><b>${esc(i.name)}</b><div>звичайна: ${i.small.price} грн · велика: ${i.big.price} грн</div><div class="kicker">запас: ${s.inv[i.id]} дн.</div></div>`).join('')}
-      <div class="card" style="text-align:center"><div style="font-size:40px">${C.trap.e}</div><b>${esc(C.trap.name)}</b><div>${C.trap.price} грн</div>${d.trap ? '<div class="pill">куплено</div>' : ''}</div></div>
-      <div class="row">${C.prices.map(p => `<div class="tile${d.price === p ? ' sel' : ''}" style="padding:10px 18px;font:800 24px var(--head)">${C.drink} ${p} грн</div>`).join('')}</div></div>`;
+  if (s.step === 'exactIntro') return head('money', 'Без решти') + `<div class="center" style="flex-direction:row;gap:30px">${owl(owlL.register)}<div style="font-size:90px">🧾💥</div></div>`;
+  if (s.step === 'exact') {
+    const t = C.targets[s.t];
+    const owlLine = s.owl === 'give' ? owlL.give : s.owl === 'thanks' ? owlL.thanks : '';
+    return head('money', `Покупка ${s.t + 1} з ${C.targets.length}`) + `<div class="shop" style="grid-template-columns:150px minmax(0,1fr) 220px;align-items:center">${owl(owlLine)}
+      <div class="center" style="gap:14px"><div class="card" style="display:flex;align-items:center;gap:14px"><span style="font-size:64px">${t.e}</span><div style="text-align:left"><div style="font:700 19px var(--head)">${esc(t.name)}</div><span class="price" style="font-size:20px">${t.sum} 🪙</span></div></div>
+        <div class="row">${C.coins.map(v => `<span class="bigcoin">${v}</span>`).join('')}</div>
+        <div class="plate">${s.plate.map(v => `<span class="bigcoin">${v}</span>`).join('') || '<span class="muted">Тарілочка для монет</span>'}</div></div>
+      <div class="basket"><b>Кошик</b><div class="row" style="font-size:44px">${s.basket.join(' ')}</div></div></div>`;
   }
-  if (s.step === 'sell910') return head('money', 'Продаж') + `<div class="center">${top}<div class="queue">${Array.from({ length: Math.min(10, d.customers || 0) }, (_, i) => `<span style="animation-delay:${i * 0.15}s">${['🧒', '👧', '👦', '👩', '🧑'][i % 5]}</span>`).join('') || '<span>🚫</span>'}</div><div class="huge">${d.noIngr ? 'Немає інгредієнтів…' : `+${d.revenue} грн`}</div></div>`;
-  return head('money', 'Вечір') + `<div class="center">${top}<div class="card bank" style="width:min(560px,100%)"><div style="font-size:56px">🐷${C.goal.e}</div><div class="bar"><i style="width:${Math.min(100, s.piggy / C.goal.price * 100)}%"></i></div><div class="lead">${s.piggy} з ${C.goal.price} грн на ${esc(C.goal.name.toLowerCase())}</div></div></div>`;
+  const D = C.deals[s.q];
+  const body = D.type === 'choice' ? `<div class="opts">${D.opts.map(o => `<div class="opt${s.choice === o.id ? ' sel' : ''}">${esc(o.label)}</div>`).join('')}</div>` : `<div class="display">${esc(s.typed) || '&nbsp;'}</div><div class="lead">грн</div>`;
+  return head('money', `Що вигідніше? · ${s.q + 1} з ${C.deals.length}`) + `<div class="center" style="flex-direction:row;gap:30px">${owl(owlL.deal)}<div class="center">${body}</div></div>`;
 };
 V.hike = s => {
   const ctx = ctxOf(S, 'hike'), C = ctx.C;
   if (G() === '78') {
-    if (s.step === 'pack') return head('hike', 'Рюкзак') + `<div class="center" style="gap:14px"><div class="pill" style="font-size:20px">${C.forecast.e} ${esc(C.forecast.text)}</div>
+    if (s.step === 'pack') return head('hike', 'Рюкзак') + `<div class="center" style="gap:12px"><div class="pill" style="font-size:20px">${C.forecast.e} ${esc(C.forecast.text)}</div>
       <div class="items">${C.items.map(i => `<div class="item${s.pack.includes(i.id) ? ' in' : ''}"><span class="e">${i.e}</span>${esc(i.name)}</div>`).join('')}</div>
-      <div class="pack" style="width:min(640px,100%)">${Array.from({ length: C.pockets }, (_, k) => `<div class="pocket">${s.pack[k] ? C.items.find(i => i.id === s.pack[k]).e : ''}</div>`).join('')}</div></div>`;
-    return head('hike', 'Зламаний міст') + `<div class="center" style="gap:16px"><div class="row" style="align-items:center"><span style="font-size:52px">${C.obstacle.e}</span><span class="pill" style="font-size:18px">До темряви: ${'☀️'.repeat(C.sunsLeft)}</span></div>
+      <div class="pack" style="width:min(620px,100%)">${Array.from({ length: C.pockets }, (_, k) => `<div class="pocket">${s.pack[k] ? C.items.find(i => i.id === s.pack[k]).e : ''}</div>`).join('')}</div></div>`;
+    return head('hike', 'Зламаний міст') + `<div class="center" style="gap:14px"><div class="row" style="align-items:center"><span style="font-size:50px">${C.obstacle.e}</span><span class="pill" style="font-size:18px">До темряви: ${'☀️'.repeat(C.sunsLeft)}</span></div>
       <div class="routes" style="width:100%">${C.routes.map(r => `<div class="route${s.route === r.id ? ' sel' : ''}"><span class="e">${r.e}</span><span class="nm">${esc(r.name)}</span><span style="font-size:22px">${'☀️'.repeat(r.suns)}</span>${r.danger ? `<span class="danger">⚠️ ${esc(r.note.replace(/^Знак /, ''))}</span>` : ''}</div>`).join('')}</div></div>`;
   }
-  if (s.step === 'rain') return head('hike', 'Несподіванка') + `<div class="center"><div style="font-size:90px">🌧️⚡</div><div class="huge" style="font-size:30px">${esc(C.rain.text)}</div></div>`;
-  const placed = Object.keys(s.plan), pool = C.blocks.filter(b => !placed.includes(b.id));
-  const rows = C.hours.map(h => `<div class="h">${String(h).padStart(2, '0')}:00</div><div class="slot" data-h="${h}"></div>`).join('') + `<div class="h">${C.end}:00</div><div class="slot"></div>`;
-  const rowH = 34, blocks = C.blocks.filter(b => s.plan[b.id] !== undefined).map(b => `<div class="blk${s.sel === b.id ? ' sel' : ''}" style="top:${(s.plan[b.id] - C.hours[0]) * (rowH + 4)}px;height:${b.dur * (rowH + 4) - 4}px">${b.e} ${esc(b.name)}</div>`).join('');
-  const rain = s.step === 'replan' ? `<div class="blk rainzone" style="top:${(C.rain.at - C.hours[0]) * (rowH + 4)}px;height:${(C.rain.until - C.rain.at) * (rowH + 4) - 4}px">🌧️ ${esc(C.blocks.find(b => b.id === 'peak').name)}: закрито</div>` : '';
+  if (s.step === 'rain') return head('hike', 'Несподіванка') + `<div class="center"><div style="font-size:90px">🌧️⚡</div><div class="huge" style="font-size:28px">${esc(C.rain.text)}</div></div>`;
+  const pool = C.blocks.filter(b => s.plan[b.id] === undefined), n = C.hours.length + 1, pct = h => ((h - C.hours[0]) / n * 100);
+  const rows = C.hours.concat([C.end]).map(h => `<div class="r"><span class="h">${String(h).padStart(2, '0')}:00</span><span class="line"></span></div>`).join('');
+  const blocks = C.blocks.filter(b => s.plan[b.id] !== undefined).map(b => `<div class="blk${s.sel === b.id ? ' sel' : ''}" style="top:calc(${pct(s.plan[b.id])}% + 2px);height:calc(${b.dur / n * 100}% - 4px)"><span class="e">${b.e}</span>${esc(b.name)} · ${b.dur} год</div>`).join('');
+  const rain = s.step === 'replan' ? `<div class="blk rainzone" style="top:calc(${pct(C.rain.at)}% + 2px);height:calc(${(C.rain.until - C.rain.at) / n * 100}% - 4px)">🌧️ ${esc(C.blocks.find(b => b.id === 'peak').name)}: закрито</div>` : '';
   const rules = Object.values(C.rules).concat(s.step === 'replan' ? [C.rain.rule] : []);
-  return head('hike', s.step === 'replan' ? 'Новий план' : 'Розклад походу') + `<div style="flex:1;display:grid;grid-template-columns:200px 1fr 260px;gap:18px;min-height:0">
-    <div style="display:flex;flex-direction:column;gap:8px"><div class="kicker">Справи</div>${pool.map(b => `<div class="item${s.sel === b.id ? ' sel' : ''}" style="flex-direction:row;justify-content:flex-start;gap:8px;padding:8px 10px"><span class="e" style="font-size:24px">${b.e}</span>${esc(b.name)} · ${b.dur} год</div>`).join('')}</div>
-    <div style="position:relative"><div class="tl">${rows}</div><div style="position:absolute;left:74px;right:0;top:0">${rain}${blocks}</div></div>
+  return head('hike', s.step === 'replan' ? 'Новий план' : 'Розклад походу') + `<div class="plan">
+    <div class="pool"><div class="kicker">Справи</div>${pool.map(b => `<div class="task-card${s.sel === b.id ? ' sel' : ''}"><span class="e">${b.e}</span>${esc(b.name)} · ${b.dur} год</div>`).join('')}</div>
+    <div class="tl">${rows}${rain}${blocks}</div>
     <div class="card rules"><div class="kicker">Правила</div><ul style="margin:6px 0 0;padding-left:18px">${rules.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div></div>`;
 };
 V.bob = s => {
-  const ctx = ctxOf(S, 'bob'), C = ctx.C, face = s.face === 'normal' ? undefined : s.face;
-  const bob = `<div class="px${s.left && s.step === 'bye' ? ' walkoff' : ''}">${HP.render({ style: CONFIG.heroStyle, head: 'beaver', cape: '#FF9F1C', items: [], scale: sc(380, 30), expression: face, frame: s.left && s.step === 'bye' ? 1 : 0 })}</div>`;
+  const ctx = ctxOf(S, 'bob'), C = ctx.C, face = s.face === 'normal' ? 'pride' : s.face;   // трохи «нахабний» Боб
+  const walking = s.left && s.step === 'bye';
+  const bob = `<div class="bobfig${walking ? ' walkoff' : ''}"><div class="px">${HP.render({ style: CONFIG.heroStyle, head: 'beaver', cape: '#FF9F1C', items: [], scale: sc(470, 30), expression: face, frame: walking ? 1 : 0 })}</div>${!s.result ? `<span class="rope">${C.need.e}</span>` : ''}</div>`;
   const line = T(ST.bob.lineText(s, C));
-  let right = `<div class="speech">${esc(line)}</div>`;
-  if (s.step === 'talk' || s.step === 'intro') right += `<div class="row" style="margin-top:18px;align-items:center"><span class="lead">Потрібна</span><span class="tile" style="font-size:44px;padding:6px 12px">${C.need.e}</span></div>`;
-  if (s.step === 'trade') right += `<div class="bag" style="margin-top:18px">${C.items.map(i => `<div class="good${s.tries.includes(i.id) ? ' taken' : ''}"><span class="e">${i.e}</span><span class="n">${esc(i.name)}</span></div>`).join('')}</div>`;
-  if (s.step === 'bye' && !s.left) right += `<div class="row" style="margin-top:18px;font-size:54px">${s.result ? C.need.e + ' 🤝' : ''}</div>`;
-  return head('bob', 'Ринок Боба') + `<div class="bob"><div class="center">${s.step === 'bye' && s.left ? '' : bob}${s.step === 'bye' && s.left ? bob : ''}</div><div>${right}</div></div>`;
+  const lastMine = s.step === 'trade' && s.tries.length ? C.items.find(i => i.id === s.tries[s.tries.length - 1]) : null;
+  const inv = `<div class="inv">${C.items.map(i => `<div class="slot${s.tries.includes(i.id) && i.id !== (s.result ? s.tries[s.tries.length - 1] : '') ? ' used' : ''}${s.result && s.tries[s.tries.length - 1] === i.id ? ' given' : ''}"><span class="e">${i.e}</span>${esc(i.name)}</div>`).join('')}</div>`;
+  return head('bob', 'Ринок Боба') + `<div class="bob"><div class="center">${bob}</div><div class="bubbles">${lastMine ? `<div class="me">Ти: ${lastMine.e} ${esc(lastMine.name)}</div>` : ''}<div class="speech">🦫 ${esc(line)}</div></div></div>${inv}`;
 };
 V.playground = s => {
   const ctx = ctxOf(S, 'playground'), C = ctx.C, caps = otherCapes();
   if (G() === '78') {
     const [h1, h2] = otherHeads(C.heads);
-    if (s.step === 'judge') return head('playground', 'Суддя') + `<div class="center"><div style="font-size:48px">${C.judge.props}</div><div class="kids">
-      <div class="kid"><div class="wish">${esc(C.judge.mia)}</div>${npc(h1, caps[0], sc(420, 30), 'anger')}<b>Мія</b></div>
-      <div class="kid"><div class="wish">${esc(C.judge.tim)}</div>${npc(h2, caps[1], sc(420, 30), 'anger')}<b>Тім</b></div></div></div>`;
-    return head('playground', 'Правила') + `<div class="center" style="gap:16px"><div class="kids">${[[h1, caps[0]], [h2, caps[1]]].map(([h, c]) => `<div class="kid"><span class="think">…</span>${npc(h, c, 4)}</div>`).join('')}</div>
-      <div class="cards" style="width:100%">${C.cards.map(c => `<div class="rcard${s.cards.includes(c.id) ? ' sel' : ''}">${esc(c.text)}</div>`).join('')}</div></div>`;
+    if (s.step === 'judge') return head('playground', 'Суддя') + `<div class="center"><div style="font-size:44px">${C.judge.props}</div><div class="kids">
+      <div class="kid"><div class="wish">${esc(C.judge.mia)}</div>${npc(h1, caps[0], sc(470, 30), 'anger')}<b>Мія</b></div>
+      <div class="kid"><div class="wish">${esc(C.judge.tim)}</div>${npc(h2, caps[1], sc(470, 30), 'anger')}<b>Тім</b></div></div></div>`;
+    return head('playground', 'Правила') + `<div class="center" style="gap:14px"><div class="kids">${[[h1, caps[0], 'Мія'], [h2, caps[1], 'Тім']].map(([h, c, n]) => `<div class="kid"><span class="think">…</span>${npc(h, c, 4)}<b>${n}</b></div>`).join('')}</div>
+      <div class="cards">${C.cards.map(c => `<div class="rcard${s.cards.includes(c.id) ? ' sel' : ''}">${esc(c.text)}</div>`).join('')}</div></div>`;
   }
-  if (s.step === 'piles') {
-    const col = p => C.phrases.map((x, i) => ({ x, i })).filter(o => s.piles[o.i] === p).map(o => `<div class="phrase">${esc(o.x.text)}</div>`).join('');
-    const mid = C.phrases.map((x, i) => ({ x, i })).filter(o => !s.piles[o.i]).map(o => `<div class="phrase">${esc(o.x.text)}</div>`).join('');
-    return head('playground', 'Дві купки') + `<div class="piles"><div class="pilecol"><h3>Звинувачення</h3>${col('blame')}</div><div class="pilecol" style="background:#fff">${mid}</div><div class="pilecol"><h3>Я-повідомлення</h3>${col('i')}</div></div>`;
+  if (s.step === 'compromise') {
+    const team = (key, h) => `<div class="team"><b>${esc(C.teams[key].name)}</b><div class="row">${[0, 1, 2].map(i => npc(h, caps[i % caps.length], 3)).join('')}</div><div class="row">${C.teams[key].wishes.map(w => `<span class="wish">${esc(w)}</span>`).join('')}</div></div>`;
+    return head('playground', 'Компроміс') + `<div class="center" style="gap:12px"><div class="teams">${team('cats', 'cat')}${team('foxes', 'fox')}</div>
+      <div class="cards">${C.cards.map(c => `<div class="rcard${s.cards.includes(c.id) ? ' sel' : ''}">${esc(c.text)}</div>`).join('')}</div></div>`;
   }
-  const team = (key, h) => `<div class="team"><b>${esc(C.teams[key].name)}</b><div class="row">${[0, 1, 2].map(i => npc(h, caps[i % caps.length], 3)).join('')}</div><div class="row">${C.teams[key].wishes.map(w => `<span class="wish">${esc(w)}</span>`).join('')}</div></div>`;
-  return head('playground', 'Компроміс') + `<div class="center" style="gap:14px"><div class="teams" style="width:100%">${team('cats', 'cat')}${team('foxes', 'fox')}</div>
-    <div class="cards" style="width:100%">${C.cards.map(c => `<div class="rcard${s.cards.includes(c.id) ? ' sel' : ''}">${esc(c.text)}</div>`).join('')}</div></div>`;
+  // «Чат класу»
+  const ch = C.chat, msgs = [];
+  msgs.push(`<div class="msg"><b>Вчителька</b>${esc(ch.situation)}</div>`);
+  ch.messages.forEach((m, i) => {
+    if (i > s.ci) return;
+    msgs.push(`<div class="msg"><b>${esc(m.from)}</b>${esc(m.text)}</div>`);
+    const pick = s.chat[i];
+    if (pick) { const o = m.options.find(x => x.id === pick), r = m.react[pick]; msgs.push(`<div class="msg me"><b>Ти</b>${esc(o.text)}</div>`, `<div class="msg"><b>${esc(r.from)}</b>${esc(r.text)}</div>`); }
+  });
+  const cur = ch.messages[s.ci];
+  const replies = s.step === 'chat' && cur ? `<div class="replies">${cur.options.map(o => `<div class="reply">${esc(o.text)}</div>`).join('')}</div>` : '';
+  return head('playground', 'Чат класу') + `<div class="chat"><div class="ttl">💬 ${esc(ch.title)}</div><div class="msgs">${msgs.slice(-7).join('')}</div>${replies}</div>`;
 };
 V.radio = s => {
-  const ctx = ctxOf(S, 'radio'), C = ctx.C, mic = HP.renderSpark({ scale: Math.max(5, Math.min(10, Math.floor((vh() - 380) / 14))), mic: true });
-  const studio = extra => `<div class="center"><span class="onair"><i></i> В ЕФІРІ</span><div class="px">${mic}</div>${extra || ''}</div>`;
-  if (s.step === 'q') return head('radio', `Питання ${s.qi + 1} з ${C.questions.length}`) + studio(G() === '910' ? `<div class="card lead">${esc(T(C.questions[s.qi]))}</div>` : '');
-  if (s.step === 'ask') return head('radio', 'Твоє питання') + studio();
-  return head('radio', 'Думка за 30 секунд', s.running ? s.endsAt : null) + `<div class="center" style="gap:18px"><span class="onair"><i></i> В ЕФІРІ</span><div class="topics" style="width:100%">${C.topics.map((t, i) => `<div class="rcard${s.topic === i ? ' sel' : ''}" style="font-size:20px;padding:22px">${esc(t)}</div>`).join('')}</div></div>`;
+  const ctx = ctxOf(S, 'radio'), C = ctx.C;
+  const named = s.guestMode === 'named';
+  const host = named
+    ? `<div class="guest"><div class="px">${HP.render({ style: CONFIG.heroStyle, head: 'shadow', cape: CONFIG.capes[s.guestCape || 0].color, items: [0, 4], scale: sc(500, 30) })}</div><span class="mic">🎙️</span><div class="plate-name">${esc(s.guest)}</div></div>`
+    : `<div class="guest"><div class="px">${HP.renderSpark({ scale: Math.max(5, Math.min(10, Math.floor((vh() - 460) / 14))), mic: true })}</div><div class="plate-name">Іскра</div></div>`;
+  if (s.step === 'guest') return head('radio', 'Таємний гість') + `<div class="center"><span class="onair"><i></i> В ЕФІРІ</span>${s.guestMode ? host : `<div class="px">${HP.render({ style: CONFIG.heroStyle, head: 'shadow', cape: '#9AA2BA', items: [0, 4], scale: sc(500, 30) })}</div><div class="plate-name">?</div>`}</div>`;
+  if (s.step === 'q' || s.step === 'ask') return head('radio', s.step === 'q' ? `Питання ${s.qi + 1} з ${C.questions.length}` : 'Твоє питання') + `<div class="center"><span class="onair"><i></i> В ЕФІРІ</span>${host}</div>`;
+  return head('radio', 'Думка за 30 секунд', s.running ? s.endsAt : null) + `<div class="center" style="gap:16px"><span class="onair"><i></i> В ЕФІРІ</span><div class="topics">${C.topics.map((t, i) => `<div class="rcard${s.topic === i ? ' sel' : ''}" style="font-size:20px;padding:20px">${esc(t)}</div>`).join('')}</div></div>`;
 };
 V.final = s => {
-  if (s.step === 'batteries') return head('final', 'Батарейки суперсил') + mapView({ all: true, batteries: true });
+  if (s.step === 'batteries') {
+    const k = s.list[s.bi];
+    if (!k) return head('final', 'Батарейки суперсил') + `<div class="center"><div class="huge">🔋</div></div>`;
+    const sk = skillOf(k), L = CONFIG.locations[k], v = S.self[k] || 0;
+    return head('final', `Батарейки суперсил · ${s.bi + 1} з ${s.list.length}`) + `<div class="center" style="gap:22px"><div class="row" style="align-items:center;gap:14px"><span class="tile" style="width:70px;height:70px;font-size:38px">${L.icon}</span><span class="huge" style="font-size:30px">${esc(sk.area)}</span></div>
+      <div class="battery">${[1, 2, 3].map(n => `<i class="${v >= n ? 'on' : ''}"></i>`).join('')}</div></div>`;
+  }
   const L = scoreAll(S), sk = skillOf(titleSkill(S, L));
-  return head('final', 'Острів пройдено!') + `<div class="final">${hero({}, sc(360, 30))}<div style="display:flex;flex-direction:column;gap:16px">
+  return head('final', 'Острів пройдено!') + `<div class="final">${hero({}, sc(400, 30))}<div style="display:flex;flex-direction:column;gap:16px">
     <div class="lead">${esc(S.setup.name)}, ти пройш{ов|ла} увесь острів!</div><div class="kicker" style="font-size:16px">Твоя найяскравіша суперсила</div><div class="huge">${esc(sk.title)}</div></div></div>`;
 };
 function splashIdle() {
@@ -459,7 +542,6 @@ function render() {
   }
   st.innerHTML = T(html);
   setBubble(iskraLine());
-  // перехід героя стежкою
   const w = $('#walker');
   if (w && walkFrom) { const L = CONFIG.locations[S.cur]; requestAnimationFrame(() => requestAnimationFrame(() => { w.style.left = L.x + '%'; w.style.top = (L.y - 3) + '%'; })); setTimeout(() => { walkFrom = null; }, 1400); }
   tick();
@@ -470,7 +552,7 @@ function tick() {
   el.textContent = fmtTime(Math.ceil(Math.max(0, rem))); el.classList.toggle('pulse', rem <= 10 && rem > 0);
 }
 function onState(ns) {
-  if (!ns || ns.v !== 4) return;
+  if (!ns || ns.v !== 5) return;
   if (S && ns.rev && S.rev && ns.rev < S.rev) return;
   const fxNew = ns.fx && (!lastFx || ns.fx.n !== lastFx);
   if (S && ns.cur !== S.cur && ns.fx && ns.fx.kind === 'walk' && !reduced()) walkFrom = S.cur;
