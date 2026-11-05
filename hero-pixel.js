@@ -60,15 +60,27 @@
       '.KKJJJJJJJJJJKK.','.KJJJJJkkJJJJJK.','..JJJJkJJkJJJJ..','..JJJJJwwJJJJJ..',
       '...JJJJwwJJJJ...','....KKKKKKKK....'] }
   };
+  // сова Ухта (Крамниця) і силует «Таємного гостя» (Радіо)
+  HEADS.owl = { label:'Сова', body:{ main:'K', belly:'J', limb:'K' }, crownY:2, rows:[
+      '..K..........K..','..KK........KK..','..KKKKKKKKKKKK..','.KKKKKKKKKKKKKK.',
+      '.KKwwwKKKKwwwKK.','.KwwwwwKKwwwwwK.','.KwwkkwKKwkkwwK.','.KwwkwwKKwkwwwK.',
+      '.KKwwwwYYwwwwKK.','.KKKJJJYYJJJKKK.','..KJJJJyyJJJJK..','..KJJJJJJJJJJK..',
+      '...KJJJJJJJJK...','....KKKKKKKK....'] };
+  HEADS.shadow = { label:'Таємний гість', body:{ main:'D', belly:'A', limb:'D' }, crownY:2, rows:[
+      '................','.....DDDDDD.....','...DDDDDDDDDD...','..DDDDDDDDDDDD..',
+      '.DDDDDDDDDDDDDD.','.DDDDDDDDDDDDDD.','.DDDwwDDDDwwDDD.','.DDDwwDDDDwwDDD.',
+      '.DDDDDDDDDDDDDD.','.DDDDDDDDDDDDDD.','..DDDDDDDDDDDD..','...DDDDDDDDDD...',
+      '....DDDDDDDD....','......DDDD......'] };
   // панда: очі на темних плямах малюються білим
   HEADS.panda.eyeInk = 'w';
 
   /* Вирази обличчя: рядки 6–11 голови. Очі — 4 символи для лівого ока (стовпці 3–6), праве дзеркальне (9–12),
      або [ліве, праве]. Рот — 6 символів (стовпці 5–10), рядки 9–11. k — чорнило, w — відблиск, p — рум’янець, U — сльоза. */
+  // без брів: верхній рядок ока або порожній, або лежить прямо над зіницею (не окремий штрих)
   const EYES = {
-    open:   ['.kk.', '.kw.'],  happy: ['.kk.', 'k..k'],  sad:    ['..kk', '.kk.'],  angry: ['kk..', '..kk'],
+    open:   ['.kk.', '.kw.'],  happy: ['.kk.', 'k..k'],  sad:    ['....', '.kk.'],  angry: ['....', 'kkk.'],
     wide:   ['kkk.', 'kwk.'],  down:  ['....', '.kk.'],  closed: ['....', 'kkk.'],  shut:  ['....', 'k..k'],
-    side:   [['.kk.', '..kk'], ['.kk.', '..kk']],  droop: ['....', '.kkk']
+    side:   [['....', '..kk'], ['....', '..kk']],  droop: ['....', '.kkk']
   };
   const MOUTH = {
     smile: ['......', 'k....k', '.kkkk.'], grin:  ['kkkkkk', 'krrrrk', '.kkkk.'], frown: ['......', '.kkkk.', 'k....k'],

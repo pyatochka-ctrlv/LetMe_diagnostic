@@ -25,21 +25,20 @@ function uuid() {
   try { if (crypto.randomUUID) return crypto.randomUUID(); } catch (e) { }
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, ch => { const r = Math.random() * 16 | 0; return (ch === 'x' ? r : (r & 3 | 8)).toString(16); });
 }
-function addMonths(iso, m) { const d = new Date(iso); const day = d.getDate(); d.setMonth(d.getMonth() + m); if (d.getDate() < day) d.setDate(0); return d; }
 function fmtDate(d) { return new Date(d).toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
 function skillOf(k) { return CONFIG.skills.find(s => s.key === k); }
 function probeNames(k, g) { const p = skillOf(k).probes; return Array.isArray(p) ? p : p[g]; }
 
 /* ---------------- стан ---------------- */
 function freshState(sound = true) {
-  return { v: 4, id: uuid(), rev: 0, phase: 'setup',
-    setup: { name: '', teacher: '', group: null, age: null, gender: null, version: 'A' },
+  return { v: 5, id: uuid(), rev: 0, phase: 'setup',
+    setup: { name: '', surname: '', mik: '', group: null, age: null, gender: null },
     hero: { head: null, cape: null }, cur: 'hero', st: {}, items: [], self: {}, sound,
     t: { lessonStart: null, lessonEnd: null }, skips: { probes: 0, stations: 0 }, fx: { n: 0, kind: '', data: null }, sheet: null, date: new Date().toISOString() };
 }
 function ctxOf(S, key) {
-  const g = S.setup.group, v = S.setup.version, V = CONFIG.versions[v] || CONFIG.versions.A, c = V[key] || {};
-  return { g, v, gender: S.setup.gender, C: Object.assign({}, c, c[g] || {}), T: CONFIG.thresholds[key] || {} };
+  const g = S.setup.group, c = CONFIG.content[key] || {};
+  return { g, gender: S.setup.gender, C: Object.assign({}, c, c[g] || {}), T: CONFIG.thresholds[key] || {} };
 }
 function fx(S, kind, data) { S.fx = { n: (S.fx ? S.fx.n : 0) + 1, kind, data: data ?? null, at: Date.now() }; }
 function capeColor(id) { return (CONFIG.capes.find(c => c.id === id) || { color: '#C9D3E8' }).color; }
@@ -60,22 +59,39 @@ function emoScore(ok, chosen) {
   return 0;
 }
 function emFrames(ctx) {
-  if (ctx.g === '78') return ctx.C.comics.flatMap((c, ci) => c.frames.map((f, fi) => ({ ...f, title: c.title, head: c.head, ci, fi, n: c.frames.length })));
-  return ctx.C.cases.flatMap((c, ci) => c.frames.map((f, fi) => ({ ...f, title: c.title, text: c.text, heads: c.heads, ci, fi, n: c.frames.length })));
+  if (ctx.g === '78') return ctx.C.comics.flatMap((c, ci) => c.frames.map((f, fi) => ({ ...f, title: c.title, head: c.head, warm: !!c.warm, ci, fi, n: c.frames.length })));
+  return ctx.C.cases.flatMap((c, ci) => c.frames.map((f, fi) => ({ ...f, title: c.title, text: c.text, heads: c.heads, warm: !!c.warm, mask: !!c.mask, ci, fi, n: c.frames.length })));
 }
+// Сейф: обидві проби рахуються на замку 2 (складнішому)
 function safeLevel(s, T) {
   if (s.end === 'skipped') return null;
-  const l1 = s.locks[0]; if (!l1) return null;
-  if (l1.opened || (s.end === 'time' && l1.attempts.length >= T.minAttempts)) return 3;
+  const l = s.locks[1]; if (!l) return null;
+  if (l.opened || (s.end === 'time' && l.attempts.length >= T.minAttempts)) return 3;
   if (s.end === 'stopped') return s.stoppedAt >= T.stopSec ? 2 : 1;
   return 2;
 }
 function safeHelpLevel(s) {
   if (s.end === 'skipped') return null;
-  const stuck = s.locks.filter(l => l.stuckAt !== null && l.stuckAt !== undefined);
-  if (!stuck.length) return null;
-  if (stuck.some(l => l.hint)) return 3;
+  const l = s.locks[1]; if (!l || l.stuckAt === null || l.stuckAt === undefined) return null;
+  if (l.hint) return 3;
   return s.end === 'stopped' ? 1 : 2;
+}
+// Майданчик 9–10, «Чат класу»: я-повідомлення + пояснення
+function chatLevel(chat, why) {
+  const n = chat.filter(x => x === 'i').length;
+  if (n === 3 && why === 'feel') return 3;
+  if (n === 2 || n === 3) return 2;
+  return 1;
+}
+function sumCoins(coins) { return coins.reduce((a, b) => a + b, 0); }
+function picnic910Points(cart) {
+  const n = id => cart[id] || 0; let p = 0;
+  if (n('sandwich') >= 3 || n('baton') >= 1) p += 1;
+  if (n('juice15') >= 1 || n('juice05') >= 3) p += 1;
+  if (n('juice15') >= 1) p += 0.5;
+  if (n('baton') >= 1) p += 0.5;
+  if (n('promo') === 0) p += 1;
+  return p;
 }
 // Похід 9–10: порушені правила плану. plan = {blockId: startHour}
 function hikeViolations(plan, C, withRain) {
@@ -119,10 +135,6 @@ function radioAvg(answers, ask, g, T) {
   if (g === '910' && ask === 'yes') avg += T.askBonus910;
   return avg;
 }
-function money910Day(dayIdx, C, choice) {
-  const w = C.weather[dayIdx]; return Math.round(C.base[w] * C.factor[choice]);
-}
-
 /* =====================================================================
    СТАНЦІЇ
    init(ctx) · probeOf(s) · canNext(s,ctx) · next(S,s,ctx) · act{} · skipProbe(S,s,ctx) · tick(S,s,ctx,now) · score(s,ctx)
@@ -150,14 +162,17 @@ ST.hero = {
 
 /* ---------- 1. Кіностудія — Емоції ---------- */
 ST.emotions = {
-  init: () => ({ step: 'intro', fi: 0, ans: [], calm: { n: 0, none: false, endsAt: null }, skip: {} }),
-  probeOf: s => (s.step === 'intro' || s.step === 'frames' ? 1 : s.step === 'calmReady' || s.step === 'calm' ? 2 : null),
+  init: () => ({ step: 'intro', fi: 0, ans: [], seen: {}, calm: { n: 0, none: false, endsAt: null }, skip: {} }),
+  probeOf: s => (['intro', 'caseIntro', 'frames'].includes(s.step) ? 1 : s.step === 'calmReady' || s.step === 'calm' ? 2 : null),
   canNext: () => true,
   nextLabel: s => (s.step === 'calmReady' ? 'Старт 60 с' : 'Далі'),
+  // перехід до кадру i: перед кейсом «показує / відчуває» — екран-пояснення
+  goFrame(s, F, i) { s.fi = i; const f = F[i]; if (f.mask && f.fi === 0 && !s.seen[f.ci]) { s.seen[f.ci] = true; s.step = 'caseIntro'; } else s.step = 'frames'; },
   next(S, s, ctx) {
     const F = emFrames(ctx);
-    if (s.step === 'intro') s.step = 'frames';
-    else if (s.step === 'frames') { if (s.fi < F.length - 1) s.fi++; else s.step = 'calmReady'; }
+    if (s.step === 'intro') ST.emotions.goFrame(s, F, 0);
+    else if (s.step === 'caseIntro') s.step = 'frames';
+    else if (s.step === 'frames') { if (s.fi < F.length - 1) ST.emotions.goFrame(s, F, s.fi + 1); else s.step = 'calmReady'; }
     else if (s.step === 'calmReady') { s.step = 'calm'; s.calm.endsAt = Date.now() + ctx.T.calmSec * 1000; }
     else if (s.step === 'calm') stationDone(S, 'emotions', s);
   },
@@ -172,7 +187,7 @@ ST.emotions = {
     none(S, s) { if (s.step !== 'calm' && s.step !== 'calmReady') return false; s.calm.none = true; stationDone(S, 'emotions', s); }
   },
   skipProbe(S, s) {
-    if (s.step === 'intro' || s.step === 'frames') { s.skip.p1 = true; s.step = 'calmReady'; }
+    if (['intro', 'caseIntro', 'frames'].includes(s.step)) { s.skip.p1 = true; s.step = 'calmReady'; }
     else { s.skip.p2 = true; stationDone(S, 'emotions', s); }
   },
   tick(S, s) { if (s.step === 'calm' && s.calm.endsAt && Date.now() >= s.calm.endsAt) { stationDone(S, 'emotions', s); return true; } },
@@ -180,192 +195,180 @@ ST.emotions = {
     const F = emFrames(ctx), T = ctx.T;
     let p1 = null, p2 = null;
     if (!s.skip.p1) {
-      const sc = F.map((f, i) => emoScore(f.ok, s.ans[i] || [])), sum = sc.reduce((a, b) => a + b, 0), t = T.frames[ctx.g];
+      const sc = F.map((f, i) => emoScore(f.ok, s.ans[i] || [])), sum = sc.reduce((a, b) => a + b, 0), share = sum / F.length;
       const miss = F.map((f, i) => ({ f, sc: sc[i], ch: s.ans[i] || [] })).filter(x => x.sc < 1);
-      p1 = { level: th(sum, t.l3, t.l2), short: `${num(sum)} з ${F.length}`,
+      p1 = { level: th(share + 1e-9, T.frames.l3, T.frames.l2), short: `${num(sum)} з ${F.length}`,
         ev: `${num(sum)} з ${F.length} балів за кадри${miss.length ? `; інакше побачено: ${miss.map(x => `«${x.f.caption || x.f.question}» — ${x.ch.length ? x.ch.map(id => CONFIG.emotionNames[id].toLowerCase()).join(', ') : 'без відповіді'}`).join('; ')}` : ''}`,
         raw: { answers: s.ans, scores: sc, sum } };
     }
     if (!s.skip.p2) {
       const n = s.calm.none ? 0 : s.calm.n, t = T.calm[ctx.g];
-      p2 = { level: th(n, t.l3, t.l2), short: `${n} ${pl(n, ['спосіб', 'способи', 'способів'])}`, ev: s.calm.none && !s.calm.n ? 'Способів заспокоїтися не назвала («не знаю»)' : `Способів заспокоїтися за 60 с — ${n}`, raw: { n, none: s.calm.none } };
+      p2 = { level: th(n, t.l3, t.l2), short: `${n}`, ev: s.calm.none && !s.calm.n ? 'Способів заспокоїтися не назвала («не знаю»)' : `Способів заспокоїтися за 60 с — ${n}`, raw: { n, none: s.calm.none } };
     }
     return { p1, p2 };
+  },
+  // коди для «Усіх відповідей»: K1…K6 — кадри, K* — способи
+  codes(s, ctx) {
+    const F = emFrames(ctx), out = [];
+    if (!s.skip.p1) F.forEach((f, i) => {
+      const ch = s.ans[i] || [], sc = emoScore(f.ok, ch), nm = a => a.map(id => CONFIG.emotionNames[id]).join(', ');
+      out.push(`K${i + 1} ${sc === 1 ? '✅' : sc === 0.5 ? '½' : '❌'} ${ch.length ? nm(ch) : '—'}${sc < 1 ? ` → ${nm(f.ok)}` : ''}`);
+    }); else out.push('K пропущено');
+    out.push(s.skip.p2 ? 'K* пропущено' : `K* способів: ${s.calm.none ? 0 : s.calm.n}`);
+    return out;
   }
 };
 
-/* ---------- 2. Сейф — Наполегливість ---------- */
+/* ---------- 2. Сейф — Наполегливість (замок 1 — розминка, замок 2 — оцінюється) ---------- */
 ST.safe = {
-  init(ctx) {
-    const tr = ctx.C.trial;
-    return { step: 'intro', trial: { code: shuffle(tr.fruits).slice(0, tr.slots), attempts: [], guess: [], opened: false }, lock: 0, locks: [], guess: [], startedAt: null, endsAt: null, end: null, stoppedAt: null, phase: 'play' };
-  },
-  makeLock(L) { return { code: shuffle(L.fruits).slice(0, L.slots), attempts: [], hint: null, opened: false, openedAt: null, greens: [], noNew: 0, stuckAt: null }; },
-  elapsed: s => Math.round((Date.now() - s.startedAt) / 1000),
-  probeOf: s => (s.step === 'play' ? 1 : null),
-  canNext: s => (s.step === 'intro' || s.step === 'trial' || (s.step === 'play' && s.phase === 'opened')),
-  nextLabel: s => (s.step === 'trial' ? 'Далі: справжній сейф (4 хв)' : s.phase === 'opened' ? 'Далі: замок 2' : 'Далі'),
+  init: () => ({ step: 'intro', lock: 0, locks: [], guess: [], startedAt: null, endsAt: null, end: null, stoppedAt: null }),
+  makeLock(L) { return { code: shuffle(L.fruits).slice(0, L.slots), attempts: [], hint: null, opened: false, openedAt: null, greens: [], noNew: 0, stuckAt: null, startedAt: Date.now() }; },
+  elapsed: s => Math.round((Date.now() - (s.startedAt || Date.now())) / 1000),
+  L: (s, ctx) => (s.lock === 0 ? ctx.C.warm : ctx.C.hard),
+  probeOf: s => (s.step === 'hard' ? 1 : null),
+  canNext: s => s.step === 'intro' || s.step === 'warm',
+  nextLabel: s => (s.step === 'warm' ? 'Далі: складніший замок' : 'Далі'),
   next(S, s, ctx) {
-    if (s.step === 'intro') s.step = 'trial';
-    else if (s.step === 'trial') { s.step = 'play'; s.startedAt = Date.now(); s.endsAt = s.startedAt + ctx.T.totalSec * 1000; s.locks = [ST.safe.makeLock(ctx.C.locks[0])]; s.guess = []; }
-    else if (s.step === 'play' && s.phase === 'opened') { s.lock = 1; s.locks.push(ST.safe.makeLock(ctx.C.locks[1])); s.guess = []; s.phase = 'play'; }
+    if (s.step === 'intro') { s.step = 'warm'; s.lock = 0; s.locks = [ST.safe.makeLock(ctx.C.warm)]; s.guess = []; }
+    else if (s.step === 'warm') { s.step = 'hard'; s.lock = 1; s.locks[1] = ST.safe.makeLock(ctx.C.hard); s.guess = []; s.startedAt = Date.now(); s.endsAt = s.startedAt + ctx.T.hardSec * 1000; }
   },
   finish(S, s, end) { s.end = end; if (end === 'stopped') s.stoppedAt = ST.safe.elapsed(s); stationDone(S, 'safe', s); },
-  slots(s, ctx) { return s.step === 'trial' ? ctx.C.trial.slots : ctx.C.locks[s.lock].slots; },
   act: {
     fruit(S, s, f, ctx) {
-      if (s.step === 'trial') { if (s.trial.guess.length < ctx.C.trial.slots) s.trial.guess.push(f); else return false; return; }
-      if (s.step !== 'play' || s.phase !== 'play') return false;
-      const L = ctx.C.locks[s.lock], lk = s.locks[s.lock];
+      if (s.step !== 'warm' && s.step !== 'hard') return false;
+      const L = ST.safe.L(s, ctx), lk = s.locks[s.lock];
+      if (lk.opened) return false;
       for (let i = 0; i < L.slots; i++) { if (lk.hint && lk.hint.pos === i) continue; if (!s.guess[i]) { s.guess[i] = f; return; } }
       return false;
     },
     erase(S, s, _, ctx) {
-      if (s.step === 'trial') { if (!s.trial.guess.length) return false; s.trial.guess.pop(); return; }
-      const L = ctx.C.locks[s.lock], lk = s.locks[s.lock]; if (!lk) return false;
+      const L = ST.safe.L(s, ctx), lk = s.locks[s.lock]; if (!lk) return false;
       for (let i = L.slots - 1; i >= 0; i--) { if (lk.hint && lk.hint.pos === i) continue; if (s.guess[i]) { s.guess[i] = null; s.corr = (s.corr || 0) + 1; return; } }
       return false;
     },
     check(S, s, _, ctx) {
-      if (s.step === 'trial') {
-        const t = s.trial; if (t.guess.length !== ctx.C.trial.slots) return false;
-        const fb = wordle(t.guess, t.code); t.attempts.push({ guess: t.guess.slice(), fb }); t.guess = [];
-        if (fb.every(x => x === 'green')) { t.opened = true; fx(S, 'open'); }
-        return;
-      }
-      if (s.step !== 'play' || s.phase !== 'play') return false;
-      const L = ctx.C.locks[s.lock], lk = s.locks[s.lock];
+      if (s.step !== 'warm' && s.step !== 'hard') return false;
+      const L = ST.safe.L(s, ctx), lk = s.locks[s.lock]; if (lk.opened) return false;
       const g = Array.from({ length: L.slots }, (_, i) => (lk.hint && lk.hint.pos === i) ? lk.hint.fruit : s.guess[i]);
       if (g.some(x => !x)) return false;
-      const fb = wordle(g, lk.code); lk.attempts.push({ guess: g, fb, at: ST.safe.elapsed(s) }); s.guess = [];
+      const at = s.step === 'hard' ? ST.safe.elapsed(s) : Math.round((Date.now() - lk.startedAt) / 1000);
+      const fb = wordle(g, lk.code); lk.attempts.push({ guess: g, fb, at }); s.guess = [];
       const newG = fb.map((x, i) => (x === 'green' && !lk.greens.includes(i) ? i : -1)).filter(i => i >= 0);
-      if (newG.length) { lk.greens.push(...newG); lk.noNew = 0; } else { lk.noNew++; if (lk.noNew >= ctx.T.stuckAfter && lk.stuckAt === null) lk.stuckAt = ST.safe.elapsed(s); }
-      if (fb.every(x => x === 'green')) {
-        lk.opened = true; lk.openedAt = ST.safe.elapsed(s); fx(S, 'open');
-        if (s.lock === 0) s.phase = 'opened'; else ST.safe.finish(S, s, 'opened');
-      }
+      if (newG.length) { lk.greens.push(...newG); lk.noNew = 0; } else { lk.noNew++; if (lk.noNew >= ctx.T.stuckAfter && lk.stuckAt === null) lk.stuckAt = at; }
+      if (fb.every(x => x === 'green')) { lk.opened = true; lk.openedAt = at; fx(S, 'open'); if (s.step === 'hard') ST.safe.finish(S, s, 'opened'); }
     },
     hint(S, s, _, ctx) {
-      if (s.step !== 'play' || s.phase !== 'play') return false;
-      const lk = s.locks[s.lock], L = ctx.C.locks[s.lock]; if (lk.hint) return false;
+      if (s.step !== 'warm' && s.step !== 'hard') return false;
+      const lk = s.locks[s.lock], L = ST.safe.L(s, ctx); if (lk.hint || lk.opened) return false;
       const cand = Array.from({ length: L.slots }, (_, i) => i).filter(i => !lk.greens.includes(i)); if (!cand.length) return false;
-      const pos = cand[rnd(cand.length)]; lk.hint = { pos, fruit: lk.code[pos], at: ST.safe.elapsed(s), afterStuck: lk.stuckAt !== null }; s.guess[pos] = null;
+      const pos = cand[rnd(cand.length)]; lk.hint = { pos, fruit: lk.code[pos], at: s.step === 'hard' ? ST.safe.elapsed(s) : null, afterStuck: lk.stuckAt !== null }; s.guess[pos] = null;
     },
-    stop(S, s) { if (s.step !== 'play') return false; ST.safe.finish(S, s, 'stopped'); }
+    stop(S, s) { if (s.step !== 'hard') return false; ST.safe.finish(S, s, 'stopped'); }
   },
-  skipProbe(S, s) { if (s.step === 'intro' || s.step === 'trial') { s.step = 'trial'; ST.safe.next(S, s, ctxOf(S, 'safe')); return; } s.end = 'skipped'; stationDone(S, 'safe', s); },
-  tick(S, s) { if (s.step === 'play' && s.endsAt && Date.now() >= s.endsAt) { ST.safe.finish(S, s, 'time'); return true; } },
+  skipProbe(S, s, ctx) { if (s.step === 'intro' || s.step === 'warm') { if (s.step === 'intro') ST.safe.next(S, s, ctx); ST.safe.next(S, s, ctx); return; } s.end = 'skipped'; stationDone(S, 'safe', s); },
+  tick(S, s) { if (s.step === 'hard' && s.endsAt && Date.now() >= s.endsAt) { ST.safe.finish(S, s, 'time'); return true; } },
   score(s, ctx) {
-    if (s.end === 'skipped' || !s.locks.length) return { p1: null, p2: null };
-    const l1 = s.locks[0], l2 = s.locks[1], n = k => `${k} ${pl(k, ['спроба', 'спроби', 'спроб'])}`;
-    const tail = s.end === 'time' ? ' до кінця часу' : s.end === 'stopped' ? `, зупинилась на ${fmtTime(s.stoppedAt)}` : '';
-    let ev = l1.opened ? `Замок 1 відкрито: ${n(l1.attempts.length)} (${fmtTime(l1.openedAt)})` : `Замок 1: ${n(l1.attempts.length)}${tail}`;
-    if (l2) ev += `; замок 2 — ${n(l2.attempts.length)}${l2.opened ? ', відкрито' : tail}`;
-    const p1 = { level: safeLevel(s, ctx.T), short: l1.opened ? `відкрито, ${n(l1.attempts.length)}` : `${n(l1.attempts.length)}${s.end === 'stopped' ? ', зупинка' : ''}`, ev, raw: { end: s.end, stoppedAt: s.stoppedAt, locks: s.locks } };
-    const hl = safeHelpLevel(s), stuck = s.locks.find(l => l.stuckAt !== null);
-    const p2 = { level: hl, short: hl === null ? 'не застрягала' : stuck.hint ? 'попросила підказку' : 'не просила',
-      ev: hl === null ? 'Не застрягала (не було 3 спроб поспіль без нового зеленого) — не оцінено' : `Застрягла на ${fmtTime(stuck.stuckAt)}; ${s.locks.some(l => l.stuckAt !== null && l.hint) ? 'попросила підказку' : s.end === 'stopped' ? 'підказку не просила й зупинилась' : 'підказку не просила, продовжувала'}`,
-      raw: { stuck: s.locks.map(l => ({ stuckAt: l.stuckAt, hint: l.hint })) } };
+    const lk = s.locks[1];
+    if (s.end === 'skipped' || !lk) return { p1: null, p2: null };
+    const n = k => `${k} ${pl(k, ['спроба', 'спроби', 'спроб'])}`;
+    const tail = s.end === 'time' ? ', до кінця часу' : s.end === 'stopped' ? `, зупинилась на ${fmtTime(s.stoppedAt)}` : '';
+    const ev = (lk.opened ? `Складніший замок відкрито: ${n(lk.attempts.length)} (${fmtTime(lk.openedAt)})` : `Складніший замок: ${n(lk.attempts.length)}${tail}`) + (s.locks[0] ? `; розминка — ${n(s.locks[0].attempts.length)}${s.locks[0].opened ? ', відкрито' : ''}` : '');
+    const p1 = { level: safeLevel(s, ctx.T), short: lk.opened ? `відкрито, ${n(lk.attempts.length)}` : `${n(lk.attempts.length)}${s.end === 'stopped' ? ', зупинка' : s.end === 'time' ? ', до кінця часу' : ''}`, ev, raw: { end: s.end, stoppedAt: s.stoppedAt, locks: s.locks } };
+    const hl = safeHelpLevel(s);
+    const p2 = { level: hl, short: hl === null ? 'не застрягала' : lk.hint ? 'попросила підказку' : 'не просила',
+      ev: hl === null ? 'Не застрягала (не було 3 спроб поспіль без нового зеленого) — не оцінено' : `Застрягла на ${fmtTime(lk.stuckAt)}; ${lk.hint ? 'попросила підказку' : s.end === 'stopped' ? 'підказку не просила й зупинилась' : 'підказку не просила, продовжувала'}`,
+      raw: { stuckAt: lk.stuckAt, hint: lk.hint } };
     return { p1, p2 };
+  },
+  codes(s) {
+    const w = s.locks[0], h = s.locks[1], out = [];
+    if (w) out.push(`S1 ${w.attempts.length} спр.${w.opened ? ', відкрито' : ''}`);
+    if (s.end === 'skipped' || !h) out.push('S2 пропущено');
+    else out.push(`S2 ${h.attempts.length} спр., ${fmtTime(h.opened ? h.openedAt : s.end === 'stopped' ? s.stoppedAt : ST.safe.elapsed(s))}, ${h.hint ? 'підказка' : 'без підказки'}, ${h.opened ? 'відкрито' : s.end === 'stopped' ? 'зупинилась' : 'час вийшов'}${h.stuckAt !== null ? ', застрягла' : ''}`);
+    return out;
   }
 };
 
-/* ---------- 3. Лимонадна лавка — Гроші ---------- */
+/* ---------- 3. Крамниця — Гроші (сова Ухта) ---------- */
 ST.money = {
   init: ctx => (ctx.g === '78'
-    ? { step: 'intro', cart: [], revenue: 0, coins: 0, piggy: 0, shelf: 0, eveningCoins: 0, skip: {} }
-    : { step: 'intro', day: 0, wallet: ctx.C.start, piggy: 0, inv: Object.fromEntries(ctx.C.ingredients.map(i => [i.id, 0])), days: [], skip: {} }),
-  probeOf: s => (s.step === 'evening' || s.step === 'evening910' ? 2 : 1),
-  canNext: (s) => (s.step === 'day' ? !!(s.days[s.day] && s.days[s.day].price) : s.step === 'evening910' ? !!(s.days[s.day] && s.days[s.day].save) : true),
-  spent78: (s, C) => s.cart.reduce((a, id) => a + C.goods.find(g => g.id === id).price, 0),
-  startDay(s, C) { const d = { weather: C.weather[s.day], buys: [], trap: false, price: null, rent: C.rent, spend: C.rent }; s.wallet -= C.rent; s.days[s.day] = d; s.step = 'day'; },
+    ? { step: 'intro', cart: [], t: 0, plate: [], paid: [], owl: 'hello', basket: [], skip: {} }
+    : { step: 'intro', cart: {}, q: 0, typed: '', choice: null, answers: [], owl: 'hello', skip: {} }),
+  probeOf: s => (s.step === 'intro' || s.step === 'picnic' ? 1 : ['exactIntro', 'exact', 'deal'].includes(s.step) ? 2 : null),
+  canNext: s => (s.step === 'exact' ? s.plate.length > 0 : s.step === 'deal' ? (s.choice !== null || s.typed !== '') : true),
+  nextLabel: s => (s.step === 'exact' ? 'Заплатити' : 'Далі'),
+  spent(s, C, g) { return g === '78' ? s.cart.reduce((a, id) => a + C.goods.find(x => x.id === id).price, 0) : Object.entries(s.cart).reduce((a, [id, n]) => a + n * C.goods.find(x => x.id === id).price, 0); },
   next(S, s, ctx) {
     const C = ctx.C;
-    if (ctx.g === '78') {
-      if (s.step === 'intro') s.step = 'buy';
-      else if (s.step === 'buy') {
-        const needN = s.cart.filter(id => C.goods.find(g => g.id === id).need).length;
-        s.revenue = needN * C.revenuePerNeed; s.coins = C.budget - ST.money.spent78(s, C) + s.revenue; s.step = 'sell'; fx(S, 'coins');
-      } else if (s.step === 'sell') { s.eveningCoins = s.coins; s.step = 'evening'; }
-      else if (s.step === 'evening') stationDone(S, 'money', s);
+    if (s.step === 'intro') { s.step = 'picnic'; s.owl = 'hello'; return; }
+    if (s.step === 'picnic') { s.step = ctx.g === '78' ? 'exactIntro' : 'deal'; s.owl = ctx.g === '78' ? 'register' : 'deal'; return; }
+    if (s.step === 'exactIntro') { s.step = 'exact'; s.owl = null; return; }
+    if (s.step === 'exact') {
+      const T = C.targets[s.t], sum = sumCoins(s.plate), exact = sum === T.sum;
+      s.paid.push({ target: T.sum, coins: s.plate.slice(), sum, exact }); if (exact) s.basket.push(T.e);
+      s.owl = exact ? 'give' : 'thanks'; s.plate = []; s.t++; fx(S, 'coin');
+      if (s.t >= C.targets.length) stationDone(S, 'money', s);
       return;
     }
-    if (s.step === 'intro') ST.money.startDay(s, C);
-    else if (s.step === 'day') {
-      const d = s.days[s.day], ok = C.ingredients.every(i => s.inv[i.id] >= 1);
-      if (ok) { C.ingredients.forEach(i => s.inv[i.id]--); d.customers = money910Day(s.day, C, d.price); d.revenue = d.customers * d.price; }
-      else { d.noIngr = true; d.customers = 0; d.revenue = 0; }
-      s.wallet += d.revenue; d.profit = d.revenue - d.spend; s.step = 'sell910'; fx(S, 'coins');
-    } else if (s.step === 'sell910') s.step = 'evening910';
-    else if (s.step === 'evening910') {
-      const d = s.days[s.day];
-      if (s.day < C.weather.length - 1) { s.day++; ST.money.startDay(s, C); } else stationDone(S, 'money', s);
-      void d;
+    if (s.step === 'deal') {
+      const D = C.deals[s.q], ans = D.type === 'choice' ? s.choice : (s.typed === '' ? null : +s.typed);
+      s.answers.push({ q: s.q, answer: ans, ok: ans === D.ok }); s.choice = null; s.typed = ''; s.q++;
+      if (s.q >= C.deals.length) stationDone(S, 'money', s);
     }
   },
   act: {
     toggle(S, s, id, ctx) {
-      if (s.step !== 'buy') return false;
+      if (s.step !== 'picnic' || ctx.g !== '78') return false;
       const C = ctx.C, k = s.cart.indexOf(id);
       if (k >= 0) { s.cart.splice(k, 1); return; }
-      const g = C.goods.find(x => x.id === id);
-      if (g.price > C.budget - ST.money.spent78(s, C)) { fx(S, 'toast', 'Монет не вистачає'); return 'fx'; }
+      if (C.goods.find(x => x.id === id).price > C.budget - ST.money.spent(s, C, '78')) { fx(S, 'toast', ctx.C.owl.lines.notEnough78); return 'fx'; }
       s.cart.push(id);
     },
-    piggy(S, s) { if (s.step !== 'evening' || s.coins <= 0) return false; s.coins--; s.piggy++; fx(S, 'coin'); },
-    shelf(S, s, _, ctx) { if (s.step !== 'evening' || s.coins <= 0 || s.shelf >= ctx.C.shelf.price) return false; s.coins--; s.shelf++; fx(S, 'coin'); },
-    buy(S, s, a, ctx) {
-      if (s.step !== 'day') return false;
-      const [id, size] = a.split(':'), ing = ctx.C.ingredients.find(i => i.id === id), pk = ing[size], d = s.days[s.day];
-      if (pk.price > s.wallet) { fx(S, 'toast', 'Грошей не вистачає'); return 'fx'; }
-      s.wallet -= pk.price; s.inv[id] += pk.days; d.buys.push({ id, size, price: pk.price }); d.spend += pk.price;
+    add(S, s, id, ctx) {
+      if (s.step !== 'picnic' || ctx.g !== '910') return false;
+      const C = ctx.C; if (C.goods.find(x => x.id === id).price > C.budget - ST.money.spent(s, C, '910')) { fx(S, 'toast', ctx.C.owl.lines.notEnough910); return 'fx'; }
+      s.cart[id] = (s.cart[id] || 0) + 1;
     },
-    trap(S, s, _, ctx) {
-      if (s.step !== 'day') return false;
-      const d = s.days[s.day], t = ctx.C.trap;
-      if (d.trap) return false;
-      if (t.price > s.wallet) { fx(S, 'toast', 'Грошей не вистачає'); return 'fx'; }
-      s.wallet -= t.price; d.trap = true; d.spend += t.price;
-    },
-    price(S, s, p) { if (s.step !== 'day') return false; s.days[s.day].price = +p; },
-    save(S, s, a) {
-      if (s.step !== 'evening910') return false;
-      const d = s.days[s.day];
-      if (d.save) { s.wallet += d.saved; s.piggy -= d.saved; }
-      const part = a === 'all' ? 1 : a === 'half' ? 0.5 : 0;
-      d.save = a; d.saved = Math.min(s.wallet, Math.floor(Math.max(0, d.profit) * part)); s.wallet -= d.saved; s.piggy += d.saved;
-      if (d.saved) fx(S, 'coin');
-    }
+    remove(S, s, id) { if (s.step !== 'picnic' || !s.cart[id]) return false; s.cart[id]--; if (!s.cart[id]) delete s.cart[id]; },
+    coin(S, s, v) { if (s.step !== 'exact' || s.plate.length >= 14) return false; s.plate.push(+v); s.owl = null; },
+    uncoin(S, s, i) { if (s.step !== 'exact' || !s.plate.length) return false; s.plate.splice(+i, 1); s.corr = (s.corr || 0) + 1; },
+    choose(S, s, a) { if (s.step !== 'deal') return false; s.choice = a; },
+    key(S, s, a) { if (s.step !== 'deal') return false; if (a === 'del') s.typed = s.typed.slice(0, -1); else if (s.typed.length < 3) s.typed += a; }
   },
   skipProbe(S, s, ctx) {
-    if (ctx.g === '78') {
-      if (s.step === 'intro' || s.step === 'buy') { s.skip.p1 = true; s.step = 'buy'; ST.money.next(S, s, ctx); }
-      else { s.skip.p2 = true; stationDone(S, 'money', s); }
-      return;
-    }
-    if (s.step === 'evening910') s.skip.p2 = true; else s.skip.p1 = true;
-    stationDone(S, 'money', s);
+    if (s.step === 'intro' || s.step === 'picnic') { s.skip.p1 = true; s.step = ctx.g === '78' ? 'exactIntro' : 'deal'; s.owl = ctx.g === '78' ? 'register' : 'deal'; }
+    else { s.skip.p2 = true; stationDone(S, 'money', s); }
   },
   score(s, ctx) {
     const C = ctx.C, T = CONFIG.thresholds.money[ctx.g];
     if (ctx.g === '78') {
-      const needN = s.cart.filter(id => C.goods.find(g => g.id === id).need).length, wants = s.cart.filter(id => !C.goods.find(g => g.id === id).need);
-      const p1 = s.skip.p1 ? null : { level: needN >= 3 ? 3 : needN === 2 ? 2 : 1, short: `потрібне ${needN}/3`,
-        ev: `Куплено потрібного: ${needN} з 3${wants.length ? `; ще взято: ${wants.map(id => C.goods.find(g => g.id === id).name.toLowerCase()).join(', ')}` : ''}`, raw: { cart: s.cart } };
-      const share = s.eveningCoins ? s.piggy / s.eveningCoins : 0;
-      const p2 = s.skip.p2 || s.step === 'buy' || s.step === 'sell' ? null : { level: th(share, T.save.l3, T.save.l2), short: `${s.piggy} з ${s.eveningCoins} у скарбничку`,
-        ev: `Увечері ${s.eveningCoins} ${pl(s.eveningCoins, ['монета', 'монети', 'монет'])}: у скарбничку на ${C.goal.name.toLowerCase()} — ${s.piggy}, на ${C.shelf.name.toLowerCase()} — ${s.shelf}, лишилось — ${s.coins}`, raw: { eveningCoins: s.eveningCoins, piggy: s.piggy, shelf: s.shelf, coins: s.coins } };
+      const has = f => s.cart.some(id => C.goods.find(g => g.id === id)[f]), food = has('food'), drink = has('drink');
+      const p1 = s.skip.p1 ? null : { level: food && drink ? 3 : (food || drink) ? 2 : 1, short: `їжа ${food ? '✓' : '—'}, вода ${drink ? '✓' : '—'}`,
+        ev: `Пікнік: їжа — ${food ? 'так' : 'ні'}, вода — ${drink ? 'так' : 'ні'} (витрачено ${ST.money.spent(s, C, '78')} з ${C.budget} монет; ${s.cart.map(id => C.goods.find(g => g.id === id).name.toLowerCase()).join(', ') || 'нічого'})`, raw: { cart: s.cart, food, drink } };
+      const ex = s.paid.filter(x => x.exact).length;
+      const p2 = s.skip.p2 || !s.paid.length ? null : { level: th(ex, T.exact.l3, T.exact.l2), short: `${ex} з ${C.targets.length}`,
+        ev: `Без решти: точно ${ex} з ${C.targets.length} (${s.paid.map(x => x.exact ? `${x.target} ✔` : `${x.target} → ${x.sum}`).join(', ')})`, raw: { paid: s.paid } };
       return { p1, p2 };
     }
-    const done = s.days.filter(d => d && d.revenue !== undefined);
-    const noIngr = done.filter(d => d.noIngr).length, trap = s.days.some(d => d && d.trap);
-    const p1 = s.skip.p1 || !done.length ? null : { level: (!noIngr && !trap) ? 3 : (!noIngr || !trap) ? 2 : 1, short: `без інгредієнтів: ${noIngr} дн., пастка: ${trap ? 'так' : 'ні'}`,
-      ev: `Днів без інгредієнтів — ${noIngr} з ${done.length}; пастку «${C.trap.name}» ${trap ? 'взято' : 'не взято'}`, raw: { days: s.days } };
-    const evs = s.days.filter(d => d && d.save), profit = evs.reduce((a, d) => a + Math.max(0, d.profit), 0), saved = evs.reduce((a, d) => a + d.saved, 0);
-    const share = profit ? saved / profit : 0, reached = s.piggy >= C.goal.price;
-    const p2 = s.skip.p2 || !evs.length ? null : { level: reached ? 3 : th(share, T.save.l3, T.save.l2), short: `відкладено ${Math.round(share * 100)}%`,
-      ev: `Прибуток ${profit} грн, відкладено ${saved} грн (${Math.round(share * 100)}%); у скарбничці ${s.piggy} з ${C.goal.price} грн`, raw: { profit, saved, piggy: s.piggy } };
+    const pts = picnic910Points(s.cart);
+    const p1 = s.skip.p1 ? null : { level: th(pts, T.picnic.l3, T.picnic.l2), short: `${num(pts)} з 4`,
+      ev: `Пікнік: ${num(pts)} з 4 балів (витрачено ${ST.money.spent(s, C, '910')} з ${C.budget} грн; ${Object.entries(s.cart).map(([id, n]) => `${C.goods.find(g => g.id === id).name.toLowerCase()} × ${n}`).join(', ') || 'нічого'})`, raw: { cart: s.cart, points: pts } };
+    const ok = s.answers.filter(x => x.ok).length, change = s.answers.find(x => C.deals[x.q].type === 'number');
+    const p2 = s.skip.p2 || !s.answers.length ? null : { level: th(ok, T.deal.l3, T.deal.l2), short: `${ok} з ${C.deals.length}`,
+      ev: `«Що вигідніше?» — ${ok} з ${C.deals.length}${change ? `, решта: ${change.answer ?? '—'}` : ''}`, raw: { answers: s.answers } };
     return { p1, p2 };
+  },
+  codes(s, ctx) {
+    const C = ctx.C, out = [];
+    if (ctx.g === '78') {
+      const has = f => s.cart.some(id => C.goods.find(g => g.id === id)[f]);
+      out.push(s.skip.p1 ? 'C1 пропущено' : `C1 ${has('food') ? '✅' : '❌'} їжа ${has('drink') ? '✅' : '❌'} вода`);
+      out.push(s.skip.p2 ? 'C2 пропущено' : `C2 ${s.paid.map((x, i) => `${x.exact ? '✅' : '❌'} ${C.targets[i].acc} ${x.exact ? x.sum : `${x.sum} → ${x.target}`}`).join(', ') || '—'}`);
+    } else {
+      out.push(s.skip.p1 ? 'C1 пропущено' : `C1 ${num(picnic910Points(s.cart))} б.: ${Object.entries(s.cart).map(([id, n]) => `${C.goods.find(g => g.id === id).name.toLowerCase()}×${n}`).join(', ') || '—'}`);
+      out.push(s.skip.p2 ? 'C2 пропущено' : `C2 ${s.answers.map(a => { const D = C.deals[a.q]; return D.type === 'number' ? `${a.ok ? '✅' : '❌'} решта ${a.answer ?? '—'}${a.ok ? '' : ` → ${D.ok}`}` : (a.ok ? '✅' : '❌'); }).join(' ')}`);
+    }
+    return out;
   }
 };
 
@@ -446,7 +449,7 @@ ST.bob = {
       if (id === 'fair') { if (ctx.g === '910') { s.step = 'haggle'; s.line = 'haggle'; s.face = 'normal'; return; } s.result = 'fair'; s.line = 'fair'; s.face = 'joy'; ST.bob.toBye(s); return; }
       if (id === 'overpay') { s.result = 'overpay'; s.line = 'overpay'; s.face = 'joy'; ST.bob.toBye(s); return; }
       s.line = id; s.face = id === 'unfair' ? 'hurt' : 'normal';
-      if (s.tries.length >= 3) { s.line = 'noDeal'; ST.bob.toBye(s); }
+      if (s.tries.length >= (ctx.C.maxTries || 3)) { s.line = 'noDeal'; ST.bob.toBye(s); }
     },
     haggle(S, s, code, ctx) {
       if (s.step !== 'haggle') return false;
@@ -472,14 +475,15 @@ ST.bob = {
 };
 
 /* ---------- 6. Майданчик — Вирішення суперечок ---------- */
+// 7–8: Правила (розминка) → Суддя. 9–10: Компроміс (розминка) → Чат класу.
 ST.playground = {
-  init: () => ({ step: 'intro', marks: [], cards: [], piles: {}, skip: {} }),
-  probeOf: s => (['intro', 'judge', 'piles'].includes(s.step) ? 1 : ['rules', 'compromise'].includes(s.step) ? 2 : null),
-  canNext: () => true,
+  init: () => ({ step: 'intro', marks: [], cards: [], chat: [], ci: 0, why: null, skip: {} }),
+  probeOf: s => (['intro', 'rules', 'compromise'].includes(s.step) ? 1 : ['judge', 'chat', 'why'].includes(s.step) ? 2 : null),
+  canNext: s => (s.step === 'chat' ? false : s.step === 'why' ? !!s.why : true),
   next(S, s, ctx) {
-    if (s.step === 'intro') s.step = ctx.g === '78' ? 'judge' : 'piles';
-    else if (s.step === 'judge') { s.step = 'rules'; s.cards = []; }
-    else if (s.step === 'piles') { s.step = 'compromise'; s.cards = []; }
+    if (s.step === 'intro') { s.step = ctx.g === '78' ? 'rules' : 'compromise'; s.cards = []; }
+    else if (s.step === 'rules') s.step = 'judge';
+    else if (s.step === 'compromise') { s.step = 'chat'; s.ci = 0; }
     else stationDone(S, 'playground', s);
   },
   act: {
@@ -489,38 +493,57 @@ ST.playground = {
       const max = s.step === 'rules' ? 2 : 3, k = s.cards.indexOf(id);
       if (k >= 0) s.cards.splice(k, 1); else { s.cards.push(id); if (s.cards.length > max) s.cards.shift(); }
     },
-    pile(S, s, a) { if (s.step !== 'piles') return false; const [i, p] = a.split(':'); s.piles[i] = p; }
+    // відповідь у чаті: id варіанта ('i' | 'blame'); повідомлення «надсилається», співрозмовник реагує
+    reply(S, s, id, ctx) {
+      if (s.step !== 'chat') return false;
+      s.chat[s.ci] = id; s.ci++; fx(S, 'sent');
+      if (s.ci >= ctx.C.chat.messages.length) s.step = 'why';
+    },
+    why(S, s, id) { if (s.step !== 'why') return false; s.why = id; }
   },
   skipProbe(S, s, ctx) {
-    if (['intro', 'judge', 'piles'].includes(s.step)) { s.skip.p1 = true; s.step = ctx.g === '78' ? 'rules' : 'compromise'; s.cards = []; }
+    if (['intro', 'rules', 'compromise'].includes(s.step)) { s.skip.p1 = true; s.step = ctx.g === '78' ? 'judge' : 'chat'; s.ci = 0; }
     else { s.skip.p2 = true; stationDone(S, 'playground', s); }
   },
   score(s, ctx) {
     const C = ctx.C, lab = id => CONFIG.codes.judge.items.find(i => i.id === id).label.toLowerCase();
     if (ctx.g === '78') {
-      const p1 = s.skip.p1 ? null : { level: judgeLevel(s.marks), short: s.marks.length ? s.marks.map(lab).join(', ') : '—', ev: `Суддя: ${s.marks.length ? s.marks.map(lab).join('; ') : 'нічого не відмічено'}`, raw: { marks: s.marks } };
       const fair = s.cards.filter(id => C.cards.find(c => c.id === id).fair).length;
-      const p2 = s.skip.p2 ? null : { level: fair >= 2 ? 3 : fair === 1 ? 2 : 1, short: `чесних ${fair}/2`, ev: `Обрані правила: ${s.cards.map(id => `«${C.cards.find(c => c.id === id).text}»`).join(', ') || '—'}; чесних — ${fair} з 2`, raw: { cards: s.cards } };
+      const p1 = s.skip.p1 ? null : { level: fair >= 2 ? 3 : fair === 1 ? 2 : 1, short: `чесних ${fair} з 2`, ev: `Обрані правила: ${s.cards.map(id => `«${C.cards.find(c => c.id === id).text}»`).join(', ') || '—'}; чесних — ${fair} з 2`, raw: { cards: s.cards } };
+      const p2 = s.skip.p2 ? null : { level: judgeLevel(s.marks), short: s.marks.length ? s.marks.map(lab).join(', ') : '—', ev: `Суддя: ${s.marks.length ? s.marks.map(lab).join('; ') : 'нічого не відмічено'}`, raw: { marks: s.marks } };
       return { p1, p2 };
     }
-    const correct = C.phrases.filter((p, i) => s.piles[i] === p.pile).length, T = CONFIG.thresholds.playground.piles;
-    const p1 = s.skip.p1 ? null : { level: th(correct, T.l3, T.l2), short: `${correct}/6`, ev: `Звинувачення / я-повідомлення: розкладено правильно ${correct} з 6`, raw: { piles: s.piles } };
     const ws = [...new Set(s.cards.flatMap(id => C.cards.find(c => c.id === id).wishes))];
-    const p2 = s.skip.p2 ? null : { level: compromiseLevel(s.cards, C), short: `${ws.length} бажань`,
+    const p1 = s.skip.p1 ? null : { level: compromiseLevel(s.cards, C), short: `${ws.length} бажань з 4`,
       ev: `Гра з карток: ${s.cards.map(id => `«${C.cards.find(c => c.id === id).text}»`).join(', ') || '—'}; враховано бажань — ${ws.length} з 4`, raw: { cards: s.cards } };
+    const iN = s.chat.filter(x => x === 'i').length, whyL = s.why ? CONFIG.codes.chatWhy.items.find(i => i.id === s.why).label.toLowerCase() : '—';
+    const p2 = s.skip.p2 || !s.chat.length ? null : { level: chatLevel(s.chat, s.why), short: `я-повідомлень ${iN} з 3`,
+      ev: `Чат класу: я-повідомлень ${iN} з 3, звинувачень ${s.chat.length - iN}; пояснення — ${whyL}`, raw: { chat: s.chat, why: s.why } };
     return { p1, p2 };
+  },
+  codes(s, ctx) {
+    const C = ctx.C, out = [];
+    if (ctx.g === '78') {
+      out.push(s.skip.p1 ? 'M1 пропущено' : `M1 правила: ${s.cards.map(id => (C.cards.find(c => c.id === id).fair ? '✅' : '❌') + ' ' + C.cards.find(c => c.id === id).text.toLowerCase()).join(', ') || '—'}`);
+      out.push(s.skip.p2 ? 'M2 пропущено' : `M2 суддя: ${s.marks.map(id => CONFIG.codes.judge.items.find(i => i.id === id).label.toLowerCase()).join(', ') || '—'}`);
+    } else {
+      out.push(s.skip.p1 ? 'M1 пропущено' : `M1 компроміс: ${s.cards.join(', ') || '—'} (${compromiseLevel(s.cards, C) === 3 ? 'обидві команди' : 'частково'})`);
+      out.push(s.skip.p2 ? 'M2 пропущено' : `M2 чат: ${s.chat.map(x => (x === 'i' ? 'я' : 'звин.')).join(', ')}; ${s.why ? CONFIG.codes.chatWhy.items.find(i => i.id === s.why).label.toLowerCase() : 'без пояснення'}`);
+    }
+    return out;
   }
 };
 
-/* ---------- 7. Радіо Хвиля — Голос і розмова ---------- */
+/* ---------- 7. Радіо Хвиля — Голос і розмова (з «Таємним гостем») ---------- */
 ST.radio = {
-  init: () => ({ step: 'intro', qi: 0, answers: [], ask: null, topic: null, marks: [], endsAt: null, running: false, ended: false, skip: {} }),
-  probeOf: s => (['intro', 'q', 'ask'].includes(s.step) ? 1 : s.step === 'opinion' ? 2 : null),
-  canNext: s => (s.step === 'q' ? typeof s.answers[s.qi] === 'number' : s.step === 'ask' ? !!s.ask : s.step === 'opinion' ? s.topic !== null : true),
+  init: () => ({ step: 'intro', guest: null, guestMode: null, guestCape: null, qi: 0, answers: [], ask: null, topic: null, marks: [], endsAt: null, running: false, ended: false, skip: {} }),
+  probeOf: s => (['intro', 'guest', 'q', 'ask'].includes(s.step) ? 1 : s.step === 'opinion' ? 2 : null),
+  canNext: s => (s.step === 'guest' ? !!s.guestMode : s.step === 'q' ? typeof s.answers[s.qi] === 'number' : s.step === 'ask' ? !!s.ask : s.step === 'opinion' ? s.topic !== null : true),
   nextLabel: s => (s.step === 'opinion' && !s.running && !s.ended ? 'Старт 30 с' : 'Далі'),
   next(S, s, ctx) {
     const Q = ctx.C.questions;
-    if (s.step === 'intro') s.step = 'q';
+    if (s.step === 'intro') s.step = 'guest';
+    else if (s.step === 'guest') s.step = 'q';
     else if (s.step === 'q') { if (s.qi < Q.length - 1) s.qi++; else s.step = 'ask'; }
     else if (s.step === 'ask') { if (ctx.g === '910') s.step = 'opinion'; else stationDone(S, 'radio', s); }
     else if (s.step === 'opinion') {
@@ -529,51 +552,82 @@ ST.radio = {
     }
   },
   act: {
+    // ім’я героя-ведучого (до 30 символів); порожнє ім’я — ще не обрано
+    guest(S, s, name) {
+      if (s.step !== 'guest') return false;
+      const n = String(name || '').trim().slice(0, 30);
+      s.guest = n || null; s.guestMode = n ? 'named' : null;
+      if (n && s.guestCape === null) s.guestCape = rnd(CONFIG.capes.length);
+    },
+    noGuest(S, s) { if (s.step !== 'guest') return false; s.guest = null; s.guestMode = 'iskra'; },
     code(S, s, v) { if (s.step !== 'q') return false; s.answers[s.qi] = +v; fx(S, 'thanks'); },
     ask(S, s, v) { if (s.step !== 'ask') return false; s.ask = v; },
     topic(S, s, i) { if (s.step !== 'opinion' || s.running || s.ended) return false; s.topic = +i; },
     mark(S, s, id) { if (s.step !== 'opinion') return false; const k = s.marks.indexOf(id); if (k >= 0) s.marks.splice(k, 1); else s.marks.push(id); }
   },
   skipProbe(S, s, ctx) {
-    if (['intro', 'q', 'ask'].includes(s.step)) { s.skip.p1 = true; if (ctx.g === '910') s.step = 'opinion'; else stationDone(S, 'radio', s); }
+    if (['intro', 'guest', 'q', 'ask'].includes(s.step)) { s.skip.p1 = true; if (ctx.g === '910') s.step = 'opinion'; else stationDone(S, 'radio', s); }
     else { s.skip.p2 = true; stationDone(S, 'radio', s); }
   },
   tick(S, s) { if (s.step === 'opinion' && s.running && Date.now() >= s.endsAt) { s.running = false; s.ended = true; fx(S, 'timer'); return true; } },
   score(s, ctx) {
     const T = CONFIG.thresholds.radio, avg = radioAvg(s.answers, s.ask, ctx.g, T);
     const lab = v => CONFIG.codes.radioAnswer.items.find(i => i.id === v).label.toLowerCase();
-    const p1 = s.skip.p1 || avg === null ? null : { level: th(avg, T.avg.l3, T.avg.l2), short: `середнє ${num(avg)}`,
-      ev: `Відповіді: ${s.answers.map(lab).join('; ')}; зустрічне питання — ${s.ask === 'yes' ? 'так' : s.ask === 'no' ? 'ні' : '—'}${ctx.g === '910' && s.ask === 'yes' ? ` (+${num(T.askBonus910)})` : ''}; середнє — ${num(avg)}`,
-      raw: { answers: s.answers, ask: s.ask } };
+    const p1 = s.skip.p1 || avg === null ? null : { level: th(avg + 1e-9, T.avg.l3, T.avg.l2), short: `середнє ${num(avg)}`,
+      ev: `Ведучий: ${guestName(s)}. Відповіді: ${s.answers.map(lab).join('; ')}; зустрічне питання — ${s.ask === 'yes' ? 'так' : s.ask === 'no' ? 'ні' : '—'}${ctx.g === '910' && s.ask === 'yes' ? ` (+${num(T.askBonus910)})` : ''}; середнє — ${num(avg)}`,
+      raw: { answers: s.answers, ask: s.ask, guest: s.guest } };
     let p2 = null;
     if (ctx.g === '910' && !s.skip.p2 && s.topic !== null && (s.running || s.ended)) {
       const n = s.marks.length, labm = id => CONFIG.codes.radioOpinion.items.find(i => i.id === id).label.toLowerCase();
-      p2 = { level: n >= 3 ? 3 : n === 2 ? 2 : 1, short: `${n}/3`, ev: `Думка за 30 с («${ctx.C.topics[s.topic]}»): ${s.marks.length ? s.marks.map(labm).join(', ') : 'нічого з трьох'}`, raw: { topic: s.topic, marks: s.marks } };
+      p2 = { level: n >= 3 ? 3 : n === 2 ? 2 : 1, short: `${n} з 3`, ev: `Думка за 30 с («${ctx.C.topics[s.topic]}»): ${s.marks.length ? s.marks.map(labm).join(', ') : 'нічого з трьох'}`, raw: { topic: s.topic, marks: s.marks } };
     }
     return { p1, p2, single: ctx.g === '78' };
+  },
+  codes(s, ctx) {
+    const out = [`R гість: ${s.guestMode === 'named' ? s.guest : 'без імені (Іскра)'}`];
+    out.push(s.skip.p1 ? 'R1 пропущено' : `R1 відповіді ${s.answers.join(',') || '—'}; зустрічне питання — ${s.ask === 'yes' ? 'так' : s.ask === 'no' ? 'ні' : '—'}`);
+    if (ctx.g === '910') out.push(s.skip.p2 ? 'R2 пропущено' : `R2 ${s.marks.map(id => CONFIG.codes.radioOpinion.items.find(i => i.id === id).label.toLowerCase().replace('є ', '')).join(', ') || '—'}`);
+    return out;
   }
 };
+function guestName(s) { return s && s.guestMode === 'named' && s.guest ? s.guest : CONFIG.content.radio.hostIskra; }
 
-/* ---------- Фінал ---------- */
+/* ---------- Фінал: батарейки за навичками (лише оцінені, по черзі) ---------- */
 ST.final = {
-  init: () => ({ step: 'batteries' }),
+  init: (ctx, S) => ({ step: 'batteries', bi: 0, list: selfList(S) }),
   probeOf: () => null,
   canNext: s => s.step === 'batteries',
   next(S, s) {
-    if (s.step === 'batteries') {
-      s.step = 'crown'; s.done = true; s.t1 = Date.now();
-      if (!S.items.includes(CONFIG.costume.final)) S.items.push(CONFIG.costume.final);
-      fx(S, 'crown'); S.t.lessonEnd = S.t.lessonEnd || Date.now(); S.phase = 'report';
-    }
+    if (s.step !== 'batteries') return;
+    if (s.bi < s.list.length - 1) { s.bi++; return; }
+    s.step = 'crown'; s.done = true; s.t1 = Date.now();
+    if (!S.items.includes(CONFIG.costume.final)) S.items.push(CONFIG.costume.final);
+    fx(S, 'crown'); S.t.lessonEnd = S.t.lessonEnd || Date.now(); S.phase = 'report';
   },
-  act: { self(S, s, a) { const [k, n] = a.split(':'), v = +n; S.self[k] = S.self[k] === v ? (v - 1 || null) : v; if (!S.self[k]) delete S.self[k]; } },
+  act: { self(S, s, n) { const k = s.list[s.bi]; if (!k) return false; const v = +n; S.self[k] = S.self[k] === v ? null : v; if (!S.self[k]) delete S.self[k]; } },
   score: () => null
 };
+// навички для самооцінки: станція пройдена й не пропущена, у порядку станцій
+function selfList(S) { return SKILL_KEYS.filter(k => S.st[k] && S.st[k].done && !S.st[k].skipped); }
+
+/* ---------- коди «Усіх відповідей» для Походу й Боба ---------- */
+ST.hike.codes = (s, ctx) => {
+  const C = ctx.C;
+  if (ctx.g === '78') {
+    const needN = s.pack.filter(id => C.items.find(i => i.id === id).need).length, r = C.routes.find(x => x.id === s.route);
+    return [s.skip.p1 ? 'P1 пропущено' : `P1 потрібних ${needN}/6 (+${s.pack.length - needN} зайвих)`, s.skip.p2 ? 'P2 пропущено' : `P2 ${r ? r.name.toLowerCase() : '—'}`];
+  }
+  const v = x => (x ? `${x.v.length} поруш.${x.v.length ? ' (' + x.v.join(', ') + ')' : ''}` : '—');
+  return [s.skip.p1 ? 'P1 пропущено' : `P1 ${v(s.plan1)}`, s.skip.p2 ? 'P2 пропущено' : `P2 ${v(s.plan2)}`];
+};
+ST.bob.codes = (s) => [
+  s.skip.p1 ? 'B1 пропущено' : `B1 ${s.askedNeed ? 'спита{в|ла}, що потрібно' : s.hinted && s.via === 'offer' ? 'обмін після натяку' : s.left ? 'Боб пішов' : 'не з’ясува{в|ла}'} (${s.replies.join('→') || '—'})`,
+  s.skip.p2 ? 'B2 пропущено' : `B2 ${s.result === 'fair' ? 'чесний обмін' : s.result === 'overpay' ? 'переплата' : 'без обміну'}${s.tries.length ? ' [' + s.tries.join(',') + ']' : ''}${s.haggle ? ', торг: ' + s.haggle : ''}`];
 
 /* =====================================================================
    ДІЇ ПУЛЬТА (змінюють стан)
    ===================================================================== */
-function curStation(S) { const key = S.cur; let s = S.st[key]; if (!s) { s = S.st[key] = ST[key].init(ctxOf(S, key)); s.t0 = Date.now(); s.pt = {}; s.skipProbes = []; s.corr = 0; } return s; }
+function curStation(S) { const key = S.cur; let s = S.st[key]; if (!s) { s = S.st[key] = ST[key].init(ctxOf(S, key), S); s.t0 = Date.now(); s.pt = {}; s.skipProbes = []; s.corr = 0; } return s; }
 function trackProbe(S) {
   const s = S.st[S.cur]; if (!s || s.done) return;
   const p = ST[S.cur].probeOf(s, ctxOf(S, S.cur));
@@ -645,27 +699,61 @@ function titleSkill(S, L) {
   });
   return best.k;
 }
-function lessonMinutes(S) { return S.t.lessonStart ? Math.max(1, Math.round(((S.t.lessonEnd || Date.now()) - S.t.lessonStart) / 60000)) : null; }
+function lessonMinutesExact(S) { return S.t.lessonStart ? ((S.t.lessonEnd || Date.now()) - S.t.lessonStart) / 60000 : null; }
+function lessonMinutes(S) { const m = lessonMinutesExact(S); return m === null ? null : Math.max(1, Math.round(m)); }
 function stationMinutes(S, k) { const s = S.st[k]; return s && s.t0 && s.t1 ? Math.round((s.t1 - s.t0) / 6000) / 10 : null; }
+// з яких 2 навичок почати на курсі і чому (спільне для звіту й таблиці)
+function pickStart(S, L) {
+  const ev = SKILL_KEYS.filter(k => L[k].level); if (!ev.length) return [];
+  const lv = ev.map(k => L[k].level), equal = Math.max(...lv) === Math.min(...lv);
+  const pk = ev.slice().sort((a, z) => equal ? (S.self[a] || 4) - (S.self[z] || 4) || SKILL_KEYS.indexOf(a) - SKILL_KEYS.indexOf(z)
+    : L[a].level - L[z].level || ((S.self[z] || 0) - L[z].level) - ((S.self[a] || 0) - L[a].level) || SKILL_KEYS.indexOf(a) - SKILL_KEYS.indexOf(z)).slice(0, 2);
+  return pk.map(k => { const l = L[k].level, a = S.self[k];
+    return { k, why: equal ? 'дитина сама оцінює цю навичку найскромніше — успіхи тут найбільше підсилять віру в себе'
+      : `рівень «${CONFIG.levelNames[l]}» — тут найбільший простір для росту${a && a > l ? ', а дитина поки оцінює себе вище, ніж показала гра' : ''}` }; });
+}
+function strongWeak(L) {
+  const ev = SKILL_KEYS.filter(k => L[k].level); if (!ev.length) return { strong: [], weak: [], equal: true, ev };
+  const lv = ev.map(k => L[k].level), max = Math.max(...lv), mn = Math.min(...lv);
+  return { ev, equal: max === mn, strong: ev.filter(k => L[k].level === max), weak: max > mn ? ev.filter(k => L[k].level === mn) : [] };
+}
 
-/* ---------------- рядок для Google Таблиці ---------------- */
+/* ---------------- рядок для Google Таблиці (формат як у НМТ) ---------------- */
+const CODE_PREFIX = { emotions: 'K', safe: 'S', money: 'C', hike: 'P', bob: 'B', playground: 'M', radio: 'R' };
+function fmtDateTime(t) { const d = new Date(t), p = n => String(n).padStart(2, '0'); return `${p(d.getDate())}.${p(d.getMonth() + 1)}.${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`; }
+function lc(l) { return CONFIG.levelColors[l || 0]; }
+function resultCell(S, k, r) {
+  if (!r.level && (r.skipped || r.missing) && !r.p1 && !r.p2) return `${lc(0)} ${CONFIG.report.skippedStation}`;
+  const pn = probeNames(k, S.setup.group), parts = [];
+  [r.p1, r.single ? undefined : r.p2].forEach((p, i) => { if (p === undefined) return; parts.push(p ? `${lc(p.level)} ${pn[i]}: ${p.short}` : `${lc(0)} ${pn[i]}: ${k === 'safe' && i === 1 ? 'не оцінено' : 'пропущено'}`); });
+  return `${lc(r.level)} ${r.level ? CONFIG.levelNames[r.level] : 'Не оцінено'} · ${parts.join('; ')}`;
+}
+function answersCell(S) {
+  return SKILL_KEYS.flatMap(k => { const s = S.st[k];
+    if (!s || !s.done || s.skipped) return [`${CODE_PREFIX[k]} пропущено`];
+    return ST[k].codes(s, ctxOf(S, k)); }).map(x => tplG(x, S.setup.gender)).join(' | ');
+}
+function routeCell(S, L) {
+  const sw = strongWeak(L), area = k => skillOf(k).area.toLowerCase(), lines = [];
+  if (!sw.ev.length) return 'Недостатньо даних для висновку.';
+  lines.push(sw.equal ? 'Рівний старт: усі оцінені навички на одному рівні.' : `Сильні: ${sw.strong.map(area).join(', ')}. Зони росту: ${sw.weak.map(area).join(', ')}.`);
+  pickStart(S, L).forEach((p, i) => lines.push(`${i + 1}) ${skillOf(p.k).area} — ${p.why}.`));
+  return lines.join('\n');
+}
 function sheetRecord(S) {
-  const L = scoreAll(S), sk = CONFIG.skills, g = S.setup.group;
-  const headers = ['id', 'Надіслано', 'Вчитель', 'Дитина', 'Вік', 'Група', 'Стать', 'Версія', 'Дата уроку', 'Тривалість, хв',
-    ...sk.map(x => 'Рівень: ' + x.area),
-    ...sk.flatMap(x => probeNames(x.key, g || '78').map((p, i) => `Проба ${i + 1}: ${x.area}`)),
-    ...sk.map(x => 'Хв: ' + x.area), ...sk.map(x => 'Самооцінка: ' + x.area),
-    'Пропуски', 'Версія гри', 'Сирі дані (JSON)'];
-  const raw = Object.fromEntries(SKILL_KEYS.map(k => [k, { level: L[k].level, p1: L[k].p1, p2: L[k].p2, skipped: !!L[k].skipped, state: S.st[k] || null, pt: S.st[k] && S.st[k].pt }]));
-  const row = [S.id, new Date().toISOString(), (S.setup.teacher || '').trim(), (S.setup.name || '').trim().split(/\s+/)[0] || '', S.setup.age || '',
-    g ? CONFIG.groups[g].label : '', S.setup.gender === 'f' ? 'дівчинка' : S.setup.gender === 'm' ? 'хлопчик' : '', S.setup.version,
-    fmtDate(S.date), lessonMinutes(S) || '',
-    ...SKILL_KEYS.map(k => L[k].level || ''),
-    ...SKILL_KEYS.flatMap(k => [L[k].p1 ? L[k].p1.level ?? '' : '', L[k].p2 ? L[k].p2.level ?? '' : '']),
-    ...SKILL_KEYS.map(k => stationMinutes(S, k) ?? ''), ...SKILL_KEYS.map(k => S.self[k] || ''),
-    S.skips.probes + S.skips.stations, CONFIG.version,
-    JSON.stringify({ id: S.id, setup: S.setup, hero: S.hero, skips: S.skips, t: S.t, self: S.self, skills: raw })];
-  return { headers, row };
+  const L = scoreAll(S), sk = CONFIG.skills, g = S.setup.group, gen = S.setup.gender;
+  const headers = ['Дата й час', 'Ім’я', 'Прізвище', 'Вік', 'Вікова група', 'Стать', 'МІК', 'Тривалість, хв',
+    ...sk.flatMap(x => [`${x.area} — результат`, `${x.area} — що робити`]),
+    'Самооцінка', 'Кількість 🟢', 'Кількість 🟡', 'Кількість 🔴', 'Усі відповіді', 'Загальний висновок / маршрут', 'PDF результату', 'id'];
+  const probeLv = SKILL_KEYS.flatMap(k => [L[k].p1 && L[k].p1.level, L[k].p2 && L[k].p2.level]).filter(x => typeof x === 'number');
+  const cnt = l => probeLv.filter(x => x === l).length, min = lessonMinutesExact(S);
+  const row = [fmtDateTime(S.t.lessonStart || S.date), (S.setup.name || '').trim(), (S.setup.surname || '').trim(), S.setup.age || '',
+    g ? CONFIG.groups[g].short : '', gen === 'f' ? 'дівчинка' : gen === 'm' ? 'хлопчик' : '', (S.setup.mik || '').trim(),
+    min === null ? '' : Math.round(min * 10) / 10,
+    ...sk.flatMap(x => { const r = L[x.key]; return [resultCell(S, x.key, r), r.level ? x.levels[r.level].home.slice(0, 2).map(h => tplG(h, gen)).join(' | ') : '']; }),
+    sk.map(x => `${x.area} ${S.self[x.key] ? S.self[x.key] + '/3' : '—'}`).join(' | '),
+    cnt(3), cnt(2), cnt(1), answersCell(S), tplG(routeCell(S, L), gen), '', S.id];
+  return { headers, row, id: S.id, fileName: `${(S.setup.surname || '').trim()} ${(S.setup.name || '').trim()} — ${fmtDate(S.t.lessonStart || S.date)}.pdf` };
 }
 
 /* =====================================================================
@@ -684,7 +772,7 @@ const SYNC = {
   },
   post(msg) { try { if (this.bc) this.bc.postMessage(msg); } catch (e) { } },
   publish(S) { S.rev = (S.rev || 0) + 1; const json = JSON.stringify(S); try { localStorage.setItem(CONFIG.storageKey, json); } catch (e) { } this.post({ type: 'state', state: S }); },
-  load() { try { const x = JSON.parse(localStorage.getItem(CONFIG.storageKey)); if (x && x.v === 4) return x; } catch (e) { } return null; },
+  load() { try { const x = JSON.parse(localStorage.getItem(CONFIG.storageKey)); if (x && x.v === 5) return x; } catch (e) { } return null; },
   ping() { this.post({ type: 'ping' }); try { localStorage.setItem(CONFIG.storageKey + '-ping', String(Date.now())); } catch (e) { } },
   hello() { this.post({ type: 'hello' }); try { localStorage.setItem(CONFIG.storageKey + '-hello', String(Date.now())); } catch (e) { } }
 };
@@ -695,112 +783,113 @@ const SYNC = {
 function selfTest() {
   const R = [], eq = (name, got, exp) => R.push({ name, ok: JSON.stringify(got) === JSON.stringify(exp), got: JSON.stringify(got), exp: JSON.stringify(exp) });
   const G = 'green', Y = 'yellow', X = 'grey';
+  const mk = (g, cur, gender = 'f') => { const S = freshState(false); Object.assign(S.setup, { name: 'Олеся', surname: 'Іваненко', mik: 'Марія', group: g, age: g === '78' ? 8 : 10, gender }); S.phase = 'lesson'; S.cur = cur; S.t.lessonStart = Date.now() - 27.44 * 60000; curStation(S); return S; };
   // Wordle
   eq('Wordle: усе на місці', wordle(['🍎', '🍌', '🍇'], ['🍎', '🍌', '🍇']), [G, G, G]);
-  eq('Wordle: правильний фрукт у середині', wordle(['🍓', '🍌', '🍒'], ['🍎', '🍌', '🍇']), [X, G, X]);
-  eq('Wordle: усі є, але не на місці', wordle(['🍌', '🍇', '🍎'], ['🍎', '🍌', '🍇']), [Y, Y, Y]);
-  eq('Wordle: нічого немає', wordle(['🍓', '🍒', '🍐'], ['🍎', '🍌', '🍇']), [X, X, X]);
-  eq('Wordle: повтор — один зелений, решта сірі', wordle(['🍎', '🍎', '🍎'], ['🍌', '🍎', '🍇']), [X, G, X]);
+  eq('Wordle: фрукт у середині', wordle(['🍓', '🍌', '🍒'], ['🍎', '🍌', '🍇']), [X, G, X]);
   eq('Wordle: повтор — лише один жовтий', wordle(['🍎', '🍎', '🍌'], ['🍌', '🍇', '🍎']), [Y, X, Y]);
-  eq('Wordle: зелений має пріоритет над жовтим', wordle(['🍎', '🍌', '🍎', '🍎'], ['🍇', '🍌', '🍎', '🍓']), [X, G, G, X]);
-  eq('Wordle: 5 місць, змішано', wordle(['🥝', '🍎', '🍐', '🍇', '🍌'], ['🍎', '🥝', '🍐', '🍒', '🍓']), [Y, Y, G, X, X]);
-  // Емоції
-  eq('Кадр: один прийнятний → 1', emoScore(['joy', 'surprise'], ['joy']), 1);
-  eq('Кадр: два прийнятні → 1', emoScore(['joy', 'surprise'], ['joy', 'surprise']), 1);
-  eq('Кадр: два, один прийнятний → 0,5', emoScore(['joy'], ['joy', 'sad']), 0.5);
-  eq('Кадр: неприйнятний / порожньо → 0', [emoScore(['joy'], ['sad']), emoScore(['joy'], [])], [0, 0]);
-  // ceilAvg з пропусками
-  eq('ceilAvg з пропущеними пробами', [ceilAvgN(3, null), ceilAvgN(2, 3), ceilAvgN(null, null), ceilAvgN(1, 2)], [3, 3, null, 2]);
-  // Сейф
-  const T = CONFIG.thresholds.safe, lk = o => Object.assign({ attempts: [1, 2, 3], opened: false, hint: null, stuckAt: null }, o);
-  eq('Сейф П1: відкрито / до кінця часу / зупинка ≥90 / <90', [
-    safeLevel({ end: 'opened', locks: [lk({ opened: true })] }, T), safeLevel({ end: 'time', locks: [lk()] }, T),
-    safeLevel({ end: 'stopped', stoppedAt: 120, locks: [lk()] }, T), safeLevel({ end: 'stopped', stoppedAt: 40, locks: [lk()] }, T)], [3, 3, 2, 1]);
-  eq('Сейф П2: застрягла+підказка / не просила / зупинилась / не застрягала', [
-    safeHelpLevel({ end: 'time', locks: [lk({ stuckAt: 60, hint: { pos: 0 } })] }), safeHelpLevel({ end: 'time', locks: [lk({ stuckAt: 60 })] }),
-    safeHelpLevel({ end: 'stopped', locks: [lk({ stuckAt: 60 })] }), safeHelpLevel({ end: 'opened', locks: [lk()] })], [3, 2, 1, null]);
-  // «Застрягла» на реальній станції: 3 спроби поспіль без нового зеленого
-  const S0 = freshState(false); Object.assign(S0.setup, { group: '78', version: 'A', gender: 'f' }); S0.phase = 'lesson'; S0.cur = 'safe';
-  const sf = curStation(S0); A.next(S0); A.next(S0); const code = sf.locks[0].code, other = CONFIG.versions.A.safe['78'].locks[0].fruits.filter(f => !code.includes(f));
-  const tryG = g => { g.forEach(f => A.act(S0, 'fruit', f)); A.act(S0, 'check'); };
+  eq('Wordle: зелений має пріоритет', wordle(['🍎', '🍌', '🍎', '🍎'], ['🍇', '🍌', '🍎', '🍓']), [X, G, G, X]);
+  // Кіностудія: нові пороги (частка балів)
+  const E = (g, picks) => { const S = mk(g, 'emotions'), F = emFrames(ctxOf(S, 'emotions')); A.next(S);
+    F.forEach((f, i) => { if (S.st.emotions.step === 'caseIntro') A.next(S); (picks(f, i) || []).forEach(p => A.act(S, 'pick', p)); A.next(S); });
+    A.next(S); A.next(S); return { S, F, sc: ST.emotions.score(S.st.emotions, ctxOf(S, 'emotions')) }; };
+  const e1 = E('78', f => [f.ok[0]]);
+  eq('Кіно 7–8: 6 кадрів, усі прийнятні → 3', [e1.F.length, e1.sc.p1.level], [6, 3]);
+  const e2 = E('78', (f, i) => (i < 4 ? [f.ok[0]] : [])), e3 = E('78', (f, i) => (i < 3 ? [f.ok[0]] : []));
+  eq('Кіно 7–8: 4/6 (67%) → 2, 3/6 (50%) → 1', [e2.sc.p1.level, e3.sc.p1.level], [2, 1]);
+  const e4 = E('910', f => [f.ok[0]]);
+  eq('Кіно 9–10: розминка + 2 кейси = 6 кадрів, 5/6 (83%) → 3', [e4.F.length, th(5 / 6 + 1e-9, 0.83, 0.58), e4.sc.p1.level], [6, 3, 3]);
+  eq('Кіно 9–10: перед кейсом-«маскою» є екран-пояснення, спершу «показує»', [e4.S.st.emotions.seen[1], e4.F[2].kind, e4.F[3].kind], [true, 'shows', 'feels']);
+  eq('Кіно: актори без котика', [...new Set(e1.F.map(f => f.head).concat(e4.F.flatMap(f => f.heads)))].includes('cat'), false);
+  eq('Кадр: бал за 1–2 вибори', [emoScore(['joy'], ['joy']), emoScore(['joy'], ['joy', 'sad']), emoScore(['joy'], ['sad'])], [1, 0.5, 0]);
+  // Сейф: два замки, поріг 60 с
+  const SF = mk('78', 'safe'), sf = SF.st.safe; A.next(SF);
+  eq('Сейф: замок 1 (розминка) 7–8 — 2 місця з 3 фруктів, без таймера', [sf.step, sf.locks[0].code.length, sf.endsAt], ['warm', 2, null]);
+  A.next(SF);
+  eq('Сейф: замок 2 — 3 з 5, таймер 2,5 хв', [sf.step, sf.locks[1].code.length, Math.round((sf.endsAt - sf.startedAt) / 1000)], ['hard', 3, 150]);
+  const code = sf.locks[1].code, other = CONFIG.content.safe['78'].hard.fruits.filter(f => !code.includes(f)), tryG = g => { g.forEach(f => A.act(SF, 'fruit', f)); A.act(SF, 'check'); };
   tryG([other[0], other[1], code[0]]); tryG([other[1], other[0], code[0]]); tryG([other[0], code[0], other[1]]);
-  eq('Сейф: «застрягла» після 3 спроб без нового зеленого', sf.locks[0].stuckAt !== null, true);
-  A.act(S0, 'hint'); A.act(S0, 'stop');
-  eq('Сейф: застрягла й попросила підказку → П2 = 3', ST.safe.score(sf, ctxOf(S0, 'safe')).p2.level, 3);
-  // Лавка 7–8
-  const M8 = freshState(false); Object.assign(M8.setup, { group: '78', version: 'A' }); M8.phase = 'lesson'; M8.cur = 'money';
-  const m8 = curStation(M8); A.next(M8); ['lemons', 'sugar', 'cups', 'lolly'].forEach(id => A.act(M8, 'toggle', id));
-  eq('Лавка 7–8: бюджет не дає взяти наліпки', A.act(M8, 'toggle', 'stickers'), 'fx');
+  eq('Сейф: «застрягла» на замку 2', sf.locks[1].stuckAt !== null, true);
+  A.act(SF, 'hint'); sf.startedAt = Date.now() - 50000; A.act(SF, 'stop');
+  const ssf = ST.safe.score(sf, ctxOf(SF, 'safe'));
+  eq('Сейф: зупинилась на 50 с (<60) → П1 = 1; застрягла + підказка → П2 = 3', [ssf.p1.level, ssf.p2.level], [1, 3]);
+  const T = CONFIG.thresholds.safe, lk = o => Object.assign({ attempts: [1, 2, 3], opened: false, hint: null, stuckAt: null }, o);
+  eq('Сейф П1: відкрито / до кінця часу / зупинка ≥60 / <60', [
+    safeLevel({ end: 'opened', locks: [lk(), lk({ opened: true })] }, T), safeLevel({ end: 'time', locks: [lk(), lk()] }, T),
+    safeLevel({ end: 'stopped', stoppedAt: 61, locks: [lk(), lk()] }, T), safeLevel({ end: 'stopped', stoppedAt: 59, locks: [lk(), lk()] }, T)], [3, 3, 2, 1]);
+  eq('Сейф П2: не застрягала → null', safeHelpLevel({ end: 'opened', locks: [lk(), lk()] }), null);
+  // Крамниця 7–8
+  const M8 = mk('78', 'money'), m8 = M8.st.money; A.next(M8);
+  ['sandwich', 'water'].forEach(id => A.act(M8, 'toggle', id));
+  eq('Крамниця 7–8: бюджет не дає взяти іграшку', A.act(M8, 'toggle', 'toy'), 'fx');
   A.next(M8); A.next(M8);
-  eq('Лавка 7–8: виручка 12, увечері 13 монет', [m8.revenue, m8.eveningCoins], [12, 13]);
-  for (let i = 0; i < 7; i++) A.act(M8, 'piggy'); for (let i = 0; i < 5; i++) A.act(M8, 'shelf');
+  [[5, 2], [5, 2, 1], [5, 5, 2]].forEach(cs => { cs.forEach(c => A.act(M8, 'coin', c)); A.next(M8); });
   const sm8 = ST.money.score(m8, ctxOf(M8, 'money'));
-  eq('Лавка 7–8: П1 усе потрібне → 3, П2 7/13 → 3', [sm8.p1.level, sm8.p2.level], [3, 3]);
-  // Лавка 9–10
-  const M9 = freshState(false); Object.assign(M9.setup, { group: '910', version: 'A' }); M9.phase = 'lesson'; M9.cur = 'money';
-  const m9 = curStation(M9); A.next(M9);
-  eq('Лавка 9–10: оренда списана, 25 грн', m9.wallet, 25);
-  A.act(M9, 'buy', 'lemons:big'); A.act(M9, 'buy', 'cups:big'); A.act(M9, 'price', 8); A.next(M9);
-  eq('Лавка 9–10: день 1 сонячно, 8 грн → 9 покупців, 72 грн', [m9.days[0].customers, m9.days[0].revenue], [9, 72]);
-  A.next(M9); A.act(M9, 'save', 'all'); A.next(M9);
-  A.act(M9, 'price', 8); A.next(M9); A.next(M9); A.act(M9, 'save', 'all'); A.next(M9);
-  A.act(M9, 'trap'); A.act(M9, 'price', 5); A.next(M9); A.next(M9); A.act(M9, 'save', 'none'); A.next(M9);
+  eq('Крамниця 7–8: їжа й вода → 3; без решти 2 з 3 → 2; товари в кошику', [sm8.p1.level, sm8.p2.level, m8.basket], [3, 2, ['🍪', '🎁']]);
+  eq('Крамниця 7–8: три покупки — 7, 9, 12', CONFIG.content.money['78'].targets.map(t => t.sum), [7, 9, 12]);
+  // Крамниця 9–10
+  const M9 = mk('910', 'money'), m9 = M9.st.money; A.next(M9);
+  ['baton', 'juice15'].forEach(id => A.act(M9, 'add', id));
+  A.next(M9); A.act(M9, 'choose', 'b'); A.next(M9); A.act(M9, 'choose', 'a'); A.next(M9); A.act(M9, 'key', '3'); A.act(M9, 'key', '7'); A.next(M9);
   const sm9 = ST.money.score(m9, ctxOf(M9, 'money'));
-  eq('Лавка 9–10: великі упаковки — без пустих днів; пастка → П1 = 2', sm9.p1.level, 2);
-  eq('Лавка 9–10: відкладено 2 дні з 3 → П2', sm9.p2.level, m9.piggy >= 120 ? 3 : th(sm9.p2.raw.saved / sm9.p2.raw.profit, 0.6, 0.3));
+  eq('Крамниця 9–10: батон + сік 1,5 л без акції = 4 → 3; вигода 3/3 з рештою 37 → 3', [sm9.p1.raw.points, sm9.p1.level, sm9.p2.level, m9.answers[2].answer], [4, 3, 3, 37]);
+  eq('Крамниця 9–10: 3 сендвічі + 3 соки 0,5 + акція = 2 → 1', [picnic910Points({ sandwich: 3, juice05: 3, promo: 1 }), th(2, 3.5, 2.5)], [2, 1]);
   // Похід
-  const HC = CONFIG.versions.A.hike['910'];
-  eq('Розклад: план без порушень', hikeViolations({ first: 8, rest: 10, lunch: 12, peak: 13, down: 15 }, HC, false), []);
-  eq('Розклад: обід о 16 і вершина до озера', hikeViolations({ peak: 8, first: 10, rest: 12, lunch: 16, down: 17 }, HC, false), ['order', 'lunch']);
-  eq('Розклад: той самий план після зливи — порушення', hikeViolations({ first: 8, rest: 10, lunch: 12, peak: 13, down: 15 }, HC, true), ['rain']);
-  eq('Розклад: перебудований план після зливи', hikeViolations({ first: 8, rest: 10, lunch: 12, peak: 15, down: 17 }, HC, true), []);
-  eq('Розклад: інший правильний план після зливи', hikeViolations({ first: 10, lunch: 12, rest: 13, peak: 15, down: 17 }, HC, true), []);
-  eq('Розклад: незаповнена справа — порушення', hikeViolations({ first: 8, lunch: 12, peak: 13, down: 15 }, HC, false), ['all:rest']);
-  eq('Розклад: накладання не вміщається', [hikeFits({ first: 8 }, HC, 'peak', 9), hikeFits({ first: 8 }, HC, 'down', 18)], [false, false]);
-  const routes = CONFIG.versions.A.hike['78'].routes;
-  eq('Маршрут 7–8: ліс 3, додому 2, гора 1, брід 1', ['forest', 'home', 'mountain', 'ford'].map(id => routes.find(r => r.id === id).level), [3, 2, 1, 1]);
-  // Боб
-  const B = (g, codes, give) => {
-    const SB = freshState(false); Object.assign(SB.setup, { group: g, version: 'A' }); SB.phase = 'lesson'; SB.cur = 'bob';
-    const b = curStation(SB); A.next(SB); codes.forEach(c => A.act(SB, 'code', c)); (give || []).forEach(x => x.startsWith('h:') ? A.act(SB, 'haggle', x.slice(2)) : A.act(SB, 'give', x));
-    return { b, sc: ST.bob.score(b, ctxOf(SB, 'bob')) };
-  };
-  const b1 = B('78', ['demand', 'demand']);
-  eq('Боб: дві вимоги — Боб іде', [b1.b.left, b1.b.step, b1.sc.p2.level], [true, 'bye', 1]);
-  const b2 = B('78', ['askNeed', 'offer'], ['fair']);
-  eq('Боб: спитала про потребу + чесний обмін → 3/3', [b2.sc.p1.level, b2.sc.p2.level, b2.b.line], [3, 3, 'fair']);
-  const b3 = B('78', ['askNoTrade', 'offer'], ['unfair', 'overpay']);
-  eq('Боб: натяк → обмін, фантик відхилено, переплата → 2/2', [b3.sc.p1.level, b3.sc.p2.level, b3.b.tries], [2, 2, ['unfair', 'overpay']]);
-  const b4 = B('910', ['askNeed', 'offer'], ['fair', 'h:agree']);
-  eq('Боб 9–10: торг «Дай дві» → погодилась → переплата', [b4.b.result, b4.sc.p2.level], ['overpay', 2]);
-  const b5 = B('78', ['silent', 'silent', 'silent', 'silent', 'silent']);
-  eq('Боб: 5 реплік — перехід до обміну', [b5.b.step, b5.b.via], ['trade', 'tooLong']);
-  // Майданчик
-  eq('Суддя: комбінації відміток', [judgeLevel(['twoPlus']), judgeLevel(['askBoth', 'one']), judgeLevel(['askBoth']), judgeLevel(['one']), judgeLevel(['side']), judgeLevel(['side', 'silent'])], [3, 3, 2, 2, 1, 1]);
-  const PC = CONFIG.versions.A.playground['910'];
-  eq('Компроміс: обидві команди і ≥3 бажання → 3; одна команда → 1; мало бажань → 2', [compromiseLevel(['c1', 'c2', 'c3'], PC), compromiseLevel(['c2', 'c5', 'c6'], PC), compromiseLevel(['c4', 'c5', 'c6'], PC)], [3, 1, 2]);
-  // Радіо
+  const HC = CONFIG.content.hike['910'];
+  eq('Розклад: план без порушень / після зливи — порушення / перебудований', [hikeViolations({ first: 8, rest: 10, lunch: 12, peak: 13, down: 15 }, HC, false), hikeViolations({ first: 8, rest: 10, lunch: 12, peak: 13, down: 15 }, HC, true), hikeViolations({ first: 8, rest: 10, lunch: 12, peak: 15, down: 17 }, HC, true)], [[], ['rain'], []]);
+  // Майданчик: «Чат класу»
+  eq('Чат класу: 3 я + почуття → 3; 3 я коротко → 2; 2 я → 2; 1 я → 1', [chatLevel(['i', 'i', 'i'], 'feel'), chatLevel(['i', 'i', 'i'], 'short'), chatLevel(['i', 'blame', 'i'], 'feel'), chatLevel(['i', 'blame', 'blame'], 'feel')], [3, 2, 2, 1]);
+  const P9 = mk('910', 'playground'), p9 = P9.st.playground; A.next(P9);
+  eq('Майданчик 9–10: перша проба — Компроміс', p9.step, 'compromise');
+  ['c1', 'c2', 'c3'].forEach(c => A.act(P9, 'card', c)); A.next(P9);
+  eq('Чат: «Далі» вимкнене, поки йде чат', ST.playground.canNext(p9), false);
+  ['i', 'i', 'i'].forEach(x => A.act(P9, 'reply', x)); A.act(P9, 'why', 'feel'); A.next(P9);
+  const sp9 = ST.playground.score(p9, ctxOf(P9, 'playground'));
+  eq('Майданчик 9–10: компроміс 3, чат 3', [sp9.p1.level, sp9.p2.level, p9.done], [3, 3, true]);
+  const P8 = mk('78', 'playground'); A.next(P8);
+  eq('Майданчик 7–8: спершу Правила, потім Суддя', [P8.st.playground.step, (A.next(P8), P8.st.playground.step)], ['rules', 'judge']);
+  eq('Суддя: комбінації відміток', [judgeLevel(['twoPlus']), judgeLevel(['askBoth', 'one']), judgeLevel(['askBoth']), judgeLevel(['side'])], [3, 3, 2, 1]);
+  // Радіо: «Таємний гість»
+  const RD = mk('78', 'radio'), rd = RD.st.radio; A.next(RD);
+  eq('Радіо: без імені «Далі» вимкнене', ST.radio.canNext(rd), false);
+  A.act(RD, 'guest', 'Людина-павук і ще дуже-дуже довге ім’я героя');
+  eq('Радіо: ім’я гостя обрізане до 30 символів, ведучий — гість', [rd.guest.length <= 30, guestName(rd).startsWith('Людина-павук'), rd.guestCape !== null], [true, true, true]);
+  A.next(RD); [3, 2, 2].forEach(v => { A.act(RD, 'code', v); A.next(RD); }); A.act(RD, 'ask', 'yes'); A.next(RD);
+  eq('Радіо: ім’я гостя в «Усіх відповідях»', ST.radio.codes(rd, ctxOf(RD, 'radio'))[0], 'R гість: ' + rd.guest);
+  const RD2 = mk('910', 'radio'), rd2 = RD2.st.radio; A.next(RD2); A.act(RD2, 'noGuest');
+  eq('Радіо: «Без імені» — ведуча Іскра', [ST.radio.canNext(rd2), guestName(rd2)], [true, 'Іскра']);
   const RT = CONFIG.thresholds.radio;
-  eq('Радіо: середнє 7–8 без бонусу; 9–10 з бонусом', [radioAvg([2, 2, 3], 'yes', '78', RT), radioAvg([2, 2], 'yes', '910', RT), radioAvg([2, 3], 'no', '910', RT)], [7 / 3, 2.5, 2.5]);
-  eq('Радіо: рівень 9–10 з бонусом 2 → 2,5 → 3', th(radioAvg([2, 2], 'yes', '910', RT), RT.avg.l3, RT.avg.l2), 3);
-  // Предмети костюма, зокрема при пропуску станції
-  const SI = freshState(false); Object.assign(SI.setup, { group: '78', version: 'A', gender: 'm' }); SI.phase = 'lesson'; SI.cur = 'emotions'; curStation(SI);
-  A.skipStation(SI);
-  eq('Костюм: пропущена станція однаково дає Маску', SI.items, [CONFIG.costume.emotions]);
-  A.next(SI); A.skipStation(SI); A.next(SI); A.skipStation(SI);
-  eq('Костюм: порядок предметів Маска → Щит → Пояс', SI.items, [0, 3, 1]);
-  eq('Костюм: навушники за Радіо (шар 7) і корона на фіналі', [CONFIG.costume.radio, CONFIG.costume.final], [7, 6]);
-  // Рядок для таблиці
-  const SR = freshState(false); Object.assign(SR.setup, { name: 'Олеся Іваненко', teacher: 'Марія', group: '78', age: 8, gender: 'f', version: 'B' });
-  SR.t.lessonStart = Date.now() - 40 * 60000; SR.t.lessonEnd = Date.now(); SR.st.emotions = { done: true, skipped: true }; SR.self.emotions = 2; SR.skips.stations = 1;
+  eq('Радіо: середнє 9–10 з бонусом', [radioAvg([2, 2], 'yes', '910', RT), radioAvg([2, 2], 'yes', '78', RT)], [2.5, 2]);
+  // Самооцінка лише для пройдених навичок
+  const SS = mk('78', 'emotions'); A.skipStation(SS); A.next(SS); A.next(SS); A.next(SS);
+  ['money', 'hike', 'bob', 'playground', 'radio'].forEach(() => { A.skipStation(SS); A.next(SS); });
+  SS.st.safe.done = true; SS.st.safe.skipped = false;   // імітуємо пройдений сейф
+  delete SS.st.final; SS.cur = 'final'; curStation(SS);
+  eq('Самооцінка: лише пройдені навички (без пропущених станцій)', SS.st.final.list, ['safe']);
+  A.act(SS, 'self', 2); A.next(SS);
+  eq('Самооцінка: одна навичка → одразу корона', [SS.self.safe, SS.st.final.step, SS.phase], [2, 'crown', 'report']);
+  // ceilAvg і костюм
+  eq('ceilAvg з пропущеними пробами', [ceilAvgN(3, null), ceilAvgN(2, 3), ceilAvgN(null, null)], [3, 3, null]);
+  const SI = mk('78', 'emotions'); A.skipStation(SI); A.next(SI); A.skipStation(SI); A.next(SI); A.skipStation(SI);
+  eq('Костюм: пропущені станції однаково дають Маску, Щит, Пояс', SI.items, [0, 3, 1]);
+  // Рядок таблиці
+  const SR = mk('78', 'emotions'); SR.st.emotions = e1.S.st.emotions; SR.st.safe = sf; SR.st.money = m8; SR.st.playground = { done: true, skipped: true };
+  SR.self.emotions = 2; SR.self.safe = 3; SR.t.lessonEnd = SR.t.lessonStart + 27.44 * 60000;
   const rec = sheetRecord(SR), col = h => rec.row[rec.headers.indexOf(h)];
-  eq('Таблиця: заголовки й рядок однакової довжини', rec.headers.length === rec.row.length, true);
-  eq('Таблиця: лише ім’я, версія, тривалість, пропуски', [col('Дитина'), col('Версія'), col('Тривалість, хв'), col('Пропуски')], ['Олеся', 'B', 40, 1]);
-  eq('Таблиця: пропущена станція — порожній рівень', [col('Рівень: Емоції'), col('Проба 1: Емоції'), col('Самооцінка: Емоції')], ['', '', 2]);
-  eq('Таблиця: сирі дані останньою колонкою', JSON.parse(rec.row[rec.row.length - 1]).setup.version, 'B');
-  // Рід
-  eq('Рід: підстановка', [tplG('мрія{в|ла}', 'm'), tplG('мрія{в|ла}', 'f'), tplG('готов{ий|а}', 'f')], ['мріяв', 'мріяла', 'готова']);
-  eq('Версії А і Б мають однакову структуру', JSON.stringify(Object.keys(CONFIG.versions.A)) === JSON.stringify(Object.keys(CONFIG.versions.B)), true);
+  eq('Таблиця: 30 колонок у потрібному порядку', [rec.headers.length, rec.row.length, rec.headers.slice(0, 8), rec.headers[8], rec.headers[9], rec.headers[22], rec.headers.slice(-3)],
+    [30, 30, ['Дата й час', 'Ім’я', 'Прізвище', 'Вік', 'Вікова група', 'Стать', 'МІК', 'Тривалість, хв'], 'Емоції — результат', 'Емоції — що робити', 'Самооцінка', ['Загальний висновок / маршрут', 'PDF результату', 'id']]);
+  eq('Таблиця: дата дд.мм.рррр гг:хх:сс, ім’я, прізвище, група, тривалість з 1 знаком', [/^\d\d\.\d\d\.\d{4} \d\d:\d\d:\d\d$/.test(col('Дата й час')), col('Ім’я'), col('Прізвище'), col('Вікова група'), col('Тривалість, хв'), col('МІК')], [true, 'Олеся', 'Іваненко', '7–8', 27.4, 'Марія']);
+  eq('Таблиця: колір навички й проби', [col('Емоції — результат') === '🟡 Росте · 🟢 Кадри: 6 з 6; 🔴 Способи заспокоїтися: 0', col('Вирішення суперечок — результат')], [true, '⚪ ' + CONFIG.report.skippedStation]);
+  eq('Таблиця: «що робити» — 2 рекомендації через « | »', col('Емоції — що робити').split(' | ').length, 2);
+  eq('Таблиця: самооцінка', col('Самооцінка').split(' | ').slice(0, 3), ['Емоції 2/3', 'Наполегливість 3/3', 'Гроші —']);
+  const L = scoreAll(SR), lvls = SKILL_KEYS.flatMap(k => [L[k].p1 && L[k].p1.level, L[k].p2 && L[k].p2.level]).filter(x => typeof x === 'number');
+  eq('Таблиця: лічильники 🟢🟡🔴 по пробах', [col('Кількість 🟢'), col('Кількість 🟡'), col('Кількість 🔴')], [3, 2, 1].map(l => lvls.filter(x => x === l).length));
+  const ans = col('Усі відповіді');
+  eq('Таблиця: «Усі відповіді» — коди проб', [ans.startsWith('K1 ✅ '), /\| K\* способів: \d/.test(ans), /\| S1 \d+ спр\./.test(ans), /\| S2 \d+ спр\., \d:\d\d, підказка/.test(ans), /\| C1 ✅ їжа ✅ вода/.test(ans), /C2 ✅ печиво в дорогу 7, ❌ квиток на човник 8 → 9/.test(ans), / \| M пропущено/.test(ans)], [true, true, true, true, true, true, true]);
+  eq('Таблиця: маршрут — підсумок + 2 навички окремими рядками', col('Загальний висновок / маршрут').split('\n').length, 3);
+  eq('Таблиця: назва PDF «Прізвище Ім’я — дата.pdf»', /^Іваненко Олеся — \d\d\.\d\d\.\d{4}\.pdf$/.test(rec.fileName), true);
+  eq('Таймінг: разом 30 хв', CONFIG.order.reduce((a, k) => a + CONFIG.locations[k].minutes, 0), 30);
+  eq('Рід: підстановка', [tplG('мрія{в|ла}', 'm'), tplG('мрія{в|ла}', 'f')], ['мріяв', 'мріяла']);
 
   const pass = R.filter(r => r.ok).length, fail = R.length - pass;
   console.log(`%c[САМОТЕСТИ] ${pass}/${R.length} пройдено${fail ? `, ${fail} провалено` : ''}`, `font-weight:bold;color:${fail ? '#c00' : '#1F9D63'}`);
