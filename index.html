@@ -52,7 +52,13 @@ h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15}
 .kicker{font-size:13px;font-weight:700;color:var(--muted)}
 .shead h2{font-size:19px}
 /* текст завдання для дитини (і для батьків поруч) */
-.task{font:800 23px/1.3 var(--head);background:#FFF3C4;border:3px solid var(--navy);border-radius:16px;padding:8px 14px;margin-bottom:10px;box-shadow:3px 3px 0 var(--navy)}
+.task{background:#FFF3C4;border:3px solid var(--navy);border-radius:16px;padding:7px 14px 8px;margin-bottom:10px;box-shadow:3px 3px 0 var(--navy)}
+.task .sit{font:600 17px/1.36 var(--text)}
+.task .q{font:800 21px/1.25 var(--head);margin-top:3px}
+/* Twemoji: емодзі як картинки */
+img.emoji{height:1em;width:1em;margin:0 .04em;vertical-align:-0.12em;display:inline-block}
+.pxcoin{display:inline-block;vertical-align:-3px;image-rendering:pixelated}
+.pxrope{display:block;image-rendering:pixelated}
 .timer{margin-left:auto;background:var(--yellow);border:4px solid var(--navy);border-radius:999px;padding:3px 18px;font:800 24px/1.2 var(--head);box-shadow:4px 4px 0 var(--navy);min-width:100px;text-align:center;font-variant-numeric:tabular-nums}
 .timer.pulse{animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{50%{transform:scale(1.07)}}
@@ -172,14 +178,16 @@ h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15}
 /* Боб */
 .bob{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:18px;align-items:center;min-height:0}
 .bobfig{position:relative}
-.rope{position:absolute;bottom:22%;right:-6%;font-size:46px;transform:rotate(-15deg)}
+.rope{position:absolute;bottom:16%;right:-18%}
 .walkoff{animation:walkoff 2.2s steps(12) forwards}
 @keyframes walkoff{to{transform:translateX(700px)}}
-.inv{display:flex;gap:6px;justify-content:center;background:#8B8B8B;border:4px solid #373737;padding:6px;border-radius:4px;margin-top:8px;box-shadow:inset 3px 3px 0 #C6C6C6,inset -3px -3px 0 #555}
-.slot{width:150px;height:76px;background:#8B8B8B;border:3px solid;border-color:#373737 #fff #fff #373737;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;text-shadow:1px 1px 0 #000;gap:2px;text-align:center;line-height:1.1;padding:2px}
-.slot .e{font-size:30px;text-shadow:none}
-.slot.used{opacity:.35}
-.slot.given{outline:4px solid var(--yellow)}
+.inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:10px}
+.icard{background:#fff;border:3px solid var(--navy);border-radius:16px;box-shadow:4px 4px 0 var(--navy);padding:8px 10px;display:flex;align-items:center;gap:10px;min-width:0}
+.icard .e{font-size:34px;line-height:1;flex:none}
+.icard b{display:block;font-size:16px;line-height:1.2}
+.icard small{display:block;font-size:13px;font-weight:600;color:var(--muted);line-height:1.25}
+.icard.used{opacity:.35}
+.icard.given{outline:5px solid var(--yellow);outline-offset:2px}
 .bubbles{display:flex;flex-direction:column;gap:8px}
 .bubbles .me{align-self:flex-end;background:#EEEBFF;border:3px solid var(--navy);border-radius:16px;padding:6px 12px;font-weight:700}
 
@@ -216,9 +224,20 @@ h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15}
 .battery::after{content:"";position:absolute;right:-12px;top:50%;width:8px;height:24px;transform:translateY(-50%);background:var(--navy);border-radius:0 4px 4px 0}
 .battery i{width:70px;height:46px;border:3px solid var(--navy);border-radius:6px;background:#fff}
 .battery i.on{background:var(--yellow)}
+.selfgrid{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-content:center;min-height:0}
+.scard{background:#fff;border:3px solid var(--navy);border-radius:18px;box-shadow:4px 4px 0 var(--navy);padding:10px 12px;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+.scard .hd{display:flex;align-items:center;gap:8px;font:800 15px/1.2 var(--head)}
+.scard .ic{display:grid;place-items:center;width:38px;height:38px;border:3px solid var(--navy);border-radius:12px;background:var(--yellow);font-size:20px;flex:none}
+.scard .qq{font-size:14px;font-weight:600;line-height:1.3;color:var(--muted);flex:1}
+.scard.cur{outline:5px solid var(--purple);outline-offset:3px;background:#F4F1FF}
+.scard.off{opacity:.4}
+.mini{display:flex;gap:4px;border:3px solid var(--navy);border-radius:8px;padding:3px;background:#fff;position:relative}
+.mini::after{content:"";position:absolute;right:-8px;top:50%;width:5px;height:14px;transform:translateY(-50%);background:var(--navy);border-radius:0 3px 3px 0}
+.mini i{width:30px;height:22px;border:2px solid var(--navy);border-radius:4px;background:#fff}
+.mini i.on{background:var(--yellow)}
 .final{flex:1;display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;justify-content:center}
 .final .huge{color:var(--purple)}
-@media (max-width:1180px){.main{grid-template-columns:170px minmax(0,1fr);gap:12px;padding:4px 12px 12px}.task{font-size:20px}}
+@media (max-width:1180px){.main{grid-template-columns:170px minmax(0,1fr);gap:12px;padding:4px 12px 12px}.task .q{font-size:19px}.task .sit{font-size:16px}}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important;transition:none !important}}
 </style>
 </head>
@@ -233,6 +252,7 @@ h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15}
     <section class="stage" id="stage"></section>
   </main>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <script src="config.js"></script>
 <script src="hero-pixel.js"></script>
 <script src="core.js"></script>
@@ -280,7 +300,7 @@ function confetti(n = 40) {
   for (let i = 0; i < n; i++) { const p = document.createElement('i'); p.style.left = Math.random() * 100 + '%'; p.style.background = cols[i % cols.length]; p.style.animationDelay = Math.random() * 0.5 + 's'; p.style.setProperty('--dx', (Math.random() * 220 - 110) + 'px'); p.style.setProperty('--rot', (Math.random() * 720 - 360) + 'deg'); box.appendChild(p); }
   document.body.appendChild(box); setTimeout(() => box.remove(), 3000);
 }
-function toast(t) { const st = $('#stage'); st.querySelectorAll('.toast').forEach(x => x.remove()); const d = document.createElement('div'); d.className = 'toast'; d.textContent = T(t); st.appendChild(d); setTimeout(() => d.remove(), 2000); }
+function toast(t) { const st = $('#stage'); st.querySelectorAll('.toast').forEach(x => x.remove()); const d = document.createElement('div'); d.className = 'toast'; d.textContent = T(t); st.appendChild(d); emojify(d); setTimeout(() => d.remove(), 2000); }
 function playFx(f) {
   if (!f || f.kind === '') return;
   if (f.kind === 'item') { AUD.item(); confetti(30); }
@@ -317,23 +337,25 @@ function iskraLine() {
   if (key === 'safe' && s.locks && s.locks[s.lock] && s.locks[s.lock].opened) return CONFIG.iskra.safe.opened;
   return (CONFIG.iskra[key] || {})[s.step] || '';
 }
-// текст завдання для поточного кроку (екран дитини)
+// ситуація + питання для поточного кроку (екран дитини): { sit, q }
 function taskText() {
-  if (!S || S.phase === 'setup') return '';
-  const key = S.cur, s = S.st[key]; if (!s) return '';
-  const g = G(), Tk = CONFIG.task, vars = {};
-  if (key === 'hero') return Tk.hero.pick;
-  if (s.step === 'done') return Tk.done;
-  if (s.step === 'intro') return '';
-  if (key === 'final') { const k = s.list && s.list[s.bi]; vars.selfQ = k ? skillOf(k).selfQ : ''; return fill(Tk.final[s.step], vars); }
+  if (!S || S.phase === 'setup') return null;
+  const key = S.cur, s = S.st[key]; if (!s) return null;
+  const g = G(), Tk = CONFIG.task, v = {};
+  const out = (t, vars) => { t = pick78(t, g); if (!t) return null; if (typeof t === 'string') t = { sit: '', q: t }; return { sit: fill(pick78(t.sit, g) || '', vars || v), q: fill(pick78(t.q, g) || '', vars || v) }; };
+  if (key === 'hero') return out(Tk.hero.pick);
+  if (s.step === 'done') return out(Tk.done);
+  if (s.step === 'intro') return { sit: CONFIG.lore[key] || '', q: Tk.intro[key] || '' };
+  if (key === 'final') { const k = s.list && s.list[s.bi]; v.selfQ = k ? skillOf(k).selfQ : ''; return out(Tk.final[s.step]); }
   const c = ctxOf(S, key);
-  if (key === 'emotions' && s.step === 'frames') vars.question = (emFrames(c)[s.fi] || {}).question || '';
-  if (key === 'money' && s.step === 'exact') { const t = c.C.targets[s.t]; if (t) { vars.price = t.sum; vars.item = t.acc; } }
-  if (key === 'money' && s.step === 'deal') vars.question = (c.C.deals[s.q] || {}).text || '';
-  if (key === 'radio') { vars.guest = guestName(s); if (s.step === 'q') vars.question = `${guestName(s)} питає: ${c.C.questions[s.qi]}`; }
-  if (key === 'safe' && s.locks && s.locks[s.lock] && s.locks[s.lock].opened) return Tk.safe.opened;
-  if (key === 'bob' && s.step === 'trade') return s.line === 'offerHidden' || s.line === 'offerKnown' ? Tk.bob.tradeAsk : Tk.bob.trade;
-  return fill(pick78((Tk[key] || {})[s.step], g) || '', vars);
+  if (key === 'emotions' && s.step === 'frames') { const f = emFrames(c)[s.fi] || {}; v.sit = f.sit || f.text || ''; v.q = f.q || f.question || ''; }
+  if (key === 'safe') { const L = s.lock === 0 ? c.C.warm : c.C.hard; v.slots = L.slots; v.n = L.fruits.length; if (s.locks && s.locks[s.lock] && s.locks[s.lock].opened) return out(Tk.safe.opened); }
+  if (key === 'money' && s.step === 'exact') { const t = c.C.targets[s.t] || {}; v.sit = t.sit || ''; v.q = t.q || ''; }
+  if (key === 'money' && s.step === 'deal') { const d = c.C.deals[s.q] || {}; v.sit = d.sit || ''; v.q = d.q || d.text || ''; }
+  if (key === 'playground' && s.step === 'chat') { const m = c.C.chat.messages[s.ci] || {}; v.sit = m.sit || ''; }
+  if (key === 'radio') { v.guest = guestName(s); if (s.step === 'q') { const Q = c.C.questions[s.qi] || {}; v.sit = Q.sit || ''; v.q = fill(Q.q || '', { guest: v.guest }); } }
+  if (key === 'bob') return out(Tk.bob[s.line] || Tk.bob.hello);
+  return out((Tk[key] || {})[s.step]);
 }
 
 /* ---------- мапа ---------- */
@@ -358,8 +380,9 @@ function mapView(opts = {}) {
 }
 function head(sk, title, timer) {
   const L = CONFIG.locations[sk];
-  const task = taskText();   // текст завдання — одразу під заголовком сцени
-  return `<div class="shead"><span class="sicon">${L.icon}</span><div><div class="kicker">${esc(L.name)}</div><h2>${esc(title)}</h2></div>${timer ? `<div class="timer" id="timer" data-ends="${timer}">${fmtTime(Math.ceil((timer - Date.now()) / 1000))}</div>` : ''}</div>${task ? `<div class="task" id="task">${esc(T(task))}</div>` : ''}`;
+  const t = taskText();   // ситуація + питання — одразу під заголовком сцени
+  const task = t && (t.sit || t.q) ? `<div class="task" id="task">${t.sit ? `<div class="sit">${esc(T(t.sit))}</div>` : ''}${t.q ? `<div class="q">${esc(T(t.q))}</div>` : ''}</div>` : '';
+  return `<div class="shead"><span class="sicon">${L.icon}</span><div><div class="kicker">${esc(L.name)}</div><h2>${esc(title)}</h2></div>${timer ? `<div class="timer" id="timer" data-ends="${timer}">${fmtTime(Math.ceil((timer - Date.now()) / 1000))}</div>` : ''}</div>${task}`;
 }
 
 /* ---------- сцени станцій ---------- */
@@ -370,7 +393,7 @@ V.hero = () => `${head('hero', 'Хто твій герой?')}<div class="center
   <div class="row">${CONFIG.capes.map(c => `<div class="tile${S.hero.cape === c.id ? ' sel' : ''}" style="width:62px;height:62px;border-radius:50%;background:${c.color}"></div>`).join('')}</div></div></div>`;
 V.intro = key => {
   const L = CONFIG.locations[key];
-  return head(key, L.name) + mapView({ extra: `<div class="splash"><div class="bigic">${L.icon}</div><div><div class="huge" style="font-size:26px">${esc(L.name)}</div><div class="lore">${esc(T(CONFIG.lore[key] || ''))}</div></div></div>` });
+  return head(key, L.name) + mapView({ extra: `<div class="splash" style="width:auto"><div class="bigic">${L.icon}</div><div class="huge" style="font-size:26px">${esc(L.name)}</div></div>` });
 };
 V.done = key => {
   const it = CONFIG.costume[key], s = S.st[key];
@@ -393,12 +416,12 @@ V.emotions = s => {
     }
     const caseFrames = F.map((x, i) => ({ x, i })).filter(o => o.x.ci === f.ci);
     const fr = ({ x, i }) => {
-      const hd = x.heads[x.who], big = sc(610, 30);
+      const hd = x.heads[x.who], big = sc(650, 30);
       if (x.kind === 'shows') return `<div class="frame shows${i === s.fi ? ' sel' : ''}" style="max-width:360px"><span class="maskbadge">🎭</span>${npc(hd, '#FFB703', big, 'joy')}<span class="lab">Показує іншим</span></div>`;
       if (x.kind === 'feels') { const ch = s.ans[i]; return `<div class="frame feels${i === s.fi ? ' sel' : ''}${i > s.fi ? ' future' : ''}" style="max-width:360px">${ch && ch.length ? emoFace(hd, ch, big, '#FFB703') : npc(hd, '#FFB703', big, 'blank', {}, 'ghost')}<span class="lab" style="color:var(--navy)">Насправді</span></div>`; }
       return `<div class="frame${i === s.fi ? ' sel' : ''}${i > s.fi ? ' future' : ''}" style="max-width:360px">${emoFace(hd, s.ans[i], big, '#FFB703')}<div class="q">${esc(T(x.question))}</div></div>`;
     };
-    return head('emotions', f.title) + `<div class="center" style="gap:10px"><div class="card casetxt">${esc(T(f.text))}</div><div class="strip">${caseFrames.map(fr).join('')}</div></div>`;
+    return head('emotions', f.title) + `<div class="center" style="gap:10px"><div class="strip">${caseFrames.map(fr).join('')}</div></div>`;
   }
   // «Що допоможе?» — без таймера на екрані дитини
   const h = ctx.C.calmHead;
@@ -407,11 +430,11 @@ V.emotions = s => {
 };
 V.safe = s => {
   const ctx = ctxOf(S, 'safe'), L = s.lock === 0 ? ctx.C.warm : ctx.C.hard, lk = s.locks[s.lock];
-  const legend = '<div class="legend"><span><i class="fb-g"></i> на своєму місці</span><span><i class="fb-y"></i> є, але в іншому місці</span><span><i class="fb-x"></i> немає</span></div>';
+  const legend = '<div class="legend"><span><i class="fb-g"></i> зелений — фрукт на своєму місці</span><span><i class="fb-y"></i> жовтий — є в коді, але в іншому місці</span><span><i class="fb-x"></i> сірий — такого фрукта в коді немає</span></div>';
   const hist = atts => atts.map((a, k) => `<div class="hrow"><b style="width:22px">${k + 1}</b>${a.guess.map((f, i) => `<div class="ft ${({ green: 'fb-g', yellow: 'fb-y', grey: 'fb-x' })[a.fb[i]]}">${f}</div>`).join('')}</div>`).join('');
   if (lk && lk.opened) return head('safe', s.lock === 0 ? 'Розминка' : 'Складніший замок') + `<div class="center"><div style="font-size:96px;line-height:1">🔓</div><div class="huge">Замок відкрито!</div></div>`;
   const guess = Array.from({ length: L.slots }, (_, i) => lk.hint && lk.hint.pos === i ? `<div class="ft hint">${lk.hint.fruit}</div>` : s.guess[i] ? `<div class="ft">${s.guess[i]}</div>` : '<div class="ft empty"></div>').join('');
-  return head('safe', s.lock === 0 ? 'Замок 1 · розминка' : 'Замок 2 · складніший') + `<div class="safe"><div class="safeL"><div class="row">${guess}</div>
+  return head('safe', s.lock === 0 ? 'Замок 1 · розминка' : 'Замок 2 · складніший') + `<div class="safe"><div class="safeL"><div class="pill" style="font-size:16px">У коді ${L.slots} ${pl(L.slots, ['місце', 'місця', 'місць'])} · фруктів на вибір: ${L.fruits.length}</div><div class="row">${guess}</div>
     <div class="row">${L.fruits.map(f => `<div class="ft" style="box-shadow:3px 3px 0 var(--navy)">${f}</div>`).join('')}</div>${legend}</div><div class="history">${hist(lk.attempts)}</div></div>`;
 };
 V.money = s => {
@@ -421,7 +444,7 @@ V.money = s => {
   if (s.step === 'picnic') {
     if (G() === '78') {
       const left = C.budget - ST.money.spent(s, C, '78');
-      return head('money', 'Пікнік за 10 монет') + `<div class="shop">${owl(owlL.hello)}<div class="goods">${C.goods.map(g => `<div class="good${s.cart.includes(g.id) ? ' taken' : ''}"><span class="e">${g.e}</span><span class="n">${esc(g.name)}</span><span class="price">${g.price} 🪙</span></div>`).join('')}</div>
+      return head('money', 'Пікнік за 10 монет') + `<div class="shop">${owl(owlL.hello)}<div class="goods">${C.goods.map(g => `<div class="good${s.cart.includes(g.id) ? ' taken' : ''}"><span class="e">${g.e}</span><span class="n">${esc(g.name)}</span><span class="price">${g.price} ${coinSVG(2)}</span></div>`).join('')}</div>
         <div class="basket"><b>Гаманець</b>${coins(left)}<b>Кошик</b><div class="row">${s.cart.map(id => `<span style="font-size:36px">${C.goods.find(x => x.id === id).e}</span>`).join('')}</div></div></div>`;
     }
     const left = C.budget - ST.money.spent(s, C, '910');
@@ -433,7 +456,7 @@ V.money = s => {
     const t = C.targets[s.t];
     const owlLine = s.owl === 'give' ? owlL.give : s.owl === 'thanks' ? owlL.thanks : '';
     return head('money', `Покупка ${s.t + 1} з ${C.targets.length}`) + `<div class="shop" style="grid-template-columns:150px minmax(0,1fr) 220px;align-items:center">${owl(owlLine)}
-      <div class="center" style="gap:14px"><div class="card" style="display:flex;align-items:center;gap:14px"><span style="font-size:64px">${t.e}</span><div style="text-align:left"><div style="font:700 19px var(--head)">${esc(t.name)}</div><span class="price" style="font-size:20px">${t.sum} 🪙</span></div></div>
+      <div class="center" style="gap:14px"><div class="card" style="display:flex;align-items:center;gap:14px"><span style="font-size:64px">${t.e}</span><div style="text-align:left"><div style="font:700 19px var(--head)">${esc(t.name)}</div><span class="price" style="font-size:20px">${t.sum} ${coinSVG(3)}</span></div></div>
         <div class="row">${C.coins.map(v => `<span class="bigcoin">${v}</span>`).join('')}</div>
         <div class="plate">${s.plate.map(v => `<span class="bigcoin">${v}</span>`).join('') || '<span class="muted">Тарілочка для монет</span>'}</div></div>
       <div class="basket"><b>Кошик</b><div class="row" style="font-size:44px">${s.basket.join(' ')}</div></div></div>`;
@@ -463,13 +486,14 @@ V.hike = s => {
     <div class="card rules"><div class="kicker">Правила</div><ul style="margin:6px 0 0;padding-left:18px">${rules.map(r => `<li>${esc(r)}</li>`).join('')}</ul></div></div>`;
 };
 V.bob = s => {
-  const ctx = ctxOf(S, 'bob'), C = ctx.C, face = s.face === 'normal' ? 'pride' : s.face;   // трохи «нахабний» Боб
+  const ctx = ctxOf(S, 'bob'), C = ctx.C, face = s.face === 'normal' ? undefined : s.face;   // оригінальний бобер із hero-pixel.js
   const walking = s.left && s.step === 'bye';
-  const bob = `<div class="bobfig${walking ? ' walkoff' : ''}"><div class="px">${HP.render({ style: CONFIG.heroStyle, head: 'beaver', cape: '#FF9F1C', items: [], scale: sc(470, 30), expression: face, frame: walking ? 1 : 0 })}</div>${!s.result ? `<span class="rope">${C.need.e}</span>` : ''}</div>`;
+  const bob = `<div class="bobfig${walking ? ' walkoff' : ''}"><div class="px">${HP.render({ style: CONFIG.heroStyle, head: 'beaver', cape: '#FF9F1C', items: [], scale: sc(560, 30), expression: face, frame: walking ? 1 : 0 })}</div>${!s.result && !s.left ? `<div class="rope">${ropeSVG(Math.max(3, sc(560, 30) - 1))}</div>` : ''}</div>`;
   const line = T(ST.bob.lineText(s, C));
-  const lastMine = s.step === 'trade' && s.tries.length ? C.items.find(i => i.id === s.tries[s.tries.length - 1]) : null;
-  const inv = `<div class="inv">${C.items.map(i => `<div class="slot${s.tries.includes(i.id) && i.id !== (s.result ? s.tries[s.tries.length - 1] : '') ? ' used' : ''}${s.result && s.tries[s.tries.length - 1] === i.id ? ' given' : ''}"><span class="e">${i.e}</span>${esc(i.name)}</div>`).join('')}</div>`;
-  return head('bob', 'Ринок Боба') + `<div class="bob"><div class="center">${bob}</div><div class="bubbles">${lastMine ? `<div class="me">Ти: ${lastMine.e} ${esc(lastMine.name)}</div>` : ''}<div class="speech">🦫 ${esc(line)}</div></div></div>${inv}`;
+  const lastMine = s.tries.length ? C.items.find(i => i.id === s.tries[s.tries.length - 1]) : null;
+  const given = s.result ? s.tries[s.tries.length - 1] : '';
+  const inv = s.step === 'trade' || s.step === 'haggle' || s.tries.length ? `<div class="inv">${C.items.map(i => `<div class="icard${s.tries.includes(i.id) && i.id !== given ? ' used' : ''}${i.id === given ? ' given' : ''}"><span class="e">${i.e}</span><div><b>${esc(i.name)}</b><small>${esc(T(i.note || ''))}</small></div></div>`).join('')}</div>` : '';
+  return head('bob', 'Ринок Боба') + `<div class="bob"><div class="center">${bob}</div><div class="bubbles">${lastMine ? `<div class="me">Ти: ${lastMine.e} ${esc(lastMine.name)}</div>` : ''}<div class="speech"><span style="font-size:13px;color:var(--muted);display:block">Боб</span>${esc(line)}</div></div></div>${inv}`;
 };
 V.playground = s => {
   const ctx = ctxOf(S, 'playground'), C = ctx.C, caps = otherCapes();
@@ -511,11 +535,11 @@ V.radio = s => {
 };
 V.final = s => {
   if (s.step === 'batteries') {
-    const k = s.list[s.bi];
-    if (!k) return head('final', 'Батарейки суперсил') + `<div class="center"><div class="huge">🔋</div></div>`;
-    const sk = skillOf(k), L = CONFIG.locations[k], v = S.self[k] || 0;
-    return head('final', `Батарейки суперсил · ${s.bi + 1} з ${s.list.length}`) + `<div class="center" style="gap:22px"><div class="row" style="align-items:center;gap:14px"><span class="tile" style="width:70px;height:70px;font-size:38px">${L.icon}</span><span class="huge" style="font-size:30px">${esc(sk.area)}</span></div>
-      <div class="battery">${[1, 2, 3].map(n => `<i class="${v >= n ? 'on' : ''}"></i>`).join('')}</div></div>`;
+    // усі батарейки на одному екрані; поточна картка підсвічена
+    const cur = s.list[s.bi];
+    const cards = CONFIG.skills.map(sk => { const k = sk.key, on = s.list.includes(k), v = S.self[k] || 0;
+      return `<div class="scard${k === cur ? ' cur' : ''}${on ? '' : ' off'}"><div class="hd"><span class="ic">${CONFIG.locations[k].icon}</span>${esc(sk.area)}</div><div class="qq">${on ? esc(T(selfShort(sk))) : 'Станцію пропущено'}</div>${on ? `<div class="mini">${[1, 2, 3].map(n => `<i class="${v >= n ? 'on' : ''}"></i>`).join('')}</div>` : ''}</div>`; }).join('');
+    return head('final', 'Батарейки суперсил') + `<div class="selfgrid">${cards}</div>`;
   }
   const L = scoreAll(S), sk = skillOf(titleSkill(S, L));
   return head('final', 'Острів пройдено!') + `<div class="final">${hero({}, sc(400, 30))}<div style="display:flex;flex-direction:column;gap:16px">
@@ -542,6 +566,7 @@ function render() {
   }
   st.innerHTML = T(html);
   setBubble(iskraLine());
+  emojify(st); emojify($('#prog')); emojify($('#herocard')); emojify($('#bubble'));
   const w = $('#walker');
   if (w && walkFrom) { const L = CONFIG.locations[S.cur]; requestAnimationFrame(() => requestAnimationFrame(() => { w.style.left = L.x + '%'; w.style.top = (L.y - 3) + '%'; })); setTimeout(() => { walkFrom = null; }, 1400); }
   tick();
@@ -561,6 +586,7 @@ function onState(ns) {
   if (fxNew && lastFx !== null) playFx(ns.fx);
   lastFx = ns.fx ? ns.fx.n : 0;
 }
+emojify(document.querySelector('.brand'));
 SYNC.init('game', m => { if (m && m.type === 'state') onState(m.state); });
 const saved = SYNC.load(); if (saved) { lastFx = saved.fx ? saved.fx.n : 0; onState(saved); } else render();
 SYNC.hello();

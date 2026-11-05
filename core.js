@@ -19,6 +19,23 @@ function num(x) { return String(Math.round(x * 100) / 100).replace('.', ','); }
 function fmtTime(sec) { sec = Math.max(0, Math.round(sec)); return Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0'); }
 function pl(n, f) { const a = Math.abs(n) % 100, b = a % 10; return f[(a > 10 && a < 20) ? 2 : b === 1 ? 0 : (b >= 2 && b <= 4) ? 1 : 2]; }
 function tplG(str, gender) { return String(str ?? '').replace(/\{([^{}|]*)\|([^{}|]*)\}/g, (_, m, f) => (gender === 'f' ? f : m)); }
+/* ---------- Twemoji: замінює емодзі на SVG-картинки (img.emoji) після кожного рендеру ---------- */
+function emojify(el) {
+  if (!el || typeof twemoji === 'undefined') return;
+  try { twemoji.parse(el, { base: CONFIG.twemoji.base, folder: 'svg', ext: '.svg', className: 'emoji' }); } catch (e) { }
+}
+/* ---------- піксельні пропси (SVG) ---------- */
+function pixelSVG(rows, pal, px, cls) {
+  const h = rows.length, w = rows[0].length; let r = '';
+  rows.forEach((row, y) => { for (let x = 0; x < w; x++) { const c = pal[row[x]]; if (c) r += `<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${c}"/>`; } });
+  return `<svg class="${cls || 'pxp'}" width="${w * px}" height="${h * px}" viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" aria-hidden="true">${r}</svg>`;
+}
+const COIN_ROWS = ['..kkkk..', '.kyyyyk.', 'kyWyyyyk', 'kyWyyyok', 'kyyyyyok', 'kyyyyook', '.kooook.', '..kkkk..'];
+function coinSVG(px = 2) { return pixelSVG(COIN_ROWS, { k: '#1E2A5A', y: '#FFC93C', W: '#FFF1A8', o: '#E8A915' }, px, 'pxcoin'); }
+const ROPE_ROWS = ['...kkkkkk...', '..kYYYYYYk..', '.kYyyyyyyYk.', 'kYyk....kyYk', 'kYk.kkkk.kYk', 'kYk.kYYk.kYk', 'kYk.kyyk.kYk', 'kYyk.kk.kyYk', '.kYykkkkyYk.', '..kYYYYYYk..', '...kkkkYYk..', '.......kYk..', '.......kYk..', '........k...'];
+function ropeSVG(px = 4) { return pixelSVG(ROPE_ROWS, { k: '#1E2A5A', Y: '#D9A35B', y: '#A8702F' }, px, 'pxrope'); }
+// коротке питання самооцінки для картки фіналу: «Наскільки вмієш …?»
+function selfShort(sk) { const q = sk.selfQ || ''; return q.replace(/^Як ти оцінюєш,\s*н/, 'Н'); }
 function fill(str, vars) { return String(str ?? '').replace(/\{(\w+)\}/g, (m, k) => (vars && vars[k] !== undefined ? vars[k] : m)); }
 function pick78(v, g) { return v && typeof v === 'object' && !Array.isArray(v) && ('78' in v || '910' in v) ? v[g] : v; }
 function uuid() {
