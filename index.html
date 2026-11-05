@@ -488,7 +488,7 @@ V.playground = s => {
   }
   // «Чат класу»
   const ch = C.chat, msgs = [];
-  msgs.push(`<div class="msg"><b>Вчителька</b>${esc(ch.situation)}</div>`);
+  msgs.push(`<div class="msg"><b>Класна керівниця</b>${esc(ch.situation)}</div>`);
   ch.messages.forEach((m, i) => {
     if (i > s.ci) return;
     msgs.push(`<div class="msg"><b>${esc(m.from)}</b>${esc(m.text)}</div>`);

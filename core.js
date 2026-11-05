@@ -126,7 +126,7 @@ function compromiseLevel(cardIds, C) {
   const ws = new Set(cardIds.flatMap(id => (C.cards.find(c => c.id === id) || { wishes: [] }).wishes));
   const cats = [...ws].some(w => w.startsWith('cats')), foxes = [...ws].some(w => w.startsWith('foxes'));
   if (cats && foxes && ws.size >= 3) return 3;
-  if (cats !== foxes) return 1;
+  if (!ws.size || cats !== foxes) return 1;
   return 2;
 }
 function radioAvg(answers, ask, g, T) {
