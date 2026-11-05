@@ -71,6 +71,8 @@ details.how summary{cursor:pointer;font-weight:800}
 .hours{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
 .keypad{display:grid;grid-template-columns:repeat(3,70px);gap:8px;margin-top:8px}
 .hint{font-size:13px;color:var(--muted)}
+.cheat{margin-top:12px;background:#FFF8E1;border:1px solid #F1D27A;border-radius:12px;padding:10px 14px;font-size:14px}.cheat p{margin:4px 0 8px}.cheat ul{margin:4px 0 8px;padding-left:18px}
+img.emoji{height:1.1em;width:1.1em;margin:0 .05em;vertical-align:-0.18em}
 .noti{background:#FFF6DA;border:1px solid #F1D27A;border-radius:10px;padding:10px 12px;font-size:14px}
 /* ---------- звіт: веб-сторінка зі скролом ---------- */
 .rp-top{position:sticky;top:56px;z-index:5;background:#fff;border:1px solid var(--line);border-radius:0 0 12px 12px;max-width:900px;margin:0 auto 12px;padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:0 4px 14px rgba(30,42,90,.06)}
@@ -155,6 +157,7 @@ details.how summary{cursor:pointer;font-weight:800}
   <div class="menu" id="menu"></div>
 </header>
 <div class="wrap" id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@twemoji/api@15.1.0/dist/twemoji.min.js" crossorigin="anonymous"></script>
 <script src="config.js"></script>
 <script src="hero-pixel.js"></script>
 <script src="core.js"></script>
@@ -190,7 +193,7 @@ function renderHeader() {
   $('#menu').innerHTML = g('menu', '⋯', { title: 'Меню' }) + (ui.menu ? `<div class="pop">
     ${g('reset', armLabel('reset', '↺ Нова діагностика'), { cls: ui.arm === 'reset' ? 'arm' : '' })}
     ${g('openGame', '↗ Відкрити вікно гри ще раз')}
-    ${g('sound', S.sound ? '🔊 Звук у грі: увімкнено' : '🔇 Звук у грі: вимкнено')}</div>` : '');
+    ${g('sound', S.sound ? '🔊 Звук у грі: увімкнено' : '🔇 Звук у грі: вимкнено')}</div>` : ''); emojify($('#menu'));
 }
 
 /* ---------- налаштування ---------- */
@@ -219,13 +222,14 @@ function viewSetup() {
 function scriptVars() {
   const key = S.cur, s = S.st[key], c = ctx(), gr = S.setup.group, v = {};
   if (!s) return v;
-  if (key === 'emotions' && s.step === 'frames') { const f = emFrames(c)[s.fi]; Object.assign(v, { title: f.title, caption: T(f.caption || ''), question: T(f.question || '') }); }
-  if (key === 'money' && s.step === 'exact') { const t = c.C.targets[s.t]; if (t) Object.assign(v, { item: t.acc, price: t.sum }); }
-  if (key === 'money' && s.step === 'deal') v.question = T((c.C.deals[s.q] || {}).text || '');
+  if (key === 'emotions' && s.step === 'frames') { const f = emFrames(c)[s.fi]; Object.assign(v, { title: f.title, say: f.say || f.q || f.question || '' }); }
+  if (key === 'money' && s.step === 'exact') { const t = c.C.targets[s.t]; if (t) Object.assign(v, { item: t.acc, price: t.sum, say: t.say || '' }); }
+  if (key === 'money' && s.step === 'deal') { const d = c.C.deals[s.q] || {}; v.say = d.say || d.text || ''; }
   if (key === 'hike' && gr === '78') v.text = c.C.forecast.text;
-  if (key === 'bob') v.text = s.step === 'haggle' ? c.C.lines.haggle : c.C.need.name;
+  if (key === 'bob') { v.text = s.step === 'haggle' ? c.C.lines.haggle : c.C.need.name; v.line = T(ST.bob.lineText(s, c.C)); }
   if (key === 'playground' && gr === '78') v.text = c.C.judge.about;
-  if (key === 'radio') { v.guest = guestName(s); if (s.step === 'q') v.question = T(c.C.questions[s.qi]); }
+  if (key === 'playground' && s.step === 'chat') v.say = (c.C.chat.messages[s.ci] || {}).say || '';
+  if (key === 'radio') { v.guest = guestName(s); if (s.step === 'q') { const Q = c.C.questions[s.qi] || {}; v.say = fill(Q.say || '', { guest: v.guest }); v.quiet = Q.quiet || ''; v.wrap = Q.wrap || ''; } }
   if (key === 'final' && s.list) { const k = s.list[s.bi]; v.selfQ = k ? skillOf(k).selfQ : ''; }
   return v;
 }
@@ -237,7 +241,10 @@ function scriptOf() {
   else if (s.step === 'done') sc = CONFIG.script.done;
   else sc = CONFIG.script[key][s.step];
   sc = sc || {};
-  const vars = scriptVars(), gr = S.setup.group, P = v => T(fill(pick78(v, gr) || '', vars));
+  // Боб: «Скажи дитині» — реакція на останню репліку Боба
+  const R = CONFIG.script.bob.react;
+  if (key === 'bob' && ['talk', 'trade', 'haggle', 'bye'].includes(s.step) && R[s.line]) sc = Object.assign({}, sc, { say: R[s.line] + (s.step === 'bye' ? ' ' + CONFIG.script.bob.bye.say : '') });
+  const vars = scriptVars(), gr = S.setup.group, P = v => T(fill(fill(pick78(v, gr) || '', vars), vars));
   return { say: P(sc.say), check: P(sc.check), expect: P(sc.expect), quiet: P(sc.quiet), active: P(sc.active), do: P(sc.do), dont: P(sc.dont) };
 }
 function codesBlock(key, buttonsFn) {
@@ -257,7 +264,7 @@ IN.emotions = s => {
   if (s.step === 'caseIntro') { const f = F[s.fi]; return `<div class="info">Історія «${esc(f.title)}»: ${esc(T(f.text))}<br><span class="hint">Спершу дитина обирає, що герой показує іншим, потім — що відчуває насправді.</span></div>`; }
   if (s.step === 'frames') {
     const f = F[s.fi], list = c.C.emotions.concat(f.extra || []), ch = s.ans[s.fi] || [];
-    const info = S.setup.group === '78' ? `${f.warm ? 'Розминка · ' : ''}Комікс «${esc(f.title)}», кадр ${f.fi + 1} з ${f.n}: <b>${esc(T(f.caption))}</b>` : `${f.warm ? 'Розминка · ' : ''}Історія «${esc(f.title)}», питання ${f.fi + 1} з ${f.n}: <b>${esc(T(f.question))}</b><br><span class="hint">${esc(T(f.text))}</span>`;
+    const info = S.setup.group === '78' ? `${f.warm ? 'Розминка · ' : ''}Комікс «${esc(f.title)}», кадр ${f.fi + 1} з ${f.n}: <b>${esc(T(f.caption))}</b>` : `${f.warm ? 'Розминка · ' : ''}Історія «${esc(f.title)}», питання ${f.fi + 1} з ${f.n}: <b>${esc(T(f.q || f.question))}</b><br><span class="hint">${esc(T(f.sit || f.text))}</span>`;
     return `<div class="info">${info} · кадр ${s.fi + 1} з ${F.length}</div><div class="lbl">Емоція, яку назвала дитина (1 або 2)</div>
       <div class="grid">${list.map(id => act('pick', id, CONFIG.emotionNames[id], { cls: ch.includes(id) ? 'sel' : '' })).join('')}</div>
       <div style="margin-top:10px">${act('prev', undefined, '← Попередній кадр', { disabled: s.fi === 0 })}</div>`;
@@ -289,8 +296,8 @@ IN.money = s => {
   if (s.step === 'exact') {
     const t = C.targets[s.t];
     return `<div class="info">Покупка ${s.t + 1} з ${C.targets.length}: ${t.e} ${esc(t.name)} — ${t.sum} монет · на тарілці: <b>${s.plate.join(' + ') || '—'}</b></div>
-      <div class="lbl">Монетки, які називає дитина</div><div class="grid">${C.coins.map(v => act('coin', v, `🪙 ${v}`, { cls: 'big' })).join('')}</div>
-      <div class="lbl" style="margin-top:10px">На тарілці (клік — прибрати)</div><div class="grid">${s.plate.map((v, i) => act('uncoin', i, `🪙 ${v}`)).join('') || '<span class="hint">порожньо</span>'}</div>
+      <div class="lbl">Монетки, які називає дитина</div><div class="grid">${C.coins.map(v => act('coin', v, `${coinSVG(3)} ${v}`, { cls: 'big' })).join('')}</div>
+      <div class="lbl" style="margin-top:10px">На тарілці (клік — прибрати)</div><div class="grid">${s.plate.map((v, i) => act('uncoin', i, `${coinSVG(2)} ${v}`)).join('') || '<span class="hint">порожньо</span>'}</div>
       <div class="hint" style="margin-top:6px">Потім «Заплатити» (Enter).</div>`;
   }
   if (s.step === 'deal') {
@@ -315,9 +322,9 @@ IN.hike = s => {
 };
 IN.bob = s => {
   const c = ctx(), C = c.C, line = T(ST.bob.lineText(s, C));
-  const top = `<div class="info">Боб каже: «${esc(line)}» · реплік: ${s.replies.length} з ${C.maxReplies}</div>`;
+  const top = `<div class="info">Репліка Боба на екрані: «${esc(line)}» · реплік дитини: ${s.replies.length} з ${C.maxReplies}</div>`;
   if (s.step === 'talk') return top + codesBlock('bobTalk', it => act('code', it.id, it.label, { cls: 'big' }));
-  if (s.step === 'trade') return top + `<div class="lbl">Що дитина віддає з інвентарю</div><div class="grid">${C.items.map(i => act('give', i.id, `${i.e} ${i.name}`, { disabled: s.tries.includes(i.id) })).join('')}</div>`;
+  if (s.step === 'trade') return top + `<div class="lbl">Що дитина віддає з інвентарю</div><div class="grid">${C.items.map(i => act('give', i.id, `${i.e} ${i.name}`, { disabled: s.tries.includes(i.id), title: T(i.note || '') })).join('')}</div>`;
   if (s.step === 'haggle') return top + codesBlock('bobHaggle', it => act('haggle', it.id, it.label, { cls: 'big' }));
   if (s.step === 'bye') return top;
   return '';
@@ -336,7 +343,10 @@ IN.radio = s => {
   if (s.step === 'guest') return `<div class="lbl">Ім’я героя-ведучого (до 30 символів)</div><input class="inp" id="f-guest" data-guest="1" maxlength="30" value="${esc(s.guest || '')}" style="max-width:420px">
     <div style="margin-top:8px">${act('noGuest', undefined, 'Без імені — ведуча Іскра', { cls: s.guestMode === 'iskra' ? 'sel' : '' })}</div><div class="hint" style="margin-top:6px">Зображень персонажа немає: у грі з’явиться наш силует у плащі й масці з табличкою імені.</div>`;
   if (s.step === 'q') return `<div class="info">Ведучий: <b>${esc(guestName(s))}</b> · питання ${s.qi + 1} з ${C.questions.length}</div>` + codesBlock('radioAnswer', it => act('code', it.id, it.label, { cls: s.answers[s.qi] === it.id ? 'sel' : '' }));
-  if (s.step === 'ask') return codesBlock('radioAsk', it => act('ask', it.id, it.label, { cls: s.ask === it.id ? 'sel' : '' }));
+  if (s.step === 'ask') { const H = C.help || CONFIG.content.radio.help, gn = guestName(s);
+    return codesBlock('radioAsk', it => act('ask', it.id, it.label, { cls: s.ask === it.id ? 'sel' : '' })) + `<div class="cheat"><div class="lbl">Як відповісти від імені гостя</div>
+      <p><b>${esc(T(fill(H.template, { guest: gn })))}</b></p><ul>${H.answers.map(x => `<li><b>${esc(x.about)}:</b> ${esc(T(x.a))}</li>`).join('')}</ul>
+      <div class="lbl">Щоб м’яко закрити розмову</div><p>${esc(T(fill(H.close, { guest: gn })))}</p></div>`; }
   if (s.step === 'opinion') return `${s.running || s.ended ? `<div class="info">Час: ${timerHTML(s.running ? s.endsAt : null)} ${s.ended ? 'час вийшов' : ''}</div>` : ''}<div class="lbl">Картка-тема</div><div class="grid">${C.topics.map((t, i) => act('topic', i, esc(t), { cls: s.topic === i ? 'sel' : '', disabled: s.running || s.ended })).join('')}</div>
     <div style="margin-top:10px">${codesBlock('radioOpinion', it => act('mark', it.id, it.label, { cls: s.marks.includes(it.id) ? 'sel' : '' }))}</div>`;
   return '';
@@ -462,7 +472,7 @@ function viewReport() {
     <section><h2>4. Стиль роботи</h2><ul>${rpStyle().map(x => `<li>${x}</li>`).join('')}</ul><p class="rp-note">Це спостереження, а не оцінки.</p></section>
     <section><h2>5. Самооцінка й результат</h2>${rpSelf(L)}</section>
     <section><h2>6. Рекомендації</h2>${rpRecommend(L)}</section>
-    <section><h2>7. Методологічна примітка</h2><p class="rp-note" style="font-size:13px">${esc(CONFIG.report.method)}</p></section></div>
+</div>
     <div class="rp-actions no-print" data-html2canvas-ignore="true">${g('print', 'Зберегти PDF', { cls: 'primary' })}<span id="sheetStatus" class="rp-note">${sheetStatusHTML()}</span><span style="flex:1"></span>${g('back', '← До уроку')}</div>`;
   return T(html);
 }
@@ -521,9 +531,9 @@ async function sheetOnReport() {
 function render() {
   renderHeader();
   const app = $('#app');
-  if (S.phase === 'setup') { app.innerHTML = viewSetup(); return; }
-  if (S.phase === 'report' && ui.view !== 'lesson') { app.innerHTML = viewReport(); sheetOnReport(); return; }
-  app.innerHTML = viewLesson();
+  if (S.phase === 'setup') { app.innerHTML = viewSetup(); emojify(app); return; }
+  if (S.phase === 'report' && ui.view !== 'lesson') { app.innerHTML = viewReport(); emojify(app); sheetOnReport(); return; }
+  app.innerHTML = viewLesson(); emojify(app);
 }
 
 /* ---------- дії ---------- */
