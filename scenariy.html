@@ -29,7 +29,8 @@ th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute
 .step{border-top:1px dashed var(--line);padding-top:8px;margin-top:10px}
 .say{border-left:5px solid var(--accent);background:#F6F4FF;border-radius:0 10px 10px 0;padding:8px 14px;font-size:17px;font-weight:600;margin:4px 0}
 .lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:14px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:14px;margin-top:6px}
+.cols>div{background:#F4F6FB;border-radius:8px;padding:6px 9px}.cols .check{grid-column:1/-1;background:#EEF7F1}
 .dont{color:var(--red)}
 .note{font-size:13px;color:var(--muted)}
 ul{margin:4px 0;padding-left:20px}
@@ -43,96 +44,107 @@ ul{margin:4px 0;padding-left:20px}
 </style>
 </head>
 <body>
-<div class="bar"><h1>🏝️ Острів суперсил — сценарій уроку <span class="note" id="cur"></span></h1>
+<div class="bar"><h1>🏝️ Острів суперсил — сценарій уроку для МІКа <span class="note" id="cur"></span></h1>
   <div class="sw" id="swg"><button data-g="78">7–8 років</button><button data-g="910">9–10 років</button></div>
-  <div class="sw" id="swv"><button data-v="A">Версія А</button><button data-v="B">Версія Б</button></div>
 </div>
 <div class="wrap" id="out"></div>
 <script src="config.js"></script>
 <script src="core.js"></script>
 <script>
 /* Статичний сценарій: усі тексти беруться з config.js, тож не розходяться з пультом і грою. */
-let G = '78', VER = 'A';
-try { G = localStorage.getItem('ostriv-scen-g') || '78'; VER = localStorage.getItem('ostriv-scen-v') || 'A'; } catch (e) { }
-const E = s => esc(String(s ?? '')).replace(/\{([^{}|]*)\|([^{}|]*)\}/g, '$1($2)');   // рід: «мріяв(ла)» — вчитель обирає форму
+let G = '78';
+try { G = localStorage.getItem('ostriv-scen-g') || '78'; } catch (e) { }
+const E = s => esc(String(s ?? '')).replace(/\{([^{}|]*)\|([^{}|]*)\}/g, '$1($2)');   // рід: «мрія(в)(ла)» — МІК обирає форму
 const P = v => pick78(v, G);
+const CC = key => { const V = CONFIG.content[key] || {}; return Object.assign({}, V, V[G] || {}); };
 const STEPS = {
-  hero: ['pick'], emotions: ['intro', 'frames', 'calmReady', 'calm'], safe: ['intro', 'trial', 'play', 'opened'],
-  money: { '78': ['intro', 'buy', 'sell', 'evening'], '910': ['intro', 'day', 'sell910', 'evening910'] },
+  hero: ['pick'],
+  emotions: { '78': ['intro', 'frames', 'calmReady', 'calm'], '910': ['intro', 'frames', 'caseIntro', 'calmReady', 'calm'] },
+  safe: ['intro', 'warm', 'hard'],
+  money: { '78': ['intro', 'picnic', 'exactIntro', 'exact'], '910': ['intro', 'picnic', 'deal'] },
   hike: { '78': ['intro', 'pack', 'bridge'], '910': ['intro', 'plan', 'rain', 'replan'] },
   bob: { '78': ['intro', 'talk', 'trade', 'bye'], '910': ['intro', 'talk', 'trade', 'haggle', 'bye'] },
-  playground: { '78': ['intro', 'judge', 'rules'], '910': ['intro', 'piles', 'compromise'] },
-  radio: { '78': ['intro', 'q', 'ask'], '910': ['intro', 'q', 'ask', 'opinion'] }, final: ['batteries', 'crown']
+  playground: { '78': ['intro', 'rules', 'judge'], '910': ['intro', 'compromise', 'chat', 'why'] },
+  radio: { '78': ['intro', 'guest', 'q', 'ask'], '910': ['intro', 'guest', 'q', 'ask', 'opinion'] },
+  final: ['batteries', 'crown']
 };
-const CODES = { emotions: ['calm'], bob: G => (G === '910' ? ['bobTalk', 'bobHaggle'] : ['bobTalk']), playground: G => (G === '78' ? ['judge'] : []), radio: G => (G === '910' ? ['radioAnswer', 'radioAsk', 'radioOpinion'] : ['radioAnswer', 'radioAsk']) };
+const CODES = { emotions: () => ['calm'], bob: g => (g === '910' ? ['bobTalk', 'bobHaggle'] : ['bobTalk']), playground: g => (g === '78' ? ['judge'] : ['chatWhy']),
+  radio: g => (g === '910' ? ['radioAnswer', 'radioAsk', 'radioOpinion'] : ['radioAnswer', 'radioAsk']) };
 function codesTable(key) {
   const c = CONFIG.codes[key];
-  return `<h3>Коди: ${E(c.title)}</h3><table><tr><th style="width:34%">Код на пульті</th><th>Приклади відповідей</th></tr>${c.items.map(i => `<tr><td><b>${E(i.label)}</b></td><td>${(i.ex || []).map(E).join('<br>')}</td></tr>`).join('')}</table>`;
+  return `<h3>Коди: ${E(c.title)}</h3><table><tr><th style="width:34%">Кнопка на пульті</th><th>Приклади відповідей</th></tr>${c.items.map(i => `<tr><td><b>${E(i.label)}</b></td><td>${(i.ex || []).map(E).join('<br>')}</td></tr>`).join('')}</table>`;
 }
 function contentBlock(key) {
-  const V = CONFIG.versions[VER][key] || {}, C = Object.assign({}, V, V[G] || {});
-  if (key === 'emotions') return G === '78'
-    ? `<h3>Комікси (вчитель читає підписи)</h3><ul>${C.comics.map(c => `<li><b>${E(c.title)}:</b> ${c.frames.map(f => E(f.caption)).join(' → ')}</li>`).join('')}</ul>`
-    : `<h3>Історії (дитина читає сама)</h3><ul>${C.cases.map(c => `<li><b>${E(c.title)}.</b> ${E(c.text)}<br><span class="note">${c.frames.map(f => E(f.question)).join(' / ')}</span></li>`).join('')}</ul>`;
-  if (key === 'safe') return `<p class="note"><b>Пробна спроба:</b> перед справжнім сейфом — маленький замок на ${C.trial.slots} місця з ${C.trial.fruits.length} фруктів (${C.trial.fruits.join(' ')}). Розв’язуєте разом, можна пояснювати кольори; не оцінюється, без таймера. Потім — замок 1 (${C.locks[0].slots} місця з ${C.locks[0].fruits.length} фруктів) і бонусний замок 2. Таймер станції — ${CONFIG.thresholds.safe.totalSec / 60} хв. «Застрягла» = 3 спроби поспіль без нового зеленого.</p>`;
+  const C = CC(key), Th = CONFIG.thresholds;
+  if (key === 'emotions') return (G === '78'
+    ? `<h3>Комікси (МІК читає підписи)</h3><ul>${C.comics.map(c => `<li><b>${E(c.title)}${c.warm ? ' (розминка)' : ''}:</b> ${c.frames.map(f => E(f.caption)).join(' → ')}</li>`).join('')}</ul>`
+    : `<h3>Історії (дитина читає сама)</h3><ul>${C.cases.map(c => `<li><b>${E(c.title)}${c.warm ? ' (розминка)' : ''}.</b> ${E(c.text)}<br><span class="note">${c.frames.map(f => E(f.question)).join(' / ')}</span>${c.mask ? '<br><span class="note">Перед цією історією — «Ти обиратимеш дві речі: що герой показує іншим і що відчуває насправді». Спершу «показує» (світла рамка з усмішкою-маскою), потім «насправді» (сірий силует).</span>' : ''}</li>`).join('')}</ul>`)
+    + `<p class="note">Рівень за кадрами: від ${Math.round(Th.emotions.frames.l3 * 100)}% балів — 3, від ${Math.round(Th.emotions.frames.l2 * 100)}% — 2. «Що допоможе заспокоїтися?» — ${Th.emotions.calmSec} с; таймер бачиш лише ти.</p>`;
+  if (key === 'safe') return `<p class="note"><b>Замок 1 — розминка:</b> ${C.warm.slots} фрукти з ${C.warm.fruits.length} (${C.warm.fruits.join(' ')}). Без таймера, не оцінюється, можна пояснювати кольори. <b>Замок 2 — складніший:</b> ${C.hard.slots} фрукти з ${C.hard.fruits.length} (${C.hard.fruits.join(' ')}). Таймер ${Th.safe.hardSec / 60} хв бачиш лише ти. Проби рахуються на замку 2: «зупинилась раніше ${Th.safe.stopSec} с» — слабкий сигнал наполегливості; «застрягла» = ${Th.safe.stuckAfter} спроби поспіль без нового зеленого.</p>`;
   if (key === 'money') return G === '78'
-    ? `<p class="note">${E(C.title)}: ${C.budget} монет. Товари: ${C.goods.map(g => `${g.e} ${E(g.name)} (${g.price})`).join(', ')}. Увечері: скарбничка на ${E(C.goal.name.toLowerCase())} (${C.goal.price}) і ${E(C.shelf.name.toLowerCase())} (${C.shelf.price}).</p>`
-    : `<p class="note">${E(C.title)}: старт ${C.start} грн, оренда ${C.rent} грн/день, ціль — ${E(C.goal.name.toLowerCase())} за ${C.goal.price} грн. Погода по днях: ${C.weather.map(w => CONFIG.weatherNames[w].name.toLowerCase()).join(', ')}. Пастка: ${E(C.trap.name)} (${C.trap.price} грн).</p>`;
+    ? `<p class="note"><b>Пікнік за ${C.budget} монет:</b> ${C.goods.map(g => `${g.e} ${E(g.name)} (${g.price})`).join(', ')}. Кожен товар можна взяти один раз; рівень — за тим, чи є їжа й вода. <b>Без решти:</b> у сови зламалася каса. Дитина викладає на тарілку монетки ${C.coins.join(' / ')} і тисне «Заплатити»: ${C.targets.map(t => `${t.e} ${E(t.name.toLowerCase())} — ${t.sum}`).join(', ')}. Точно — товар у кошик, інакше сова просто каже «Дякую!». Рівень — за кількістю точних оплат.</p>`
+    : `<p class="note"><b>Пікнік за ${C.budget} грн:</b> ${C.goods.map(g => `${g.e} ${E(g.name)} (${g.price})`).join(', ')}. <b>Що вигідніше?</b> ${C.deals.map(d => E(d.text)).join(' · ')} Решту дитина називає, ти вводиш на клавіатурі пульта.</p>`;
   if (key === 'hike') return G === '78'
     ? `<p class="note">Прогноз: ${E(C.forecast.text)}. Речі: ${C.items.map(i => E(i.name.toLowerCase())).join(', ')}. Шляхи: ${C.routes.map(r => `${E(r.name.toLowerCase())} (${r.suns}☀️)`).join(', ')}.</p>`
     : `<p class="note">Справи: ${C.blocks.map(b => `${E(b.name.toLowerCase())} (${b.dur} год)`).join(', ')}. Правила: ${Object.values(C.rules).map(E).join('; ')}. Несподіванка: ${E(C.rain.text)}.</p>`;
-  if (key === 'bob') return `<p class="note">Потрібна ${E(C.need.name)}. Бажання Боба: «${E(C.wish.text)}» Рюкзак: ${C.items.map(i => E(i.name.toLowerCase())).join(', ')}. Після двох «Вимагає» Боб іде; максимум ${C.maxReplies} реплік. Плащ Боб дарує за будь-якого результату.</p>`;
+  if (key === 'bob') return `<p class="note">${E(CONFIG.lore.bob || '')} Боб із мотузкою — нахабний; йому для греблі потрібні міцні гілки. Інвентар дитини: ${C.items.map(i => `${i.e} ${E(i.name.toLowerCase())}`).join(', ')}. Після двох «Вимагає» Боб іде; максимум ${C.maxReplies} реплік. Плащ Боб дарує за будь-якого результату.</p>`;
   if (key === 'playground') return G === '78'
-    ? `<p class="note">Суперечка за ${E(C.judge.about)}: Мія — «${E(C.judge.mia)}», Тім — «${E(C.judge.tim)}». Картки правил: ${C.cards.map(c => `«${E(c.text)}»`).join(', ')}.</p>`
-    : `<p class="note">Фрази: ${C.phrases.map(p => `«${E(p.text)}»`).join(' ')} Бажання: Котики — ${E(C.teams.cats.wishes.join(', ').toLowerCase())}; Лисички — ${E(C.teams.foxes.wishes.join(', ').toLowerCase())}.</p>`;
-  if (key === 'radio') return `<h3>Питання</h3><ol>${C.questions.map(q => `<li>${E(q)}</li>`).join('')}</ol>${G === '910' ? `<p class="note">Теми «Думки за 30 секунд»: ${C.topics.map(t => `«${E(t)}»`).join(', ')}.</p>` : ''}`;
+    ? `<p class="note"><b>Правила:</b> ${C.cards.map(c => `«${E(c.text)}»`).join(', ')}. <b>Суддя:</b> суперечка за ${E(C.judge.about)} — Мія: «${E(C.judge.mia)}», Тім: «${E(C.judge.tim)}».</p>`
+    : `<p class="note"><b>Компроміс (розминка):</b> Котики — ${E(C.teams.cats.wishes.join(', ').toLowerCase())}; Лисички — ${E(C.teams.foxes.wishes.join(', ').toLowerCase())}. <b>Чат класу «${E(C.chat.title)}»:</b> ${E(C.chat.situation)} Три повідомлення, на кожне — два варіанти (звинувачення або я-повідомлення), потім «Чому ти обра(в)(ла) саме так?». Рівень: 3 з 3 я-повідомлень і пояснення через почуття — 3; 2 з 3 або 3 без пояснення — 2; інакше — 1.</p>`;
+  if (key === 'radio') return `<p class="note"><b>Таємний гість:</b> спитай про улюбленого героя з мультика, гри чи книжки й впиши ім’я на пульті (до 30 символів). У грі з’явиться наш силует у плащі й масці з табличкою імені — жодних зображень відомих персонажів. «Без імені» — питає ведуча Іскра.</p><h3>Питання</h3><ol>${C.questions.map(q => `<li>${E(q)}</li>`).join('')}</ol>${G === '910' ? `<p class="note">Теми «Думки за 30 секунд»: ${C.topics.map(t => `«${E(t)}»`).join(', ')}.</p>` : ''}`;
+  if (key === 'final') return `<p class="note">Батарейки — по черзі лише для навичок, які оцінено (пропущені станції пропускаються). На екрані — повне питання й маленька картинка станції.</p><ul>${CONFIG.skills.map(s => `<li>${E(s.selfQ)}</li>`).join('')}</ul>`;
   return '';
 }
-function vars(key) {
-  const V = CONFIG.versions[VER][key] || {}, C = Object.assign({}, V, V[G] || {});
-  const v = { title: '[назва комікса]', caption: '[підпис кадру]', question: '[питання]', n: '[номер дня]', text: '' };
+function vars(key, st) {
+  const C = CC(key);
+  const v = { title: '[назва]', caption: '[підпис кадру]', question: '[питання]', text: '', item: '[товар]', price: '[ціна]', guest: '[ім’я героя / Іскра]', selfQ: '[питання про навичку]' };
   if (key === 'hike' && G === '78') v.text = C.forecast.text;
-  if (key === 'bob') v.text = C.need ? C.need.name : '';
+  if (key === 'bob') v.text = st === 'haggle' ? C.lines.haggle : C.need.name;
   if (key === 'playground' && G === '78') v.text = C.judge.about;
   return v;
 }
+const F = [['check', 'Що перевіряємо'], ['expect', 'Чого очікувати'], ['do', 'Що робиш ти'], ['quiet', 'Якщо дитина мовчить або думає довго'], ['active', 'Якщо дуже активна й говорить довго'], ['dont', 'Не кажи / не роби']];
+function stepHTML(x, vv) {
+  if (!x) return '';
+  const cells = F.filter(([k]) => P(x[k])).map(([k, l]) => `<div class="${k === 'check' ? 'check' : ''}${k === 'dont' ? ' dont' : ''}"><div class="lbl"${k === 'dont' ? ' style="color:var(--red)"' : ''}>${l}</div>${E(fill(P(x[k]), vv))}</div>`).join('');
+  return `<div class="step"><div class="lbl">Скажи дитині</div><div class="say">${E(fill(P(x.say), vv))}</div><div class="cols">${cells}</div></div>`;
+}
 function station(key) {
   const L = CONFIG.locations[key], steps = P(STEPS[key]), sc = CONFIG.script[key], sk = CONFIG.skills.find(s => s.key === key);
-  const stepsHtml = steps.map(st => { const x = sc[st]; if (!x) return ''; const vv = key === 'bob' && st === 'haggle' ? { text: (CONFIG.versions[VER].bob.lines || {}).haggle } : vars(key);
-    return `<div class="step"><div class="say">${E(fill(P(x.say), vv))}</div><div class="cols"><div><div class="lbl">Що робиш ти</div>${E(fill(P(x.do), vv))}</div>${x.dont ? `<div class="dont"><div class="lbl" style="color:var(--red)">Не кажи / не роби</div>${E(P(x.dont))}</div>` : '<div></div>'}</div></div>`; }).join('');
-  const codes = (typeof CODES[key] === 'function' ? CODES[key](G) : CODES[key] || []).map(codesTable).join('');
+  const stepsHtml = steps.map(st => stepHTML(sc[st], vars(key, st))).join('');
+  const codes = (CODES[key] ? CODES[key](G) : []).map(codesTable).join('');
   const probes = sk ? `<p class="note">Навичка: <b>${E(sk.area)}</b>. Проби: ${probeNames(key, G).filter(p => p !== '—').map(E).join(' · ')}.</p>` : '';
-  return `<div class="card"><div class="st-head"><span class="ic">${L.icon}</span><h2>${E(L.name)}</h2><span class="time">${L.minutes} хв</span></div>${probes}${contentBlock(key)}${stepsHtml}${codes}
+  const lore = CONFIG.lore[key] ? `<p class="note">Заставка в грі: «${E(CONFIG.lore[key])}»</p>` : '';
+  return `<div class="card"><div class="st-head"><span class="ic">${L.icon}</span><h2>${E(L.name)}</h2><span class="time">${L.minutes} хв</span></div>${probes}${lore}${contentBlock(key)}${stepsHtml}${codes}
     ${key !== 'hero' && key !== 'final' ? `<div class="step"><div class="say">${E(CONFIG.script.done.say)}</div><div class="note">Після кожної локації: ${E(CONFIG.script.done.do)} Предмет костюма видається завжди, навіть якщо станцію пропущено.</div></div>` : ''}</div>`;
 }
 function render() {
   document.querySelectorAll('#swg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.g === G));
-  document.querySelectorAll('#swv button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === VER));
-  document.getElementById('cur').textContent = `· ${CONFIG.groups[G].label} · ${CONFIG.versionsMeta[VER]}`;
+  document.getElementById('cur').textContent = `· ${CONFIG.groups[G].label}`;
   const timing = CONFIG.order.map(k => `<tr><td>${CONFIG.locations[k].icon} ${E(CONFIG.locations[k].name)}</td><td>${CONFIG.locations[k].minutes} хв</td></tr>`).join('');
   const total = CONFIG.order.reduce((a, k) => a + CONFIG.locations[k].minutes, 0);
   document.getElementById('out').innerHTML = `
-  <div class="card"><h2>Таймінг</h2><table>${timing}<tr><td><b>Разом</b></td><td><b>${total} хв + запас до ${CONFIG.planMinutes}</b></td></tr></table></div>
+  <div class="card"><h2>Таймінг</h2><table>${timing}<tr><td><b>Разом</b></td><td><b>${total} хв (план — до ${CONFIG.planMinutes})</b></td></tr></table></div>
   <div class="card"><h2>Загальні правила</h2><ul>
     <li>Нейтральні фрази: «Записала», «Дякую, далі», «Прийнято», «Цікаво!».</li>
-    <li>Не підказуй і не повторюй відповідь дитини оцінною інтонацією.</li>
-    <li>Не порівнюй з іншими дітьми.</li>
+    <li>Не підказуй і не повторюй відповідь дитини оцінною інтонацією. Не порівнюй з іншими дітьми.</li>
     <li>«Дитина попросила підказку» і «Дитина зупинилась» — лише з ініціативи дитини.</li>
     <li>Хвали зусилля, а не результат. Під час уроку на пульті немає балів — вони з’являться лише у звіті.</li>
-    <li>Тексти зі словами на кшталт «мріяв(ла)» читай у роді дитини.</li></ul></div>
+    <li>На екрані гри дитина бачить коротке питання чи завдання великим шрифтом — без підказок і відповідей. Таймери бачиш лише ти.</li>
+    <li>Тексти на кшталт «мрія(в)(ла)» читай у роді дитини.</li></ul></div>
   <div class="card"><h2>Технічна пам’ятка</h2><ol>
-    <li>Відкрий <b>pult.html</b> — це пульт, його дитина не бачить.</li>
-    <li>Заповни налаштування: ім’я дитини (без прізвища), своє ім’я, групу, вік, стать і версію (А — вхідна, Б — повторна).</li>
+    <li>Відкрий <b>pult.html</b> — це пульт МІКа, дитина його не бачить.</li>
+    <li>Заповни налаштування: ім’я та прізвище дитини (обидва обов’язкові, прізвище потрібне для пошуку в таблиці), МІК, групу, вік і стать. Картка «Як це працює» пояснює, що на пульті, а що в грі.</li>
     <li>Натисни «Відкрити вікно гри». Якщо браузер його заблокував — дозволь спливні вікна або відкрий index.html вручну в тому самому браузері.</li>
-    <li>Коли на пульті «Вікно гри підключено», у Zoom демонструй <b>тільки вікно «Острів суперсил»</b>, не весь екран. Щоб у грі був звук, один раз клікни у вікні гри до демонстрації.</li>
+    <li>Коли на пульті «Вікно гри підключено»: ${E(CONFIG.meetHint)} Щоб у грі був звук, один раз клікни у вікні гри до демонстрації.</li>
     <li>Гарячі клавіші пульта: Enter — «Далі», пробіл — «+1 спосіб» у Кіностудії, Ctrl+Z — «Стерти останнє».</li>
-    <li>Після фіналу звіт для батьків відкривається на пульті. Там же — «Зберегти PDF».</li></ol></div>
+    <li>Після фіналу звіт для батьків відкривається на пульті: там «Зберегти PDF» і статус надсилання в таблицю.</li></ol></div>
   ${CONFIG.order.map(station).join('')}`;
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  if (b.dataset.g) G = b.dataset.g; if (b.dataset.v) VER = b.dataset.v;
-  try { localStorage.setItem('ostriv-scen-g', G); localStorage.setItem('ostriv-scen-v', VER); } catch (er) { }
+  if (b.dataset.g) G = b.dataset.g;
+  try { localStorage.setItem('ostriv-scen-g', G); } catch (er) { }
   render();
 });
 render();

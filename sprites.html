@@ -37,12 +37,16 @@ html += '<h2>Персонажі станцій</h2><div class="row">'
   + fig(H.render({ style: 'b', head: 'beaver', cape: '#FF9F1C', scale: 4, expression: 'hurt' }), 'Боб — ображений')
   + fig(H.render({ style: 'b', head: 'beaver', cape: '#FF9F1C', scale: 4, frame: 1 }), 'Боб — крок 1')
   + fig(H.render({ style: 'b', head: 'beaver', cape: '#FF9F1C', scale: 4, frame: 2 }), 'Боб — крок 2')
-  + fig(H.render({ style: 'b', head: 'cat', cape: '#2EC4B6', scale: 4 }), 'котик')
+  + fig(H.render({ style: 'b', head: 'owl', cape: '#8E6CFF', scale: 4 }), 'сова Ухта')
+  + fig(H.render({ style: 'b', head: 'owl', cape: '#8E6CFF', scale: 4, expression: 'joy' }), 'Ухта — рада')
+  + fig(H.render({ style: 'b', head: 'shadow', cape: '#3D8BFF', scale: 4 }), 'силует гостя (Радіо)')
+  + fig(H.render({ style: 'b', head: 'shadow', cape: '#E63946', scale: 4, expression: 'joy' }), 'гість — усмішка')
+  + fig(H.render({ style: 'b', head: 'cat', cape: '#2EC4B6', scale: 4 }), 'котик (Майданчик)')
   + fig(H.render({ style: 'b', head: 'fox', cape: '#FF7EB6', scale: 4, blink: true }), 'моргання')
   + fig(H.renderSpark({ scale: 5 }), 'Іскра, кадр 1') + fig(H.renderSpark({ scale: 5, frame: 1 }), 'Іскра, кадр 2')
   + fig(H.renderSpark({ scale: 5, mic: true }), 'Іскра з мікрофоном') + '</div>';
-const FILM = ['fox', 'lion', 'frog', 'octopus', 'cat', 'panda', 'unicorn', 'beaver'];
-html += '<h2>14 виразів + порожнє обличчя на кожній голові Кіностудії</h2><table><tr><th></th>'
+const FILM = ['lion', 'fox', 'frog', 'octopus', 'panda', 'unicorn', 'beaver', 'owl'];  // лев — основний актор Кіностудії, лисичка — другий
+html += '<h2>Вирази (без брів) + порожнє обличчя: лев і лисичка — актори Кіностудії</h2><table><tr><th></th>'
   + ['blank', ...Object.keys(H.EXPRESSIONS)].map(e => `<th>${e === 'blank' ? 'порожнє' : H.EXPRESSIONS[e].label}</th>`).join('') + '</tr>';
 FILM.forEach(head => {
   html += `<tr><th>${head}</th>` + ['blank', ...Object.keys(H.EXPRESSIONS)].map(e => `<td>${H.renderHead ? H.render({ style: 'b', head, expression: e, scale: 3 }) : ''}</td>`).join('') + '</tr>';
