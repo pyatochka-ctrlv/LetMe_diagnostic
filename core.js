@@ -720,15 +720,16 @@ function lessonMinutesExact(S) { return S.t.lessonStart ? ((S.t.lessonEnd || Dat
 function lessonMinutes(S) { const m = lessonMinutesExact(S); return m === null ? null : Math.max(1, Math.round(m)); }
 function stationMinutes(S, k) { const s = S.st[k]; return s && s.t0 && s.t1 ? Math.round((s.t1 - s.t0) / 6000) / 10 : null; }
 // з яких 2 навичок почати на курсі і чому (спільне для звіту й таблиці)
+// «На що ми звернемо особливу увагу на курсі»: лише «Прокидається» і «Росте» (ніколи «Сильна»).
+// Спершу 1, потім 2; при рівності — де самооцінка вища за результат; далі за порядком станцій. Максимум 2.
 function pickStart(S, L) {
-  const ev = SKILL_KEYS.filter(k => L[k].level); if (!ev.length) return [];
-  const lv = ev.map(k => L[k].level), equal = Math.max(...lv) === Math.min(...lv);
-  const pk = ev.slice().sort((a, z) => equal ? (S.self[a] || 4) - (S.self[z] || 4) || SKILL_KEYS.indexOf(a) - SKILL_KEYS.indexOf(z)
-    : L[a].level - L[z].level || ((S.self[z] || 0) - L[z].level) - ((S.self[a] || 0) - L[a].level) || SKILL_KEYS.indexOf(a) - SKILL_KEYS.indexOf(z)).slice(0, 2);
-  return pk.map(k => { const l = L[k].level, a = S.self[k];
-    return { k, why: equal ? 'дитина сама оцінює цю навичку найскромніше — успіхи тут найбільше підсилять віру в себе'
-      : `рівень «${CONFIG.levelNames[l]}» — тут найбільший простір для росту${a && a > l ? ', а дитина поки оцінює себе вище, ніж показала гра' : ''}` }; });
+  const ev = SKILL_KEYS.filter(k => L[k].level && L[k].level < 3);
+  const over = k => (S.self[k] || 0) - L[k].level;
+  return ev.sort((a, z) => L[a].level - L[z].level || over(z) - over(a) || SKILL_KEYS.indexOf(a) - SKILL_KEYS.indexOf(z)).slice(0, 2)
+    .map(k => ({ k, level: L[k].level, why: fill(skillOf(k).focus[L[k].level], { name: S.setup.name || 'Дитина' }) }));
 }
+// усі оцінені навички — «Сильна»
+function allStrong(L) { const ev = SKILL_KEYS.filter(k => L[k].level); return ev.length > 0 && ev.every(k => L[k].level === 3); }
 function strongWeak(L) {
   const ev = SKILL_KEYS.filter(k => L[k].level); if (!ev.length) return { strong: [], weak: [], equal: true, ev };
   const lv = ev.map(k => L[k].level), max = Math.max(...lv), mn = Math.min(...lv);
@@ -754,7 +755,9 @@ function routeCell(S, L) {
   const sw = strongWeak(L), area = k => skillOf(k).area.toLowerCase(), lines = [];
   if (!sw.ev.length) return 'Недостатньо даних для висновку.';
   lines.push(sw.equal ? 'Рівний старт: усі оцінені навички на одному рівні.' : `Сильні: ${sw.strong.map(area).join(', ')}. Зони росту: ${sw.weak.map(area).join(', ')}.`);
-  pickStart(S, L).forEach((p, i) => lines.push(`${i + 1}) ${skillOf(p.k).area} — ${p.why}.`));
+  const pk = pickStart(S, L);
+  pk.forEach((p, i) => lines.push(`${i + 1}) ${skillOf(p.k).area} — ${p.why}.`));
+  if (!pk.length && allStrong(L)) lines.push(fill(CONFIG.report.allStrong, { name: S.setup.name || 'Дитина' }));
   return lines.join('\n');
 }
 function sheetRecord(S) {
@@ -905,6 +908,16 @@ function selfTest() {
   eq('Таблиця: «Усі відповіді» — коди проб', [ans.startsWith('K1 ✅ '), /\| K\* способів: \d/.test(ans), /\| S1 \d+ спр\./.test(ans), /\| S2 \d+ спр\., \d:\d\d, підказка/.test(ans), /\| C1 ✅ їжа ✅ вода/.test(ans), /C2 ✅ печиво в дорогу 7, ❌ квиток на човник 8 → 9/.test(ans), / \| M пропущено/.test(ans)], [true, true, true, true, true, true, true]);
   eq('Таблиця: маршрут — підсумок + 2 навички окремими рядками', col('Загальний висновок / маршрут').split('\n').length, 3);
   eq('Таблиця: назва PDF «Прізвище Ім’я — дата.pdf»', /^Іваненко Олеся — \d\d\.\d\d\.\d{4}\.pdf$/.test(rec.fileName), true);
+  // Рекомендації: лише «Прокидається» і «Росте», спершу 1, при рівності — де самооцінка вища за результат
+  const LV = o => Object.fromEntries(SKILL_KEYS.map(k => [k, { level: o[k] }]));
+  const RS = { setup: { name: 'Оля' }, self: {} };
+  const Lmix = LV({ emotions: 3, safe: 3, money: 3, hike: 3, bob: 3, playground: 2, radio: 3 });   // друга «найслабша» — Сильна
+  eq('Рекомендації: «Сильна» не потрапляє в блок', pickStart(RS, Lmix).map(p => p.k), ['playground']);
+  { const w = pickStart(RS, Lmix)[0].why; eq('Рекомендації: людський текст без шаблону «простір для росту»', [/простір для росту|Рівень «/.test(w), w.startsWith('Оля вже пробує домовлятися')], [false, true]); }
+  const Lord = LV({ emotions: 2, safe: 1, money: 2, hike: 3, bob: 2, playground: 3, radio: 3 });
+  eq('Рекомендації: спершу «Прокидається», потім «Росте» з вищою самооцінкою', pickStart({ setup: { name: 'Оля' }, self: { emotions: 2, money: 3, bob: 1 } }, Lord).map(p => p.k), ['safe', 'money']);
+  const Lall = LV({ emotions: 3, safe: 3, money: 3, hike: 3, bob: 3, playground: 3, radio: 3 });
+  eq('Рекомендації: усі «Сильна» — порожній список і текст про складніші завдання', [pickStart(RS, Lall).length, allStrong(Lall), /складніші завдання/.test(CONFIG.report.allStrong)], [0, true, true]);
   eq('Таймінг: разом 30 хв', CONFIG.order.reduce((a, k) => a + CONFIG.locations[k].minutes, 0), 30);
   eq('Рід: підстановка', [tplG('мрія{в|ла}', 'm'), tplG('мрія{в|ла}', 'f')], ['мріяв', 'мріяла']);
 

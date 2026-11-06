@@ -279,8 +279,9 @@ IN.safe = s => {
   const hist = atts => atts.map((a, k) => `<div class="hrow">${k + 1}. ${a.guess.map((f, i) => `<span class="ft ${({ green: 'fb-g', yellow: 'fb-y', grey: 'fb-x' })[a.fb[i]]}">${f}</span>`).join('')}</div>`).join('');
   const guess = Array.from({ length: L.slots }, (_, i) => lk.hint && lk.hint.pos === i ? `<span class="ft fb-g">${lk.hint.fruit}</span>` : `<span class="ft${s.guess[i] ? '' : ' empty'}">${s.guess[i] || ''}</span>`).join(' ');
   const full = Array.from({ length: L.slots }, (_, i) => (lk.hint && lk.hint.pos === i) || s.guess[i]).every(Boolean);
-  return `<div class="info">${s.lock === 0 ? 'Замок 1 — розминка (не оцінюється, без таймера)' : `Замок 2 — складніший · час (видно лише тобі): ${timerHTML(s.endsAt)}`} · спроба: ${guess}${lk.opened ? ' · <b>відкрито</b>' : ''}</div>
-    <div class="grid">${L.fruits.map(f => act('fruit', f, f, { cls: 'big', disabled: lk.opened })).join('')}</div>
+  return `<div class="info">${s.lock === 0 ? 'Замок 1 — розминка (не оцінюється, без таймера)' : `Замок 2 — складніший · час (видно лише тобі): ${timerHTML(s.endsAt)}`}${lk.opened ? ' · <b>відкрито</b>' : ''}</div>
+    <div class="lbl">Фрукти, які називає дитина</div><div class="grid">${L.fruits.map(f => act('fruit', f, f, { cls: 'big', disabled: lk.opened })).join('')}</div>
+    <div class="info" style="margin-top:8px">Спроба: ${guess}</div>
     <div class="grid" style="margin-top:8px">${act('check', undefined, 'Перевірити', { cls: 'primary', disabled: !full || lk.opened })}${act('erase', undefined, 'Стерти фрукт')}
       ${act('hint', undefined, 'Дитина попросила підказку', { disabled: !!lk.hint || lk.opened })}${s.step === 'hard' ? act('stop', undefined, 'Дитина зупинилась') : ''}</div>
     <div class="hint" style="margin-top:6px">«Підказку» й «зупинилась» — лише з ініціативи дитини.</div>${hist(lk.attempts)}`;
@@ -447,9 +448,13 @@ function rpSelf(L) {
   return `<table><thead><tr><th>Навичка</th><th>Самооцінка</th><th>Результат</th><th>Як бачить себе</th></tr></thead><tbody>${rows}</tbody></table><p style="margin-top:8px">${parts.length ? 'Дитина ' + parts.join('; ') + '.' : 'Самооцінку не заповнено.'}${u.length ? ' Там, де дитина себе недооцінює, особливо важливо помічати й називати її успіхи.' : ''}</p>`;
 }
 function rpRecommend(L) {
-  const pk = pickStart(S, L); if (!pk.length) return '<p>Недостатньо даних.</p>';
-  return `<h3 style="margin-bottom:4px">З чого почати на курсі</h3><ul>${pk.map(p => `<li><b>${esc(skillOf(p.k).area)}.</b> ${p.why[0].toUpperCase() + p.why.slice(1)}. ${esc(skillOf(p.k).training)}</li>`).join('')}</ul>
-    <h3 style="margin:8px 0 4px">Що помічати й хвалити вдома</h3><ul>${pk.map(p => `<li><b>${esc(skillOf(p.k).area)}:</b> ${esc(skillOf(p.k).praise)}</li>`).join('')}<li>Хваліть зусилля, спроби й стратегію, а не лише результат.</li></ul>`;
+  const pk = pickStart(S, L), all = allStrong(L);
+  if (!pk.length && !all) return '<p>Недостатньо даних.</p>';
+  const focus = pk.length ? `<ul>${pk.map(p => `<li><b>${esc(skillOf(p.k).area)}</b> — ${esc(p.why)}.</li>`).join('')}</ul>` : `<p>${esc(fill(CONFIG.report.allStrong, { name: S.setup.name }))}</p>`;
+  // «Що помічати й хвалити вдома» — як і раніше: навички з блоку вище (або дві найслабші, якщо всі «Сильна»)
+  const home = pk.length ? pk.map(p => p.k) : SKILL_KEYS.filter(k => L[k].level).sort((a, z) => (S.self[a] || 4) - (S.self[z] || 4)).slice(0, 2);
+  return `<h3 style="margin-bottom:4px">${esc(CONFIG.report.focusTitle)}</h3>${focus}
+    <h3 style="margin:8px 0 4px">Що помічати й хвалити вдома</h3><ul>${home.map(k => `<li><b>${esc(skillOf(k).area)}:</b> ${esc(skillOf(k).praise)}</li>`).join('')}<li>Хваліть зусилля, спроби й стратегію, а не лише результат.</li></ul>`;
 }
 function viewReport() {
   const L = scoreAll(S), gr = S.setup.group, min = lessonMinutes(S), tk = titleSkill(S, L);
