@@ -434,8 +434,12 @@ V.safe = s => {
   const hist = atts => atts.map((a, k) => `<div class="hrow"><b style="width:22px">${k + 1}</b>${a.guess.map((f, i) => `<div class="ft ${({ green: 'fb-g', yellow: 'fb-y', grey: 'fb-x' })[a.fb[i]]}">${f}</div>`).join('')}</div>`).join('');
   if (lk && lk.opened) return head('safe', s.lock === 0 ? 'Розминка' : 'Складніший замок') + `<div class="center"><div style="font-size:96px;line-height:1">🔓</div><div class="huge">Замок відкрито!</div></div>`;
   const guess = Array.from({ length: L.slots }, (_, i) => lk.hint && lk.hint.pos === i ? `<div class="ft hint">${lk.hint.fruit}</div>` : s.guess[i] ? `<div class="ft">${s.guess[i]}</div>` : '<div class="ft empty"></div>').join('');
-  return head('safe', s.lock === 0 ? 'Замок 1 · розминка' : 'Замок 2 · складніший') + `<div class="safe"><div class="safeL"><div class="pill" style="font-size:16px">У коді ${L.slots} ${pl(L.slots, ['місце', 'місця', 'місць'])} · фруктів на вибір: ${L.fruits.length}</div><div class="row">${guess}</div>
-    <div class="row">${L.fruits.map(f => `<div class="ft" style="box-shadow:3px 3px 0 var(--navy)">${f}</div>`).join('')}</div>${legend}</div><div class="history">${hist(lk.attempts)}</div></div>`;
+  // зверху вниз: ряд фруктів → слоти поточної спроби → легенда кольорів (унизу)
+  return head('safe', s.lock === 0 ? 'Замок 1 · розминка' : 'Замок 2 · складніший') + `<div class="safe"><div class="safeL" style="justify-content:flex-start">
+    <div class="row">${L.fruits.map(f => `<div class="ft" style="box-shadow:3px 3px 0 var(--navy)">${f}</div>`).join('')}</div>
+    <div class="pill" style="font-size:16px;margin-top:6px">Спроба · у коді ${L.slots} ${pl(L.slots, ['місце', 'місця', 'місць'])}</div>
+    <div class="row" style="flex-wrap:nowrap">${guess}</div>
+    <div style="margin-top:auto">${legend}</div></div><div class="history">${hist(lk.attempts)}</div></div>`;
 };
 V.money = s => {
   const ctx = ctxOf(S, 'money'), C = ctx.C, owlL = C.owl.lines;
