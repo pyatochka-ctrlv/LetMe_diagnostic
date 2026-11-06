@@ -27,7 +27,7 @@ const CONFIG = {
   storageKey: 'ostriv-state-v5',
   channel: 'ostriv-sync',
   // Google Таблиця (див. docs/GOOGLE_SHEETS.md). Порожній endpoint — нічого не надсилається.
-  sheets: { endpoint: '', token: '' },
+  sheets: { endpoint: 'https://script.google.com/macros/s/AKfycbwio2iJz0sRvSaccnoyA4dCbO2XiRgVrH1fqbqKaiWXLXVT4NRxwuKR4jAIuN3jj3EzlQ/exec', token: 'w2quxUheEN7RsB86oMJLRN5AuIdnO4qEjOhd' },
   // Twemoji: емодзі однаково виглядають у Windows, macOS і Linux (замість порожніх квадратиків)
   twemoji: { base: 'https://cdn.jsdelivr.net/gh/jdecked/twemoji@15.1.0/assets/' },
   meetHint: 'У Google Meet натисни «Показати екран» → обери вкладку або вікно «Острів суперсил». Не показуй увесь екран, інакше дитина побачить пульт.',
