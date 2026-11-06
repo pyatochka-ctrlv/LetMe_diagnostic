@@ -14,7 +14,10 @@
 html,body{height:100%;margin:0}
 body{background:var(--sky);color:var(--navy);font-family:var(--text);overflow:hidden;background-image:radial-gradient(rgba(30,42,90,.07) 2px,transparent 2px);background-size:26px 26px}
 h1,h2,h3{font-family:var(--head);margin:0;line-height:1.15}
-.app{height:100vh;display:grid;grid-template-rows:56px minmax(0,1fr)}
+.app{width:var(--W,1280px);height:var(--H,800px);zoom:var(--z,1);display:grid;grid-template-rows:56px minmax(0,1fr)}
+/* ситуація + вміст станції — по центру вільного місця під заголовком */
+.sflow{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.sflow>.center,.sflow>.bob,.sflow>.shop,.sflow>.selfgrid,.sflow>.final{flex:0 1 auto}
 .top{display:flex;align-items:center;gap:14px;padding:8px 18px}
 .brand{font-family:var(--head);font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px;white-space:nowrap}
 .brand b{display:inline-grid;place-items:center;width:34px;height:34px;border:3px solid var(--navy);border-radius:12px;background:var(--yellow);box-shadow:3px 3px 0 var(--navy);font-size:18px}
@@ -116,40 +119,40 @@ img.emoji{height:1em;width:1em;margin:0 .04em;vertical-align:-0.12em;display:inl
 .casetxt{font-size:17px;font-weight:600;line-height:1.4;max-width:900px;text-align:left}
 
 /* сейф */
-.safe{flex:1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:22px;min-height:0}
+.safe{flex:1;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:22px;min-height:0}
 .safeL{display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center}
-.ft{width:68px;height:68px;border:4px solid var(--navy);border-radius:18px;background:#fff;display:grid;place-items:center;font-size:38px}
+.ft{width:84px;height:84px;border:4px solid var(--navy);border-radius:20px;background:#fff;display:grid;place-items:center;font-size:48px}
 .ft.empty{border-style:dashed;background:rgba(255,255,255,.5)}
 .ft.hint{background:#D7F5E6;border-color:var(--green)}
 .row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.legend{display:flex;flex-direction:column;gap:5px;font-size:15px;font-weight:600;background:#fff;border:3px solid var(--navy);border-radius:16px;padding:8px 14px}
+.legend{display:flex;flex-direction:column;gap:7px;font-size:17px;font-weight:600;background:#fff;border:3px solid var(--navy);border-radius:16px;padding:8px 14px}
 .legend span{display:flex;align-items:center;gap:8px}
-.legend i{width:22px;height:22px;border-radius:6px;border:2px solid var(--navy);display:inline-block}
+.legend i{width:26px;height:26px;border-radius:6px;border:2px solid var(--navy);display:inline-block}
 .fb-g{background:var(--green) !important}.fb-y{background:var(--yellow) !important}.fb-x{background:#B9C0CF !important}
-.history{background:var(--soft);border:3px solid var(--navy);border-radius:22px;padding:12px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;min-height:0}
+.history{background:var(--soft);border:3px solid var(--navy);border-radius:22px;padding:12px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-start;gap:8px;min-height:0}
 .hrow{display:flex;align-items:center;gap:8px}
-.hrow .ft{width:44px;height:44px;font-size:24px;border-width:3px;border-radius:12px}
+.hrow .ft{width:54px;height:54px;font-size:30px;border-width:3px;border-radius:14px}
 
 /* крамниця */
-.shop{flex:1;display:grid;grid-template-columns:150px minmax(0,1.3fr) minmax(0,1fr);gap:18px;min-height:0;align-items:start}
+.shop{flex:1;display:grid;grid-template-columns:200px minmax(0,1.5fr) minmax(0,1fr);gap:18px;min-height:0;align-items:start}
 .owl{display:flex;flex-direction:column;align-items:center;gap:8px}
-.owl .speech{font-size:15px;padding:8px 10px}
+.owl .speech{font-size:16px;padding:8px 12px}
 .goods{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:start}
-.goods.g4{grid-template-columns:repeat(3,1fr)}
-.good{border:3px solid var(--navy);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--navy);padding:8px 6px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center}
-.good .e{font-size:34px}.good .n{font-size:14px;font-weight:700;line-height:1.2}
-.price{font:800 14px var(--head);background:var(--yellow);border:2px solid var(--navy);border-radius:999px;padding:1px 9px}
+.goods.g4{grid-template-columns:repeat(4,1fr)}
+.good{border:3px solid var(--navy);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--navy);padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center}
+.good .e{font-size:46px}.good .n{font-size:16px;font-weight:700;line-height:1.2}
+.price{white-space:nowrap;font:800 16px var(--head);background:var(--yellow);border:2px solid var(--navy);border-radius:999px;padding:1px 9px}
 .good.taken{opacity:.3}
 .coinrow{display:flex;flex-wrap:wrap;gap:3px;justify-content:center}
 .coin{width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFE28A,var(--yellow) 60%,#E8A915);border:2px solid var(--navy);display:inline-block}
-.bigcoin{display:inline-grid;place-items:center;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFE28A,var(--yellow) 60%,#E8A915);border:4px solid var(--navy);box-shadow:3px 3px 0 var(--navy);font:800 24px var(--head)}
+.bigcoin{display:inline-grid;place-items:center;width:76px;height:76px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFE28A,var(--yellow) 60%,#E8A915);border:4px solid var(--navy);box-shadow:3px 3px 0 var(--navy);font:800 24px var(--head)}
 .basket{background:var(--soft);border:3px dashed var(--navy);border-radius:20px;padding:10px;display:flex;flex-direction:column;gap:8px}
-.cartline{display:flex;align-items:center;gap:8px;background:#fff;border:3px solid var(--navy);border-radius:12px;padding:4px 10px;font-weight:700;font-size:15px}
+.cartline{display:flex;align-items:center;gap:8px;background:#fff;border:3px solid var(--navy);border-radius:12px;padding:5px 10px;font-weight:700;font-size:16px}
 .plate{min-height:110px;background:#fff;border:4px solid var(--navy);border-radius:50%/40%;box-shadow:5px 5px 0 var(--navy);display:flex;flex-wrap:wrap;gap:6px;align-content:center;justify-content:center;padding:14px 36px;width:min(520px,100%)}
-.plate .bigcoin{width:48px;height:48px;font-size:18px;border-width:3px}
-.display{min-width:160px;font:800 40px var(--head);background:#fff;border:4px solid var(--navy);border-radius:18px;padding:4px 18px;text-align:center;min-height:62px}
+.plate .bigcoin{width:58px;height:58px;font-size:22px;border-width:3px}
+.display{min-width:220px;font:800 56px var(--head);background:#fff;border:4px solid var(--navy);border-radius:18px;padding:4px 18px;text-align:center;min-height:62px}
 .opts{display:flex;gap:22px;justify-content:center}
-.opt{min-width:240px;font:700 24px var(--head);padding:22px;border:4px solid var(--navy);border-radius:20px;background:#fff;box-shadow:5px 5px 0 var(--navy)}
+.opt{min-width:280px;font:700 28px var(--head);padding:26px;border:4px solid var(--navy);border-radius:20px;background:#fff;box-shadow:5px 5px 0 var(--navy)}
 
 /* похід */
 .items{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;width:100%}
@@ -194,21 +197,21 @@ img.emoji{height:1em;width:1em;margin:0 .04em;vertical-align:-0.12em;display:inl
 /* майданчик */
 .kids{display:flex;gap:40px;justify-content:center;align-items:flex-end}
 .kid{display:flex;flex-direction:column;align-items:center;gap:8px;position:relative}
-.wish{background:#fff;border:3px solid var(--navy);border-radius:16px;padding:6px 12px;font-weight:700;font-size:16px;box-shadow:3px 3px 0 var(--navy);max-width:230px}
+.wish{background:#fff;border:3px solid var(--navy);border-radius:16px;padding:6px 12px;font-weight:700;font-size:18px;box-shadow:3px 3px 0 var(--navy);max-width:230px}
 .think{position:absolute;top:-28px;left:50%;transform:translateX(-50%);font:800 24px var(--head);letter-spacing:4px;animation:think 1.5s steps(3) infinite}
 @keyframes think{0%{opacity:.3}50%{opacity:1}}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%}
-.rcard{border:3px solid var(--navy);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--navy);padding:10px;font-weight:700;font-size:16px;text-align:center}
+.rcard{border:3px solid var(--navy);border-radius:16px;background:#fff;box-shadow:4px 4px 0 var(--navy);padding:12px;font-weight:700;font-size:18px;text-align:center}
 .teams{display:flex;justify-content:space-around;gap:20px;width:100%}
 .team{display:flex;flex-direction:column;align-items:center;gap:4px}
 .chat{flex:1;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px;background:#E6EEF9;border:4px solid var(--navy);border-radius:22px;padding:10px 14px;min-height:0;width:100%}
 .chat .ttl{font:800 15px var(--head);display:flex;gap:8px;align-items:center}
 .msgs{display:flex;flex-direction:column;justify-content:flex-end;gap:6px;overflow:hidden}
-.msg{max-width:70%;background:#fff;border:2px solid var(--navy);border-radius:14px 14px 14px 4px;padding:5px 10px;font-size:16px;font-weight:600}
-.msg b{display:block;font-size:12px;color:var(--muted)}
+.msg{max-width:70%;background:#fff;border:2px solid var(--navy);border-radius:14px 14px 14px 4px;padding:6px 12px;font-size:18px;font-weight:600}
+.msg b{display:block;font-size:13px;color:var(--muted)}
 .msg.me{align-self:flex-end;background:#DCF8C6;border-radius:14px 14px 4px 14px}
 .replies{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.reply{background:#fff;border:3px solid var(--navy);border-radius:14px;box-shadow:3px 3px 0 var(--navy);padding:8px 12px;font-weight:700;font-size:16px;text-align:left}
+.reply{background:#fff;border:3px solid var(--navy);border-radius:14px;box-shadow:3px 3px 0 var(--navy);padding:10px 14px;font-weight:700;font-size:18px;text-align:left}
 
 /* радіо */
 .onair{display:inline-flex;align-items:center;gap:8px;background:#C8323C;color:#fff;border:3px solid var(--navy);border-radius:12px;padding:4px 14px;font:800 16px var(--head);box-shadow:3px 3px 0 var(--navy)}
@@ -290,7 +293,16 @@ function emoFace(head, chosen, scale, cape) {
 }
 const otherCapes = () => CONFIG.capes.map(c => c.color).filter(c => c !== capeColor(S.hero.cape));
 const otherHeads = list => list.filter(h => h !== S.hero.head);
-const vh = () => window.innerHeight;
+// гра «намальована» для 1280×800 і пропорційно масштабується під вікно (у Google Meet — під показану вкладку)
+let LOGIC_H = 800;
+function fit() {
+  const z = Math.min(innerWidth / 1280, innerHeight / 800);
+  LOGIC_H = Math.round(innerHeight / z);
+  const r = document.documentElement.style;
+  r.setProperty('--z', z); r.setProperty('--W', Math.round(innerWidth / z) + 'px'); r.setProperty('--H', LOGIC_H + 'px');
+}
+fit();
+const vh = () => LOGIC_H;
 const sc = (reserve, H = 30) => Math.max(2, Math.min(10, Math.floor((vh() - reserve) / H)));
 
 /* ---------- ефекти ---------- */
@@ -416,17 +428,17 @@ V.emotions = s => {
     }
     const caseFrames = F.map((x, i) => ({ x, i })).filter(o => o.x.ci === f.ci);
     const fr = ({ x, i }) => {
-      const hd = x.heads[x.who], big = sc(650, 30);
+      const hd = x.heads[x.who], big = sc(560, 30);
       if (x.kind === 'shows') return `<div class="frame shows${i === s.fi ? ' sel' : ''}" style="max-width:360px"><span class="maskbadge">🎭</span>${npc(hd, '#FFB703', big, 'joy')}<span class="lab">Показує іншим</span></div>`;
       if (x.kind === 'feels') { const ch = s.ans[i]; return `<div class="frame feels${i === s.fi ? ' sel' : ''}${i > s.fi ? ' future' : ''}" style="max-width:360px">${ch && ch.length ? emoFace(hd, ch, big, '#FFB703') : npc(hd, '#FFB703', big, 'blank', {}, 'ghost')}<span class="lab" style="color:var(--navy)">Насправді</span></div>`; }
-      return `<div class="frame${i === s.fi ? ' sel' : ''}${i > s.fi ? ' future' : ''}" style="max-width:360px">${emoFace(hd, s.ans[i], big, '#FFB703')}<div class="q">${esc(T(x.question))}</div></div>`;
+      return `<div class="frame${i === s.fi ? ' sel' : ''}${i > s.fi ? ' future' : ''}" style="max-width:360px">${emoFace(hd, s.ans[i], big, '#FFB703')}<div class="q">${esc(T(x.q || x.question))}</div></div>`;
     };
     return head('emotions', f.title) + `<div class="center" style="gap:10px"><div class="strip">${caseFrames.map(fr).join('')}</div></div>`;
   }
   // «Що допоможе?» — без таймера на екрані дитини
   const h = ctx.C.calmHead;
   const sparks = Array.from({ length: s.calm.n }, (_, i) => { const a = i * 2.4, r = 30 + (i % 4) * 6; const x = 50 + Math.cos(a) * r * 1.2, y = 50 + Math.sin(a) * r; return `<span class="flysp${i === s.calm.n - 1 ? ' new' : ''}" style="left:${x}%;top:${y}%;--fx:${(50 - x) * 4}px;--fy:${(50 - y) * 4}px">✨</span>`; }).join('');
-  return head('emotions', 'Що допоможе?') + `<div class="center" style="position:relative">${sparks}<div style="position:relative"><span class="steam">💨</span>${npc(h, '#FF5A5F', sc(430, 30), 'anger')}</div></div>`;
+  return head('emotions', 'Що допоможе?') + `<div class="center" style="position:relative">${sparks}<div style="position:relative"><span class="steam">💨</span>${npc(h, '#FF5A5F', sc(380, 30), 'anger')}</div></div>`;
 };
 V.safe = s => {
   const ctx = ctxOf(S, 'safe'), L = s.lock === 0 ? ctx.C.warm : ctx.C.hard, lk = s.locks[s.lock];
@@ -439,7 +451,7 @@ V.safe = s => {
     <div class="row">${L.fruits.map(f => `<div class="ft" style="box-shadow:3px 3px 0 var(--navy)">${f}</div>`).join('')}</div>
     <div class="pill" style="font-size:16px;margin-top:6px">Спроба · у коді ${L.slots} ${pl(L.slots, ['місце', 'місця', 'місць'])}</div>
     <div class="row" style="flex-wrap:nowrap">${guess}</div>
-    <div style="margin-top:auto">${legend}</div></div><div class="history">${hist(lk.attempts)}</div></div>`;
+    <div style="margin-top:auto">${legend}</div></div><div class="history"><div class="kicker" style="font-size:15px">Твої спроби</div>${hist(lk.attempts) || '<div class="muted" style="font-weight:600">Тут з’являтимуться твої спроби й підказки кольорами</div>'}</div></div>`;
 };
 V.money = s => {
   const ctx = ctxOf(S, 'money'), C = ctx.C, owlL = C.owl.lines;
@@ -496,7 +508,8 @@ V.bob = s => {
   const line = T(ST.bob.lineText(s, C));
   const lastMine = s.tries.length ? C.items.find(i => i.id === s.tries[s.tries.length - 1]) : null;
   const given = s.result ? s.tries[s.tries.length - 1] : '';
-  const inv = s.step === 'trade' || s.step === 'haggle' || s.tries.length ? `<div class="inv">${C.items.map(i => `<div class="icard${s.tries.includes(i.id) && i.id !== given ? ' used' : ''}${i.id === given ? ' given' : ''}"><span class="e">${i.e}</span><div><b>${esc(i.name)}</b><small>${esc(T(i.note || ''))}</small></div></div>`).join('')}</div>` : '';
+  const invTitle = s.step === 'talk' ? '🎒 Здається, у твоєму рюкзаку є дещо цікаве…' : '🎒 Твій рюкзак';
+  const inv = `<div class="kicker" style="font-size:15px;margin-top:10px">${invTitle}</div><div class="inv" style="margin-top:6px">${C.items.map(i => `<div class="icard${s.tries.includes(i.id) && i.id !== given ? ' used' : ''}${i.id === given ? ' given' : ''}"><span class="e">${i.e}</span><div><b>${esc(i.name)}</b><small>${esc(T(i.note || ''))}</small></div></div>`).join('')}</div>`;
   return head('bob', 'Ринок Боба') + `<div class="bob"><div class="center">${bob}</div><div class="bubbles">${lastMine ? `<div class="me">Ти: ${lastMine.e} ${esc(lastMine.name)}</div>` : ''}<div class="speech"><span style="font-size:13px;color:var(--muted);display:block">Боб</span>${esc(line)}</div></div></div>${inv}`;
 };
 V.playground = s => {
@@ -510,7 +523,7 @@ V.playground = s => {
       <div class="cards">${C.cards.map(c => `<div class="rcard${s.cards.includes(c.id) ? ' sel' : ''}">${esc(c.text)}</div>`).join('')}</div></div>`;
   }
   if (s.step === 'compromise') {
-    const team = (key, h) => `<div class="team"><b>${esc(C.teams[key].name)}</b><div class="row">${[0, 1, 2].map(i => npc(h, caps[i % caps.length], 3)).join('')}</div><div class="row">${C.teams[key].wishes.map(w => `<span class="wish">${esc(w)}</span>`).join('')}</div></div>`;
+    const team = (key, h) => `<div class="team"><b>${esc(C.teams[key].name)}</b><div class="row">${[0, 1, 2].map(i => npc(h, caps[i % caps.length], 5)).join('')}</div><div class="row">${C.teams[key].wishes.map(w => `<span class="wish">${esc(w)}</span>`).join('')}</div></div>`;
     return head('playground', 'Компроміс') + `<div class="center" style="gap:12px"><div class="teams">${team('cats', 'cat')}${team('foxes', 'fox')}</div>
       <div class="cards">${C.cards.map(c => `<div class="rcard${s.cards.includes(c.id) ? ' sel' : ''}">${esc(c.text)}</div>`).join('')}</div></div>`;
   }
@@ -569,6 +582,8 @@ function render() {
     else html = V[key](s);
   }
   st.innerHTML = T(html);
+  const sh = st.querySelector(':scope > .shead');
+  if (sh) { const fl = document.createElement('div'); fl.className = 'sflow'; while (sh.nextSibling) fl.appendChild(sh.nextSibling); st.appendChild(fl); }
   setBubble(iskraLine());
   emojify(st); emojify($('#prog')); emojify($('#herocard')); emojify($('#bubble'));
   const w = $('#walker');
@@ -596,7 +611,7 @@ const saved = SYNC.load(); if (saved) { lastFx = saved.fx ? saved.fx.n : 0; onSt
 SYNC.hello();
 setInterval(() => SYNC.ping(), 1000);
 setInterval(tick, 250);
-window.addEventListener('resize', () => render());
+window.addEventListener('resize', () => { fit(); render(); });
 </script>
 </body>
 </html>
