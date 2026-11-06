@@ -16,6 +16,9 @@
 const TOKEN = 'ЗАМІНІТЬ-НА-СВІЙ-ДОВГИЙ-ВИПАДКОВИЙ-ТОКЕН';
 const FOLDER_ID = 'ВСТАВТЕ-ID-ПАПКИ-ДЛЯ-PDF';
 const SHEET_NAME = 'Проходження';
+// Необов’язково: ID таблиці (частина адреси між /d/ і /edit). Потрібен, якщо скрипт створено окремо
+// на script.google.com, а не через «Розширення → Apps Script» у самій таблиці.
+const SPREADSHEET_ID = '';
 const PDF_HEADER = 'PDF результату';
 const ID_HEADER = 'id';
 const MAX_CELL = 49000; // ліміт клітинки — 50 000 символів
@@ -34,7 +37,7 @@ function doPost(e) {
       return json_({ ok: false, error: 'bad payload' });
     }
 
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const ss = book_();
     const sheet = ss.getSheetByName(SHEET_NAME) || ss.insertSheet(SHEET_NAME);
     ensureHeaders_(sheet, headers);
 
@@ -57,6 +60,8 @@ function doPost(e) {
 
     return json_({ ok: true, updated: !!target, pdf: !!link });
   } catch (err) {
+    console.error('Острів суперсил: помилка запису', err && err.stack || err);   // видно в «Executions»
+    logError_(err);
     return json_({ ok: false, error: String(err) });
   } finally {
     try { lock.releaseLock(); } catch (e2) { /* lock міг і не бути взятий */ }
@@ -64,6 +69,30 @@ function doPost(e) {
 }
 
 // Перевірка в браузері: відкрийте URL веб-застосунку — має з’явитися {"ok":true,...}
+function book_() {
+  const ss = SPREADSHEET_ID ? SpreadsheetApp.openById(SPREADSHEET_ID) : SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) throw new Error('Скрипт не прив’язаний до таблиці: впишіть SPREADSHEET_ID або створіть скрипт через «Розширення → Apps Script» у таблиці');
+  return ss;
+}
+
+// помилки — на аркуш «Помилки», щоб їх було видно без журналу
+function logError_(err) {
+  try { const ss = book_(); const sh = ss.getSheetByName('Помилки') || ss.insertSheet('Помилки'); sh.appendRow([new Date(), String(err && err.stack || err)]); } catch (e) { /* немає доступу до таблиці */ }
+}
+
+// ПЕРЕВІРКА: оберіть testPost у списку функцій біля Run і натисніть Run.
+// У «Execution log» буде назва таблиці, куди пише скрипт, а на аркуші «Перевірка» — тестовий рядок.
+function testPost() {
+  const ss = book_();
+  Logger.log('Скрипт пише в таблицю: ' + ss.getName() + ' — ' + ss.getUrl());
+  const sh = ss.getSheetByName('Перевірка') || ss.insertSheet('Перевірка');
+  sh.appendRow([new Date(), 'Запис працює ✓']);
+  const main = ss.getSheetByName(SHEET_NAME);
+  Logger.log(main ? 'Аркуш «' + SHEET_NAME + '»: рядків з даними — ' + Math.max(0, main.getLastRow() - 1) : 'Аркуша «' + SHEET_NAME + '» ще немає: жодне проходження не дійшло до запису');
+  const err = ss.getSheetByName('Помилки');
+  if (err && err.getLastRow()) Logger.log('Остання помилка: ' + err.getRange(err.getLastRow(), 2).getValue());
+}
+
 function doGet() {
   return json_({ ok: true, info: 'Острів суперсил: приймаю POST із результатами діагностики.' });
 }
