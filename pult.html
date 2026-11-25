@@ -459,7 +459,6 @@ function rpRecommend(L) {
 function viewReport() {
   const L = scoreAll(S), gr = S.setup.group, min = lessonMinutes(S), tk = titleSkill(S, L);
   const meta = [['Дитина', esc(`${S.setup.name} ${S.setup.surname}`.trim())], ['Вік', `${S.setup.age} ${pl(S.setup.age, ['рік', 'роки', 'років'])}`], ['Група', CONFIG.groups[gr].label], ['Дата', fmtDate(S.t.lessonStart || S.date)], ['Тривалість', min ? `${min} хв` : '—']];
-  if (S.setup.mik.trim()) meta.push(['МІК', esc(S.setup.mik)]);
   const table = CONFIG.skills.map(sk => { const r = L[sk.key], pn = probeNames(sk.key, gr);
     return `<tr><td class="nm">${esc(sk.area)}</td><td>${esc(RP.measured(sk))}</td><td>${r.skipped && !r.p1 && !r.p2 ? esc(CONFIG.report.skippedStation) : `${esc(pn[0])}: ${RP.probe(r.p1)}${r.single ? '' : `<br>${esc(pn[1])}: ${RP.probe(r.p2)}`}`}</td><td>${RP.lv(r.level)}</td><td>${RP.dots(S.self[sk.key])}</td></tr>`; }).join('');
   const skills = CONFIG.skills.map(sk => { const r = L[sk.key], pn = probeNames(sk.key, gr), Tx = r.level ? sk.levels[r.level] : null;
@@ -498,15 +497,34 @@ function loadH2P() {
   return new Promise((res, rej) => { const sc = document.createElement('script'); sc.src = H2P; sc.onload = () => res(window.html2pdf); sc.onerror = rej; document.head.appendChild(sc); });
 }
 // PDF звіту в base64 (на клієнті). Якщо бібліотека недоступна — null, рядок однаково надсилається.
-async function reportPdfBase64(fileName) {
+// PDF звіту через html2pdf.js: без колонтитулів браузера (назви вкладки пульта, дати, адреси)
+async function withReportPdf(fileName, use) {
+  const h2p = await loadH2P(), src = $('#report'); if (!h2p || !src) throw new Error('html2pdf недоступний');
+  const box = document.createElement('div'); box.style.cssText = 'position:absolute;left:0;top:0;z-index:-1;width:718px;background:#fff';
+  const el = src.cloneNode(true); el.removeAttribute('id'); el.classList.add('pdf'); box.appendChild(el); document.body.appendChild(box);
+  const sy = window.scrollY; window.scrollTo(0, 0);
   try {
-    const h2p = await loadH2P(), src = $('#report'); if (!h2p || !src) return null;
-    const box = document.createElement('div'); box.style.cssText = 'position:absolute;left:0;top:0;z-index:-1;width:718px;background:#fff';
-    const el = src.cloneNode(true); el.removeAttribute('id'); el.classList.add('pdf'); box.appendChild(el); document.body.appendChild(box); const sy = window.scrollY; window.scrollTo(0, 0);
-    const uri = await h2p().set({ margin: 10, filename: fileName, image: { type: 'jpeg', quality: 0.85 }, html2canvas: { scale: 1.5, useCORS: true, scrollX: 0, scrollY: 0 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }, pagebreak: { mode: ['css'], avoid: ['.rp-skill', 'tr', 'h2', 'li'] } }).from(el).outputPdf('datauristring').then(u => { box.remove(); window.scrollTo(0, sy); return u; }, e => { box.remove(); window.scrollTo(0, sy); throw e; });
-    return String(uri).split(',')[1] || null;
-  } catch (e) { console.warn('PDF не згенеровано', e); return null; }
+    return await use(h2p().set({ margin: 10, filename: fileName, image: { type: 'jpeg', quality: 0.85 }, html2canvas: { scale: 1.5, useCORS: true, scrollX: 0, scrollY: 0 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }, pagebreak: { mode: ['css'], avoid: ['.rp-skill', 'tr', 'h2', 'li'] } }).from(el));
+  } finally { box.remove(); window.scrollTo(0, sy); }
+}
+// PDF у base64 для Google Диска; якщо бібліотека недоступна — null, рядок однаково надсилається
+async function reportPdfBase64(fileName) {
+  try { const uri = await withReportPdf(fileName, w => w.outputPdf('datauristring')); return String(uri).split(',')[1] || null; }
+  catch (e) { console.warn('PDF не згенеровано', e); return null; }
+}
+// кнопка «Зберегти PDF»: файл «Прізвище Ім’я — дата.pdf»; запасний варіант — друк із нейтральною назвою
+async function savePdf() {
+  const name = sheetRecord(S).fileName;
+  try {
+    const blob = await withReportPdf(name, w => w.outputPdf('blob'));
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+  }
+  catch (e) {
+    const t = document.title; document.title = name.replace(/\.pdf$/, '');
+    window.print(); setTimeout(() => { document.title = t; }, 1000);
+  }
 }
 async function sheetFlush() {
   const { endpoint, token } = CONFIG.sheets; if (!endpoint) return;
@@ -565,7 +583,7 @@ const GA = {
   skipStation() { if (!armed('skipStation')) { render(); return; } A.skipStation(S); ui.undo = []; commit(); },
   report() { ui.view = null; render(); },
   back() { ui.view = 'lesson'; render(); },
-  print() { window.print(); },
+  print() { savePdf(); },
   sheetRetry() { S.sheet = { status: 'pending' }; sheetShow(); sheetFlush(); },
   goto(k) { const el = document.getElementById('sk-' + k); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
   ex(a) { ui.ex[a] = !ui.ex[a]; render(); }
